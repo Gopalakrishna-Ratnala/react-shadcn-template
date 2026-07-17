@@ -1,0 +1,70 @@
+---
+description: React Hook Form + Zod validation — form structure, Controller integration, accessibility wiring. Loaded when working with forms.
+paths: ["src/**/*.tsx", "src/hooks/**/*.ts"]
+---
+
+# Forms Rules (React Hook Form + Zod)
+
+## Mandatory Form Requirements
+
+- All forms MUST use Zod schema validation
+- All forms MUST use RHF resolver
+- UI library inputs MUST integrate through `Controller` unless RHF-native
+- Validation messages MUST be visible and accessible
+- Form submission MUST use typed values inferred from schema where possible
+- Do not manage RHF-controlled values in local component state
+
+## MANDATORY: Schema File Placement
+
+Every Zod schema for a page or component MUST live in a co-located schema file named `ComponentName.schema.ts` (e.g. `LoginPage.schema.ts`).
+
+- Schema files are **not permitted** inside `.tsx` files or hooks
+- The `.tsx` file imports the schema and the inferred type from the schema file
+
+```text
+pages/login/
+├── LoginPage.tsx
+├── LoginPage.styles.ts
+├── types.ts
+├── LoginPage.schema.ts    ← schema lives here
+├── LoginPage.test.tsx
+└── index.ts
+```
+
+```ts
+// LoginPage.schema.ts
+import { z } from "zod";
+
+export const loginSchema = z.object({
+  email: z.string().email("Invalid email"),
+  password: z.string().min(8, "Minimum 8 characters"),
+});
+
+export type LoginFormValues = z.infer<typeof loginSchema>;
+```
+
+```tsx
+// LoginPage.tsx
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+
+import { loginSchema, type LoginFormValues } from "./LoginPage.schema";
+
+export function LoginPage() {
+  const form = useForm<LoginFormValues>({ resolver: zodResolver(loginSchema) });
+}
+```
+
+## Forbidden Patterns
+
+- Do not define Zod schemas inline in `.tsx` files or hooks
+- Do not use `yup` — use only Zod for schema definition
+- Do not mix local `useState` with RHF-controlled fields for the same value
+
+## Required Accessibility Wiring
+
+- `error`
+- `helperText` (or equivalent error display in your UI library)
+- `aria-invalid`
+- `aria-describedby`
+- visible labels or valid `aria-label`
