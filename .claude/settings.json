@@ -1,0 +1,95 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/check-dependency-security.sh",
+            "timeout": 30000,
+            "statusMessage": "Running npm audit before commit..."
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/check-no-any.sh",
+            "timeout": 5000,
+            "statusMessage": "Checking for explicit 'any'..."
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/check-no-div-span.sh",
+            "timeout": 5000,
+            "statusMessage": "Checking for forbidden HTML elements (<div>, <span>)..."
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/check-no-sx-prop.sh",
+            "timeout": 5000,
+            "statusMessage": "Checking for production sx prop..."
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/check-no-inline-style.sh",
+            "timeout": 5000,
+            "statusMessage": "Checking for inline style..."
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/check-no-hardcoded-colors.sh",
+            "timeout": 5000,
+            "statusMessage": "Checking for hardcoded colors..."
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/check-no-raw-dimensions.sh",
+            "timeout": 5000,
+            "statusMessage": "Checking for raw dimensions..."
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/check-component-duplicate.sh",
+            "timeout": 5000,
+            "statusMessage": "Checking for duplicate components..."
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/check-component-files.sh",
+            "timeout": 5000,
+            "statusMessage": "Checking component completeness..."
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/check-no-inline-classnames.sh",
+            "timeout": 5000,
+            "statusMessage": "Checking for inline multi-token classNames..."
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/check-barrel-exports.sh",
+            "timeout": 5000,
+            "statusMessage": "Checking barrel exports..."
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/check-tsc.sh",
+            "timeout": 30000,
+            "statusMessage": "Running TypeScript type check..."
+          }
+        ]
+      }
+    ]
+  }
+}
