@@ -234,3 +234,152 @@ The `check-no-div-span.sh` hook enforces the **Forbidden** tier automatically. A
 - **Notifications** *(if enabled)*: `toast()` only from hooks, never from UI components; use `toast.promise` for async (`features/02-notifications.md`)
 - **i18n** *(if enabled)*: locale files in `public/locales/`, never imported into JS bundle, always loaded via `loadLocale()` (`features/03-internationalization.md`)
 - **Animation wrappers** *(if enabled)*: no raw animation code in pages/components, all wrappers in `src/components/animated/`, 6-file contract applies (`features/04-animated-components.md`)
+
+---
+
+# Divami Design System Rules (Theming & Component Sourcing)
+
+This section governs the **3-layer template model** used to reskin this
+project for future clients without touching component code. It supplements
+everything above — the rules above (structure, hooks, forms, etc.) still
+apply in full. Where this section talks about "screens," read that as
+`src/pages/`; where it says "components," read `src/components/`. Paths
+below are already adapted to this repo's actual `src/`-based Vite layout
+(the original draft of this section assumed a Next.js `/app/` layout —
+that mapping has been corrected here).
+
+**Core principle: you assemble, the theme styles.** Components in
+`src/components/ui/` and `src/components/blocks/` are already wired to the
+CSS variables defined in `src/styles/themes/theme.css`. You never apply
+colors, fonts, or shadows directly in a screen or component — you only
+pick and arrange components. Styling happens automatically through the
+theme layer.
+
+## 1. The three layers of this repo (never mix them)
+
+| Layer | Location | Who owns it | Your access |
+|---|---|---|---|
+| **Design System (components)** | `src/components/ui/` and `src/components/blocks/` | System owner | READ + USE. Never restyle. |
+| **Theme (all visual values)** | `src/styles/themes/theme.css` (built from `theme-template.css` in the same folder) | Designer | READ ONLY. Never edit unless explicitly asked. |
+| **Screens** | `src/pages/` (including `src/pages/preview/` sample pages) | You + designer | You build these, using Layer 1 only. |
+
+## 2. Component sourcing rules — READ CAREFULLY
+
+### 2a. Component EXISTS in the local design system
+Always check `src/components/ui/` and `src/components/blocks/` FIRST.
+If the component exists there → import and use it as-is.
+- Do NOT re-generate it from memory.
+- Do NOT create a local variant or copy.
+- Do NOT override its visual styling with extra classes or inline styles.
+  Layout-only classes on the wrapper (grid, flex, gap, width, padding
+  using spacing utilities) are allowed.
+
+### 2b. Component DOES NOT exist in the local design system
+**STOP. Do not build or invent it. Follow this exact workflow:**
+
+**Step 1 — Ask permission.**
+Tell the designer:
+> "The design system does not have a `<component name>` component.
+> May I bring one in from an outside source? Options:
+> (a) official shadcn/ui registry (`npx shadcn add <name>`),
+> (b) a community/registry source you specify,
+> (c) I build a custom one following the token contract,
+> (d) skip it / use an existing component differently.
+> Which do you prefer?"
+
+Then WAIT for the designer's answer. Do not proceed on assumption.
+
+**Step 2 — Fetch/build from the source THE DESIGNER chose.**
+After bringing it in, immediately harden it:
+- Replace every hardcoded visual value (colors, fonts, shadows, radius)
+  with the matching semantic variable from `theme-template.css`.
+- Verify it renders correctly with the current `theme.css`.
+- New primitives go in `src/components/ui/` (vendored, CLI-installed
+  only); new composite/registry blocks go in `src/components/blocks/`.
+  Custom one-offs that don't belong in either follow the existing
+  `src/components/shared/` or `src/components/layout/` tiers instead
+  (see `core/02-project-structure.md` and `core/05-architecture.md`).
+
+**Step 3 — Ask again: add to the design system?**
+Once the component works, ask the designer:
+> "The `<component name>` component is working with the theme.
+> Should I add it permanently to the local design system
+> (`src/components/ui/` or `src/components/blocks/`) so all future
+> screens and projects can reuse it?"
+
+- If YES → move it into the appropriate tier, add it to the component
+  index below, and note it in the changelog section.
+- If NO → keep it local to the current screen's folder and clearly
+  comment it as `// PROJECT-LOCAL COMPONENT — not part of design system`.
+
+Never skip Step 1 or Step 3. Both confirmations are required, every time.
+
+## 3. Styling rules (hard rules — zero exceptions)
+
+1. **No raw visual values in screens or components.** Never write:
+   - hex/rgb/hsl colors (`#E71E0E`, `rgb(...)`) → use `var(--primary)` etc.
+   - raw Tailwind palette classes (`bg-red-500`, `text-gray-600`,
+     `shadow-md`, `rounded-lg` with hardcoded intent) → use semantic
+     classes wired to tokens (`bg-primary`, `text-muted-foreground`).
+   - arbitrary values (`bg-[#ff0000]`, `shadow-[0_2px_...]`, `text-[13px]`).
+2. **No inline `style={{ color: ... }}`** for any visual property.
+3. **Fonts** only via `var(--font-sans)`, `var(--font-display)`,
+   `var(--font-mono)` and the `--text-*` scale.
+4. **Icons** only through `lucide-react` (installed by `shadcn init`) as
+   used inside vendored `src/components/ui/` components. Never import a
+   second icon library directly into a screen.
+5. **If a screen needs a visual value that no token provides:**
+   do not inline it. Tell the designer:
+   > "This needs a new token (`--<suggested-name>`). It should be added
+   > to the theme contract. Shall I propose it?"
+
+## 4. Building new screens
+
+1. Start from the closest sample page pattern under `src/pages/preview/`
+   once those reference pages exist (dashboard-type, list/table-type,
+   form-type — see the default template pages design prompt).
+2. Compose ONLY from Layer 1 components (`src/components/ui/`,
+   `src/components/blocks/`).
+3. Use real, sensible content — no lorem ipsum unless asked.
+4. Responsive by default (mobile → desktop), keyboard focus visible,
+   respect `prefers-reduced-motion`.
+5. Both light and dark mode must work (the theme defines both —
+   never assume light-only).
+
+## 5. Self-check before finishing ANY task
+
+Run this checklist and fix violations before presenting work:
+
+- [ ] No raw hex/rgb/hsl values outside `src/styles/`
+- [ ] No arbitrary Tailwind values (`[...]`) for visual properties
+- [ ] No raw palette classes (`*-red-*`, `*-gray-*`, `*-slate-*`, etc.)
+- [ ] No inline visual styles
+- [ ] Every component imported from `src/components/`, none re-implemented
+- [ ] No direct icon library imports in screens (beyond `lucide-react`
+      already used by vendored `src/components/ui/`)
+- [ ] New components (if any) went through the Section 2b permission flow
+
+## 6. Component index
+
+> Keep this list updated whenever a component is added (Section 2b, Step 3).
+
+**`src/components/ui/`** (primitives — vendored via `npx shadcn add`)
+- accordion, alert, alert-dialog, aspect-ratio, attachment, avatar, badge,
+  breadcrumb, bubble, button, button-group, calendar, card, carousel,
+  chart, checkbox, collapsible, combobox, command, context-menu, dialog,
+  direction, drawer, dropdown-menu, empty, field, hover-card, input,
+  input-group, input-otp, item, kbd, label, marker, menubar, message,
+  message-scroller, native-select, navigation-menu, pagination, popover,
+  progress, radio-group, resizable, scroll-area, select, separator,
+  sheet, sidebar, skeleton, slider, sonner, spinner, switch, table,
+  tabs, textarea, toggle, toggle-group, tooltip
+  <!-- update whenever `npx shadcn add <name>` installs a new primitive -->
+
+**`src/components/blocks/`** (composites)
+- *(empty — populate as shadcn registry blocks or larger composite
+  patterns are added; update as blocks are created)*
+
+## 7. Changelog of design-system additions
+
+> Append one line per component added via the Section 2b flow:
+> `YYYY-MM-DD — <component> — source: <shadcn/registry/custom> — approved by: <designer>`

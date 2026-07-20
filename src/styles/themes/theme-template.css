@@ -1,0 +1,261 @@
+/* ============================================================
+   DIVAMI THEME TEMPLATE  —  v1.0
+   ============================================================
+   WHO USES THIS FILE : Designers (or Claude, when a designer
+                        asks it to generate a theme).
+   HOW TO USE IT      : 1. Duplicate this file
+                        2. Rename it  →  theme.css  (or theme-<project>.css)
+                        3. Fill in every value below
+                        4. Drop it into src/styles/themes/ , replacing
+                           the existing theme.css
+   RULES              : - Fill EVERY variable. Do not delete any.
+                        - Do not rename any variable. Components
+                          depend on these exact names.
+                        - You MAY add extra variables at the bottom
+                          in the "PROJECT EXTRAS" section only.
+   COLOR FORMAT       : Any valid CSS color works (hex, rgb, oklch).
+                        Hex is fine: #E71E0E
+   ============================================================ */
+
+
+/* ============================================================
+   LIGHT MODE  (default)
+   ============================================================ */
+:root {
+
+  /* ----------------------------------------------------------
+     1. CORE SURFACES
+     The base canvas of every screen.
+     ---------------------------------------------------------- */
+  --background:            #FFFFFF;   /* Page background color */
+  --foreground:            #111111;   /* Default text color on the page */
+
+  /* ----------------------------------------------------------
+     2. BRAND / ACTION COLORS
+     --primary is THE brand color. Used on: main buttons,
+     active states, links, selected items, progress bars.
+     "-foreground" always means: the text/icon color placed
+     ON TOP of that color. Check contrast!
+     ---------------------------------------------------------- */
+  --primary:               #E71E0E;   /* Main brand/action color */
+  --primary-foreground:    #FFFFFF;   /* Text on top of primary (e.g. button label) */
+
+  --secondary:             #F4F4F4;   /* Secondary buttons, subtle actions */
+  --secondary-foreground:  #111111;   /* Text on top of secondary */
+
+  --accent:                #F4F4F4;   /* Hover backgrounds, highlighted menu items */
+  --accent-foreground:     #111111;   /* Text on top of accent */
+
+  /* ----------------------------------------------------------
+     3. CONTAINERS
+     Cards, dropdowns, modals — anything that sits "on" the page.
+     ---------------------------------------------------------- */
+  --card:                  #FFFFFF;   /* Card background */
+  --card-foreground:       #111111;   /* Text inside cards */
+
+  --popover:               #FFFFFF;   /* Dropdowns, tooltips, popovers background */
+  --popover-foreground:    #111111;   /* Text inside popovers */
+
+  /* ----------------------------------------------------------
+     4. MUTED / QUIET ELEMENTS
+     De-emphasized things: helper text, placeholders,
+     disabled areas, subtle section backgrounds.
+     ---------------------------------------------------------- */
+  --muted:                 #F5F5F5;   /* Quiet background (e.g. table header row) */
+  --muted-foreground:      #6B6B6B;   /* Secondary/helper text color */
+
+  /* ----------------------------------------------------------
+     5. FEEDBACK / STATUS COLORS
+     ---------------------------------------------------------- */
+  --destructive:            #DC2626;  /* Errors, delete actions */
+  --destructive-foreground: #FFFFFF;  /* Text on top of destructive */
+
+  --success:                #16A34A;  /* Success messages, positive badges */
+  --success-foreground:     #FFFFFF;  /* Text on top of success */
+
+  --warning:                #D97706;  /* Warnings, caution badges */
+  --warning-foreground:     #FFFFFF;  /* Text on top of warning */
+
+  --info:                   #2563EB;  /* Informational messages */
+  --info-foreground:        #FFFFFF;  /* Text on top of info */
+
+  /* ----------------------------------------------------------
+     6. LINES & FOCUS
+     ---------------------------------------------------------- */
+  --border:                #E5E5E5;   /* Dividers, card borders, table lines */
+  --input:                 #E5E5E5;   /* Input field border color */
+  --ring:                  #E71E0E;   /* Focus outline (keyboard focus). Usually = primary */
+
+  /* ----------------------------------------------------------
+     7. CHARTS / DATA VISUALIZATION
+     Used in order: chart-1 is the first/most important series.
+     Pick colors that are distinguishable next to each other.
+     ---------------------------------------------------------- */
+  --chart-1:               #E71E0E;
+  --chart-2:               #111111;
+  --chart-3:               #9A9A9A;
+  --chart-4:               #D4D4D4;
+  --chart-5:               #6B6B6B;
+
+  /* ----------------------------------------------------------
+     8. SIDEBAR
+     The app sidebar gets its own palette because it often
+     needs a different (e.g. darker/inverted) treatment
+     than the rest of the page.
+     ---------------------------------------------------------- */
+  --sidebar:                    #FAFAFA;  /* Sidebar background */
+  --sidebar-foreground:         #111111;  /* Sidebar text */
+  --sidebar-primary:            #E71E0E;  /* Active/selected item in sidebar */
+  --sidebar-primary-foreground: #FFFFFF;  /* Text on active sidebar item */
+  --sidebar-accent:             #F0F0F0;  /* Sidebar item hover background */
+  --sidebar-accent-foreground:  #111111;  /* Text on hovered sidebar item */
+  --sidebar-border:             #E5E5E5;  /* Sidebar divider lines */
+  --sidebar-ring:               #E71E0E;  /* Focus ring inside sidebar */
+
+  /* ----------------------------------------------------------
+     9. TYPOGRAPHY
+     --font-sans    : the main UI font (buttons, body, tables)
+     --font-display : headings / hero text. Can be the same as
+                      sans, or a contrasting display face.
+     --font-mono    : code, numbers, technical data
+     Remember to actually load these fonts in the project.
+     ---------------------------------------------------------- */
+  --font-sans:    "Inter", system-ui, sans-serif;
+  --font-display: "Inter", system-ui, sans-serif;
+  --font-mono:    "JetBrains Mono", monospace;
+
+  /* Type scale — size / line-height for each step.
+     Components use these instead of fixed px values. */
+  --text-xs:    0.75rem;   --leading-xs:   1rem;      /* Tiny labels, captions */
+  --text-sm:    0.875rem;  --leading-sm:   1.25rem;   /* Secondary text, table cells */
+  --text-base:  1rem;      --leading-base: 1.5rem;    /* Body text */
+  --text-lg:    1.125rem;  --leading-lg:   1.75rem;   /* Emphasized body */
+  --text-xl:    1.25rem;   --leading-xl:   1.75rem;   /* Card titles */
+  --text-2xl:   1.5rem;    --leading-2xl:  2rem;      /* Section headings */
+  --text-3xl:   1.875rem;  --leading-3xl:  2.25rem;   /* Page titles */
+  --text-4xl:   2.5rem;    --leading-4xl:  3rem;      /* Hero / display */
+
+  /* Weights — which weights this theme uses */
+  --font-weight-normal:   400;
+  --font-weight-medium:   500;
+  --font-weight-semibold: 600;
+  --font-weight-bold:     700;
+
+  /* Letter spacing for display/heading text (0 = none) */
+  --tracking-display:     -0.02em;
+
+  /* ----------------------------------------------------------
+     10. SHAPE — corner roundness
+     --radius is the base. sm/lg are derived but can be
+     set independently for a custom feel.
+     0px = sharp/editorial. 0.5rem = soft. 9999px = pill.
+     ---------------------------------------------------------- */
+  --radius:      0.375rem;                  /* Base: inputs, buttons, cards */
+  --radius-sm:   calc(var(--radius) - 2px); /* Small: badges, tags */
+  --radius-lg:   calc(var(--radius) + 4px); /* Large: modals, big cards */
+  --radius-full: 9999px;                    /* Pills, avatars */
+
+  /* ----------------------------------------------------------
+     11. ELEVATION — shadows
+     This is a big personality lever. Soft & diffused,
+     hard & offset, colored, or "none" for flat design.
+     ---------------------------------------------------------- */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);                            /* Subtle lift: inputs, small cards */
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);                           /* Cards, dropdowns */
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.12);                          /* Modals, popovers */
+  --shadow-focus: 0 0 0 3px color-mix(in srgb, var(--ring) 30%, transparent); /* Focus glow */
+
+  /* ----------------------------------------------------------
+     12. ICONS
+     Controls the look of every icon in the system.
+     ---------------------------------------------------------- */
+  --icon-stroke-width: 1.75;    /* 1 = thin/elegant, 2 = bold/sturdy */
+  --icon-size-sm:      1rem;
+  --icon-size-md:      1.25rem;
+  --icon-size-lg:      1.5rem;
+
+  /* ----------------------------------------------------------
+     13. MOTION
+     ---------------------------------------------------------- */
+  --duration-fast:   150ms;                        /* Hovers, small transitions */
+  --duration-normal: 250ms;                        /* Dropdowns, accordions */
+  --duration-slow:   400ms;                        /* Modals, page-level */
+  --ease-standard:   cubic-bezier(0.2, 0, 0, 1);   /* Default easing curve */
+}
+
+
+/* ============================================================
+   DARK MODE
+   Fill this in even if the project launches light-only —
+   it costs 10 minutes now and saves a retrofit later.
+   ============================================================ */
+.dark {
+  --background:            #0F0F0F;
+  --foreground:            #FAFAFA;
+
+  --primary:               #E71E0E;
+  --primary-foreground:    #FFFFFF;
+
+  --secondary:             #1E1E1E;
+  --secondary-foreground:  #FAFAFA;
+
+  --accent:                #1E1E1E;
+  --accent-foreground:     #FAFAFA;
+
+  --card:                  #161616;
+  --card-foreground:       #FAFAFA;
+
+  --popover:               #161616;
+  --popover-foreground:    #FAFAFA;
+
+  --muted:                 #1E1E1E;
+  --muted-foreground:      #9A9A9A;
+
+  --destructive:            #EF4444;
+  --destructive-foreground: #FFFFFF;
+  --success:                #22C55E;
+  --success-foreground:     #0F0F0F;
+  --warning:                #F59E0B;
+  --warning-foreground:     #0F0F0F;
+  --info:                   #3B82F6;
+  --info-foreground:        #FFFFFF;
+
+  --border:                #2A2A2A;
+  --input:                 #2A2A2A;
+  --ring:                  #E71E0E;
+
+  --chart-1:               #E71E0E;
+  --chart-2:               #FAFAFA;
+  --chart-3:               #9A9A9A;
+  --chart-4:               #4A4A4A;
+  --chart-5:               #6B6B6B;
+
+  --sidebar:                    #0A0A0A;
+  --sidebar-foreground:         #FAFAFA;
+  --sidebar-primary:            #E71E0E;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent:             #1E1E1E;
+  --sidebar-accent-foreground:  #FAFAFA;
+  --sidebar-border:             #2A2A2A;
+  --sidebar-ring:               #E71E0E;
+
+  /* Shadows are usually stronger/darker in dark mode */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.6);
+  --shadow-focus: 0 0 0 3px color-mix(in srgb, var(--ring) 40%, transparent);
+
+  /* Typography, radius, icons, motion normally stay the same
+     in dark mode — override here only if this theme needs it. */
+}
+
+
+/* ============================================================
+   PROJECT EXTRAS  (optional)
+   The ONLY place a theme may add new variables.
+   If a new variable is needed by more than one project,
+   propose adding it to this template instead.
+   ============================================================ */
+:root {
+  /* --example-hero-gradient: ... ; */
+}
