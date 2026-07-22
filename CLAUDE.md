@@ -367,8 +367,8 @@ Run this checklist and fix violations before presenting work:
 - accordion, alert, alert-dialog, aspect-ratio, attachment, avatar, badge,
   breadcrumb, bubble, button, button-group, calendar, card, carousel,
   chart, checkbox, collapsible, combobox, command, context-menu, dialog,
-  direction, drawer, dropdown-menu, empty, field, hover-card, input,
-  input-group, input-otp, item, kbd, label, marker, menubar, message,
+  direction, drawer, dropdown-menu, empty, field, hover-card, icon,
+  input, input-group, input-otp, item, kbd, label, marker, menubar, message,
   message-scroller, native-select, navigation-menu, pagination, popover,
   progress, radio-group, resizable, scroll-area, select, separator,
   sheet, sidebar, skeleton, slider, sonner, spinner, switch, table,
@@ -383,3 +383,5 @@ Run this checklist and fix violations before presenting work:
 
 > Append one line per component added via the Section 2b flow:
 > `YYYY-MM-DD — <component> — source: <shadcn/registry/custom> — approved by: <designer>`
+
+2026-07-22 — icon — source: custom (lucide-react wrapper wired to --icon-size-*/--icon-stroke-width tokens) — approved by: vinay@divami.com

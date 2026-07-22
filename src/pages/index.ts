@@ -1,1 +1,1 @@
-export {};
+export { ComponentsGalleryPage } from "./preview/componentsGallery";

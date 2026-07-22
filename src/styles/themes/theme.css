@@ -1,0 +1,207 @@
+/* ============================================================
+   THEME: QAD Modern Sleek — AI Manufacturing Intelligence  (v31)
+   ============================================================
+   Active branding theme (the "branding token" file wired into
+   the build via src/index.css). Converted from the QAD v31
+   consistency-locked package (assets/tokens/design-tokens.css)
+   into our template token contract (theme-template.css).
+
+   QAD PRINCIPLES encoded here:
+   - IBM Plex Sans, weights 400 + 500 ONLY (semibold/bold pinned to 500).
+   - 4px radius on every rectangular element; circles stay circular.
+   - White / white-glass / mist surfaces for normal app UI.
+   - Graphite (#111418) is the PRIMARY action colour — never a red primary.
+   - QAD red (#f82408) is a SIGNAL colour: risk, destructive, active nav.
+   - Charts use a minimal muted palette; red reserved for risk only.
+   - Left rail is WHITE with dark icons and a RED active state.
+   - NOTE: QAD is a light-first system (dark is reserved for AI chat /
+     overlays). The .dark block below is a DERIVED dark app variant for
+     the theme toggle — review before production.
+   ============================================================ */
+
+/* ============================================================
+   LIGHT MODE  (default)
+   ============================================================ */
+:root {
+
+  /* ---------- 1. CORE SURFACES ---------- */
+  --background:            #EEF3F8;   /* QAD mist canvas */
+  --foreground:            #111418;   /* QAD ink */
+
+  /* ---------- 2. BRAND / ACTION COLORS ---------- */
+  --primary:               #099e09;   /* Graphite — QAD primary button (never red) */
+  --primary-foreground:    #FFFFFF;
+
+  --secondary:             #EDF2F7;   /* Silver glass surface */
+  --secondary-foreground:  #111418;
+
+  --accent:                #EEF3F8;   /* Mist hover */
+  --accent-foreground:     #111418;
+
+  /* ---------- 3. CONTAINERS ---------- */
+  --card:                  #FFFFFF;   /* White-glass card */
+  --card-foreground:       #111418;
+
+  --popover:               #FFFFFF;
+  --popover-foreground:    #111418;
+
+  /* ---------- 4. MUTED / QUIET ELEMENTS ---------- */
+  --muted:                 #EEF3F8;   /* Mist */
+  --muted-foreground:      #657180;   /* QAD muted slate */
+
+  /* ---------- 5. FEEDBACK / STATUS COLORS ---------- */
+  --destructive:            #F82408;  /* QAD signal red — risk/danger */
+  --destructive-foreground: #FFFFFF;
+
+  --success:                #249060;  /* QAD green */
+  --success-foreground:     #FFFFFF;
+
+  --warning:                #D5A94D;  /* QAD amber */
+  --warning-foreground:     #111418;
+
+  --info:                   #7FA4D8;  /* QAD blue */
+  --info-foreground:        #111418;
+
+  /* ---------- 6. LINES & FOCUS ---------- */
+  --border:                #DFE6EF;   /* QAD line */
+  --input:                 #DFE6EF;
+  --ring:                  #111418;   /* Graphite focus */
+
+  /* ---------- 7. CHARTS / DATA VIZ ---------- */
+  /* Minimal palette; red reserved for risk (chart-5). */
+  --chart-1:               #667280;   /* Slate — neutral lead series */
+  --chart-2:               #7FA4D8;   /* Blue */
+  --chart-3:               #249060;   /* Green */
+  --chart-4:               #D5A94D;   /* Amber */
+  --chart-5:               #F82408;   /* Risk red */
+
+  /* ---------- 8. SIDEBAR (WHITE rail, RED active) ---------- */
+  --sidebar:                    #FFFFFF;  /* White left rail */
+  --sidebar-foreground:         #111418;  /* Dark icons/text */
+  --sidebar-primary:            #F82408;  /* QAD red active signal */
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent:             #EEF3F8;  /* Mist hover/active surface */
+  --sidebar-accent-foreground:  #F82408;  /* Active nav icon/text = red */
+  --sidebar-border:             #DFE6EF;
+  --sidebar-ring:               #F82408;  /* Red focus signal */
+
+  /* ---------- 9. TYPOGRAPHY ---------- */
+  --font-sans:    "IBM Plex Sans", Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "IBM Plex Sans", Inter, ui-sans-serif, system-ui, sans-serif;
+  --font-mono:    "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  --text-xs:    0.75rem;   --leading-xs:   1rem;
+  --text-sm:    0.875rem;  --leading-sm:   1.25rem;
+  --text-base:  1rem;      --leading-base: 1.5rem;
+  --text-lg:    1.125rem;  --leading-lg:   1.75rem;
+  --text-xl:    1.25rem;   --leading-xl:   1.75rem;
+  --text-2xl:   1.5rem;    --leading-2xl:  2rem;
+  --text-3xl:   1.875rem;  --leading-3xl:  2.25rem;
+  --text-4xl:   2.25rem;   --leading-4xl:  2.75rem;
+
+  /* LOCKED: QAD uses ONLY 400 and 500. Heavier steps pin to 500. */
+  --font-weight-normal:   400;
+  --font-weight-medium:   500;
+  --font-weight-semibold: 500;
+  --font-weight-bold:     500;
+
+  --tracking-display:     -0.01em;
+
+  /* ---------- 10. SHAPE — 4px everywhere rectangular ---------- */
+  --radius:      4px;
+  --radius-sm:   4px;
+  --radius-lg:   4px;
+  --radius-full: 9999px;   /* circles only: dots, avatars */
+
+  /* ---------- 11. ELEVATION — QAD white-glass depth ---------- */
+  --shadow-sm: 0 12px 34px rgba(33, 44, 58, 0.085), inset 0 1px 0 rgba(255, 255, 255, 0.82);
+  --shadow-md: 0 22px 58px rgba(33, 44, 58, 0.11), inset 0 1px 0 rgba(255, 255, 255, 0.86);
+  --shadow-lg: 0 30px 72px rgba(33, 44, 58, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.86);
+  --shadow-focus: 0 0 0 3px color-mix(in srgb, var(--ring) 22%, transparent);
+
+  /* ---------- 12. ICONS — Phosphor-style, 1.5px stroke ---------- */
+  --icon-stroke-width: 1.5;
+  --icon-size-sm:      1rem;
+  --icon-size-md:      1.25rem;
+  --icon-size-lg:      1.5rem;
+
+  /* ---------- 13. MOTION ---------- */
+  --duration-fast:   160ms;
+  --duration-normal: 260ms;
+  --duration-slow:   720ms;
+  --ease-standard:   cubic-bezier(0.2, 0.72, 0.16, 1);
+}
+
+/* ============================================================
+   DARK MODE — DERIVED graphite app variant (not the QAD AI-chat
+   surface; review with the design owner before production).
+   ============================================================ */
+.dark {
+  --background:            #0A0D11;   /* Near-carbon */
+  --foreground:            #EEF3F8;
+
+  --primary:               #EEF3F8;   /* Light primary on dark */
+  --primary-foreground:    #111418;
+
+  --secondary:             #202733;   /* Graphite-2 */
+  --secondary-foreground:  #EEF3F8;
+
+  --accent:                #252B33;   /* Charcoal */
+  --accent-foreground:     #EEF3F8;
+
+  --card:                  #111418;   /* Graphite */
+  --card-foreground:       #EEF3F8;
+
+  --popover:               #111418;
+  --popover-foreground:    #EEF3F8;
+
+  --muted:                 #202733;
+  --muted-foreground:      #9EACBA;   /* QAD neutral */
+
+  --destructive:            #F82408;
+  --destructive-foreground: #FFFFFF;
+  --success:                #37B07A;
+  --success-foreground:     #0A0D11;
+  --warning:                #E0B866;
+  --warning-foreground:     #0A0D11;
+  --info:                   #9CBCE6;
+  --info-foreground:        #0A0D11;
+
+  --border:                rgba(255, 255, 255, 0.10);
+  --input:                 rgba(255, 255, 255, 0.15);
+  --ring:                  #9EACBA;
+
+  --chart-1:               #9EACBA;
+  --chart-2:               #9CBCE6;
+  --chart-3:               #37B07A;
+  --chart-4:               #E0B866;
+  --chart-5:               #F82408;
+
+  --sidebar:                    #0D1116;
+  --sidebar-foreground:         #EEF3F8;
+  --sidebar-primary:            #F82408;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent:             #202733;
+  --sidebar-accent-foreground:  #FF6A52;
+  --sidebar-border:             rgba(255, 255, 255, 0.08);
+  --sidebar-ring:               #F82408;
+
+  --shadow-sm: 0 12px 34px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  --shadow-md: 0 22px 58px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  --shadow-lg: 0 30px 72px rgba(0, 0, 0, 0.62), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  --shadow-focus: 0 0 0 3px color-mix(in srgb, var(--ring) 32%, transparent);
+}
+
+/* ============================================================
+   PROJECT EXTRAS — QAD-specific tokens (available to components
+   that intentionally opt into QAD brand surfaces).
+   ============================================================ */
+:root {
+  --qad-glass:         rgba(255, 255, 255, 0.72);
+  --qad-glass-strong:  rgba(255, 255, 255, 0.86);
+  --qad-signal-red:    #F82408;
+  --qad-signal-orange: #FF8661;
+  --qad-deep:          #95002D;
+  --qad-graphite-2:    #202733;
+  --qad-charcoal:      #252B33;
+}

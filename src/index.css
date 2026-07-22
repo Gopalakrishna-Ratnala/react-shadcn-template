@@ -1,225 +1,169 @@
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "@fontsource-variable/geist";
+@import "./styles/themes/theme.css";
+
+/* Dark mode is driven by the `.dark` class on <html> (next-themes attribute="class"). */
+@custom-variant dark (&:is(.dark *));
+
+/* ============================================================
+   TOKEN → TAILWIND MAPPING
+   Maps the semantic design tokens defined in styles/themes/theme.css
+   onto Tailwind's theme namespaces so utilities such as `bg-primary`,
+   `text-muted-foreground`, `rounded-md`, `shadow-md` and `text-2xl`
+   resolve to the active theme. Editing theme.css re-skins everything
+   because these utilities reference the token vars at runtime.
+   ============================================================ */
+@theme inline {
+  /* Surfaces & brand */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  /* Containers */
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  /* Muted */
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  /* Status */
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+
+  /* Lines & focus */
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Charts */
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  /* Sidebar */
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Fonts */
+  --font-sans: var(--font-sans);
+  --font-display: var(--font-display);
+  --font-mono: var(--font-mono);
+
+  /* Type scale (size + line-height) */
+  --text-xs: var(--text-xs);
+  --text-xs--line-height: var(--leading-xs);
+  --text-sm: var(--text-sm);
+  --text-sm--line-height: var(--leading-sm);
+  --text-base: var(--text-base);
+  --text-base--line-height: var(--leading-base);
+  --text-lg: var(--text-lg);
+  --text-lg--line-height: var(--leading-lg);
+  --text-xl: var(--text-xl);
+  --text-xl--line-height: var(--leading-xl);
+  --text-2xl: var(--text-2xl);
+  --text-2xl--line-height: var(--leading-2xl);
+  --text-3xl: var(--text-3xl);
+  --text-3xl--line-height: var(--leading-3xl);
+  --text-4xl: var(--text-4xl);
+  --text-4xl--line-height: var(--leading-4xl);
+
+  /* Font weights */
+  --font-weight-normal: var(--font-weight-normal);
+  --font-weight-medium: var(--font-weight-medium);
+  --font-weight-semibold: var(--font-weight-semibold);
+  --font-weight-bold: var(--font-weight-bold);
+
+  /* Tracking */
+  --tracking-display: var(--tracking-display);
+
+  /* Motion easing */
+  --ease-standard: var(--ease-standard);
+
+  /* Radius utilities whose token name is owned by theme.css.
+     Declared inline so the utility resolves to the theme value without
+     re-emitting (and thus overwriting) the source variable. */
+  --radius-sm: var(--radius-sm);
+  --radius-lg: var(--radius-lg);
+
+  /* Elevation — inline so `shadow-md` etc. resolve to theme.css shadows
+     without a self-referential re-emit. */
+  --shadow-2xs: var(--shadow-sm);
+  --shadow-xs: var(--shadow-sm);
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+  --shadow-xl: var(--shadow-lg);
+  --shadow-focus: var(--shadow-focus);
 }
 
-html,
-body,
-#root {
-  min-height: 100vh;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* Radius names NOT defined in theme.css are emitted (non-inline) so
+   components can reference e.g. var(--radius-md) directly. All derive
+   from the base --radius token, so editing --radius rescales the family.
+   rounded-full uses Tailwind's built-in pill radius. */
+@theme {
+  --radius-md: var(--radius);
+  --radius-xl: calc(var(--radius) + 8px);
+  --radius-2xl: calc(var(--radius) + 12px);
+  --radius-3xl: calc(var(--radius) + 20px);
+  --radius-4xl: calc(var(--radius) + 28px);
 }
 
-/* ==========================================================================
-   PLACEHOLDER SCREEN — delete everything below when replacing src/App.tsx
-   ========================================================================== */
-
-.ph-root {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  padding: 24px;
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-  font-family: system-ui, -apple-system, sans-serif;
+/* Chart swatch helpers for the design-system preview. Single-token classes
+   that reference the chart tokens so the gallery can display chart-1..5 as
+   color chips (Tailwind `bg-chart-N` classes collide with the palette-class
+   lint rule). These reference tokens only — no hardcoded values. */
+@layer components {
+  .swatch-chart-1 { background-color: var(--chart-1); }
+  .swatch-chart-2 { background-color: var(--chart-2); }
+  .swatch-chart-3 { background-color: var(--chart-3); }
+  .swatch-chart-4 { background-color: var(--chart-4); }
+  .swatch-chart-5 { background-color: var(--chart-5); }
 }
 
-.ph-card {
-  background: #1e293b;
-  border: 1px solid #334155;
-  border-radius: 16px;
-  padding: 48px;
-  max-width: 560px;
-  width: 100%;
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
-}
+@layer base {
+  * {
+    border-color: var(--border);
+  }
 
-.ph-header {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  margin-bottom: 40px;
-  gap: 12px;
-}
+  html {
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 
-.ph-logo {
-  font-size: 48px;
-  line-height: 1;
-  margin: 0 0 4px;
-  color: #6366f1;
-  display: block;
-}
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    margin: 0;
+    min-height: 100vh;
+  }
 
-.ph-title {
-  display: block;
-  font-size: 26px;
-  font-weight: 700;
-  color: #f1f5f9;
-  letter-spacing: -0.5px;
-}
-
-.ph-tagline {
-  display: block;
-  font-style: normal;
-  font-size: 15px;
-  color: #94a3b8;
-}
-
-.ph-section {
-  margin-bottom: 32px;
-}
-
-.ph-section-heading {
-  display: block;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.6px;
-  color: #94a3b8;
-  margin-bottom: 12px;
-}
-
-.ph-delete-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 4px;
-}
-
-.ph-delete-item {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  padding: 10px 14px;
-  background: #2d1a1a;
-  border: 1px solid #7f1d1d;
-  border-radius: 8px;
-  font-size: 13px;
-}
-
-.ph-delete-item code {
-  font-family: ui-monospace, Consolas, monospace;
-  font-size: 12px;
-  color: #fca5a5;
-  white-space: nowrap;
-}
-
-.ph-delete-item em {
-  font-style: normal;
-  color: #6b7280;
-  font-size: 12px;
-}
-
-.ph-replace-item {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  padding: 10px 14px;
-  background: #1c1a0f;
-  border: 1px solid #854d0e;
-  border-radius: 8px;
-  font-size: 13px;
-}
-
-.ph-replace-item code {
-  font-family: ui-monospace, Consolas, monospace;
-  font-size: 12px;
-  color: #fde68a;
-  white-space: nowrap;
-}
-
-.ph-replace-item em {
-  font-style: normal;
-  color: #6b7280;
-  font-size: 12px;
-}
-
-.ph-step-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.ph-step {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
-  padding: 16px;
-  background: #0f172a;
-  border: 1px solid #334155;
-  border-radius: 10px;
-}
-
-.ph-step-num {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 28px;
-  height: 28px;
-  background: #6366f1;
-  color: #fff;
-  border-radius: 50%;
-  font-size: 13px;
-  font-weight: 700;
-  font-style: normal;
-}
-
-.ph-step-body {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.ph-step-title {
-  display: block;
-  font-size: 14px;
-  font-weight: 600;
-  color: #e2e8f0;
-}
-
-.ph-step-desc {
-  display: block;
-  font-style: normal;
-  font-size: 13px;
-  color: #64748b;
-  line-height: 1.5;
-}
-
-.ph-step-desc code {
-  font-family: ui-monospace, Consolas, monospace;
-  font-size: 12px;
-  background: #1e293b;
-  color: #a5b4fc;
-  padding: 1px 5px;
-  border-radius: 4px;
-  border: 1px solid #334155;
-}
-
-.ph-footer {
-  border-top: 1px solid #334155;
-  padding-top: 24px;
-  text-align: center;
-  font-size: 13px;
-  color: #475569;
-}
-
-.ph-footer code {
-  font-family: ui-monospace, Consolas, monospace;
-  font-size: 12px;
-  background: #0f172a;
-  color: #a5b4fc;
-  padding: 1px 6px;
-  border-radius: 4px;
-  border: 1px solid #334155;
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
 }
