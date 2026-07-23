@@ -1,1 +1,1 @@
-// layout component exports go here
+export { PreviewLayout } from "./previewLayout";

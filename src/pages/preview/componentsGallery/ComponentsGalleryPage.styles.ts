@@ -1,17 +1,11 @@
 import { cn } from "@/lib/utils";
 
 /* ---------- Page shell ---------- */
-export const pageRootStyles = cn(
-  "min-h-screen bg-background font-sans text-foreground",
-);
+export const pageRootStyles = cn("flex flex-col gap-6");
 
-export const topBarStyles = cn(
-  "sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur",
-);
+export const topBarStyles = cn("border-b border-border pb-4");
 
-export const topBarInnerStyles = cn(
-  "mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-3",
-);
+export const topBarInnerStyles = cn("flex flex-col gap-1");
 
 export const topBarTitleWrapStyles = cn("flex flex-col");
 
@@ -28,12 +22,12 @@ export const topBarHelperStyles = cn("text-xs text-muted-foreground");
 export const topBarActionsStyles = cn("flex items-center gap-2");
 
 export const layoutStyles = cn(
-  "mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 py-8 lg:flex-row lg:gap-10",
+  "flex flex-col gap-8 lg:flex-row lg:gap-10",
 );
 
 /* ---------- In-page navigation ---------- */
 export const navAsideStyles = cn(
-  "flex shrink-0 flex-col gap-2 lg:sticky lg:top-28 lg:max-h-[calc(100vh-8rem)] lg:w-56 lg:overflow-y-auto",
+  "flex shrink-0 flex-col gap-2 lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:w-56 lg:overflow-y-auto",
 );
 
 export const navHeadingStyles = cn(

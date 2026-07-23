@@ -350,7 +350,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { ColorSwatch, Specimen, ThemeToggle } from "@/components/shared";
+import { ColorSwatch, Specimen } from "@/components/shared";
 import { useResolvedToken, useToastPreview } from "@/hooks";
 
 import * as styles from "./ComponentsGalleryPage.styles";
@@ -570,7 +570,10 @@ export function ComponentsGalleryPage() {
 
   return (
     <TooltipProvider>
-      <main className={styles.pageRootStyles}>
+      <section
+        className={styles.pageRootStyles}
+        aria-label="Design system components"
+      >
         <header className={styles.topBarStyles}>
           <section className={styles.topBarInnerStyles}>
             <section className={styles.topBarTitleWrapStyles}>
@@ -584,9 +587,6 @@ export function ComponentsGalleryPage() {
                 This page reflects the currently active theme. Toggle the mode or
                 edit theme.css and every element re-skins.
               </small>
-            </section>
-            <section className={styles.topBarActionsStyles}>
-              <ThemeToggle />
             </section>
           </section>
         </header>
@@ -2182,7 +2182,7 @@ export function ComponentsGalleryPage() {
             </section>
           </article>
         </section>
-      </main>
+      </section>
     </TooltipProvider>
   );
 }
