@@ -8,7 +8,7 @@ Fill in your chosen library for each slot, then delete the strategy files you ar
 
 - **Framework**: React 19.x (latest stable version)
 - **Language**: TypeScript (strict mode)
-- **UI Library**: [e.g. MUI v7 / shadcn/ui] — see `styling/`
+- **UI Library**: shadcn/ui + Tailwind CSS v4 (Base UI backend) — see `styling/`
 - **State Management**: [e.g. Zustand] — see `state-management/`
 - **HTTP Client**: [e.g. Axios] — see `data-fetching/`
 - **Forms**: [e.g. React Hook Form + Zod] — see `forms/`

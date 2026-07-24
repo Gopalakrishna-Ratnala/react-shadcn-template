@@ -36,7 +36,6 @@ All guidelines are organized into `rules` (contextual guidance) and `hooks` (aut
 | `09-zustand-state.md` | Zustand usage, store structure, async actions | `src/store/**/*.ts`, `src/hooks/**/*.ts` |
 | `10-react-hooks.md` | Component responsibilities, hooks requirements | `src/**/*.tsx`, `src/hooks/**/*.ts` |
 | `11-forms.md` | React Hook Form + Zod rules | `src/**/*.tsx`, `src/hooks/**/*.ts` |
-| `12-mui-usage.md` | MUI practices, forbidden patterns | `src/**/*.tsx`, `src/**/styles.ts` |
 | `13-testing.md` | Testing rules, coverage requirements | `src/**/*.test.ts`, `src/**/*.test.tsx` |
 | `14-accessibility.md` | Accessibility requirements | `src/**/*.tsx` |
 
@@ -74,8 +73,7 @@ All hooks skip test files, story files, and theme files as configured in `.claud
 
 - Inspect existing related files before generating new code.
 - Reuse existing components, hooks, stores, services, types, and utilities first.
-- Do not generate direct MUI usage in pages or feature components when repository rules require wrapper components.
-- Do not use `any`, inline styles, `sx`, raw dimensions, hardcoded colors, or non-semantic JSX blocked by repo policy.
+- Do not use `any`, inline styles, raw dimensions, hardcoded colors, or non-semantic JSX blocked by repo policy.
 - Keep styling in `styles.ts`, typing in `types.ts`, and exports in `index.ts`.
 - When creating a reusable component, include the full required component contract:
   - `ComponentName.tsx`
