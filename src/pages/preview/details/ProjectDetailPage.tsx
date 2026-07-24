@@ -55,9 +55,24 @@ const PROPERTIES: DetailProperty[] = [
 const TAGS = ["Healthcare", "Design system", "Mobile", "Accessibility"];
 
 const ACTIVITY: DetailActivity[] = [
-  { id: "a1", actor: "Daniel Cho", summary: "submitted the onboarding flow for review", timestamp: "5h ago" },
-  { id: "a2", actor: "Priya Sharma", summary: "updated the component inventory", timestamp: "Yesterday" },
-  { id: "a3", actor: "Meera Iyer", summary: "left 4 comments on the dashboard spec", timestamp: "2 days ago" },
+  {
+    id: "a1",
+    actor: "Daniel Cho",
+    summary: "submitted the onboarding flow for review",
+    timestamp: "5h ago",
+  },
+  {
+    id: "a2",
+    actor: "Priya Sharma",
+    summary: "updated the component inventory",
+    timestamp: "Yesterday",
+  },
+  {
+    id: "a3",
+    actor: "Meera Iyer",
+    summary: "left 4 comments on the dashboard spec",
+    timestamp: "2 days ago",
+  },
 ];
 
 export function ProjectDetailPage() {
@@ -84,19 +99,28 @@ export function ProjectDetailPage() {
                 <DialogHeader>
                   <DialogTitle>Delete this project?</DialogTitle>
                   <DialogDescription>
-                    This permanently removes “Aurora Care Portal” and all of its activity. This
-                    action cannot be undone.
+                    This permanently removes “Aurora Care Portal” and all of its
+                    activity. This action cannot be undone.
                   </DialogDescription>
                 </DialogHeader>
                 <DialogFooter>
-                  <DialogClose render={<Button type="button" variant="outline">Keep project</Button>} />
+                  <DialogClose
+                    render={
+                      <Button type="button" variant="outline">
+                        Keep project
+                      </Button>
+                    }
+                  />
                   <Button type="button" variant="destructive">
                     Delete project
                   </Button>
                 </DialogFooter>
               </DialogContent>
             </Dialog>
-            <Link to={ROUTES.PREVIEW_FORM} className={buttonVariants({ variant: "secondary" })}>
+            <Link
+              to={ROUTES.PREVIEW_FORM}
+              className={buttonVariants({ variant: "secondary" })}
+            >
               <PencilIcon />
               Edit
             </Link>
@@ -116,22 +140,26 @@ export function ProjectDetailPage() {
 
         <TabsContent value="overview">
           <section className={overviewGridStyles} aria-label="Project overview">
-            <section className={overviewMainStyles} aria-label="Description and properties">
+            <section
+              className={overviewMainStyles}
+              aria-label="Description and properties"
+            >
               <Card>
                 <CardHeader>
                   <CardTitle>About this project</CardTitle>
                 </CardHeader>
                 <CardContent className={descriptionBodyStyles}>
                   <p>
-                    Aurora Health is rebuilding its patient-facing care portal on the Divami design
-                    system. The engagement covers a component audit, a themable design foundation,
-                    and a production-ready React implementation of the onboarding and scheduling
-                    flows.
+                    Aurora Health is rebuilding its patient-facing care portal
+                    on the Divami design system. The engagement covers a
+                    component audit, a themable design foundation, and a
+                    production-ready React implementation of the onboarding and
+                    scheduling flows.
                   </p>
                   <p>
-                    The team is currently validating the theming layer against Aurora&apos;s brand
-                    palette before handing the first two flows to their engineering group for
-                    integration.
+                    The team is currently validating the theming layer against
+                    Aurora&apos;s brand palette before handing the first two
+                    flows to their engineering group for integration.
                   </p>
                 </CardContent>
               </Card>
@@ -209,7 +237,8 @@ export function ProjectDetailPage() {
                 {ACTIVITY.map((entry) => (
                   <li key={entry.id} className={metaRowStyles}>
                     <p>
-                      <strong className={ownerNameStyles}>{entry.actor}</strong> {entry.summary}
+                      <strong className={ownerNameStyles}>{entry.actor}</strong>{" "}
+                      {entry.summary}
                     </p>
                     <small className={metaLabelStyles}>{entry.timestamp}</small>
                   </li>
@@ -226,7 +255,8 @@ export function ProjectDetailPage() {
             </CardHeader>
             <CardContent>
               <p className={placeholderStyles}>
-                Project settings would appear here — visibility, integrations, and archiving.
+                Project settings would appear here — visibility, integrations,
+                and archiving.
               </p>
             </CardContent>
           </Card>

@@ -9,7 +9,7 @@ const renderPage = () =>
   render(
     <MemoryRouter>
       <ProjectFormPage />
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 
 describe("ProjectFormPage", () => {
@@ -43,11 +43,20 @@ describe("ProjectFormPage", () => {
     await user.click(screen.getByRole("button", { name: "Save changes" }));
 
     await waitFor(() => {
-      expect(screen.getByText("Project name must be at least 3 characters")).toBeInTheDocument();
+      expect(
+        screen.getByText("Project name must be at least 3 characters"),
+      ).toBeInTheDocument();
     });
-    expect(screen.getByText("Select a client for this project")).toBeInTheDocument();
-    expect(screen.getByText("Add at least one team member")).toBeInTheDocument();
-    expect(screen.getByLabelText("Project name")).toHaveAttribute("aria-invalid", "true");
+    expect(
+      screen.getByText("Select a client for this project"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("Add at least one team member"),
+    ).toBeInTheDocument();
+    expect(screen.getByLabelText("Project name")).toHaveAttribute(
+      "aria-invalid",
+      "true",
+    );
   });
 
   it("updates the character count as the user types in the description", async () => {
@@ -64,8 +73,10 @@ describe("ProjectFormPage", () => {
 
     expect(screen.getByRole("link", { name: "Cancel" })).toHaveAttribute(
       "href",
-      "/preview/listing"
+      "/preview/listing",
     );
-    expect(screen.getByRole("button", { name: "Save changes" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Save changes" }),
+    ).toBeInTheDocument();
   });
 });

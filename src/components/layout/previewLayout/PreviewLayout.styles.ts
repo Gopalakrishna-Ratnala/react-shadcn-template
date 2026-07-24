@@ -16,9 +16,7 @@ export const brandStyles = cn(
   "hidden shrink-0 text-sm font-semibold whitespace-nowrap text-foreground sm:block",
 );
 
-export const navStyles = cn(
-  "flex flex-1 flex-wrap items-center gap-1",
-);
+export const navStyles = cn("flex flex-1 flex-wrap items-center gap-1");
 
 export const navLinkBaseStyles = cn(
   "rounded-md px-3 py-1.5 text-sm font-medium text-muted-foreground transition-colors",

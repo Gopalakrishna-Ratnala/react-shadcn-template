@@ -43,7 +43,10 @@ import {
   switchRowStyles,
   twoColumnStyles,
 } from "./ProjectFormPage.styles";
-import { projectFormSchema, type ProjectFormValues } from "./ProjectFormPage.schema";
+import {
+  projectFormSchema,
+  type ProjectFormValues,
+} from "./ProjectFormPage.schema";
 import type { SelectOption, TeamMemberOption } from "./types";
 
 const CLIENTS: SelectOption[] = [
@@ -70,8 +73,12 @@ const TEAM: TeamMemberOption[] = [
 
 const DESCRIPTION_LIMIT = 280;
 
-const clientItems = Object.fromEntries(CLIENTS.map((option) => [option.value, option.label]));
-const leadItems = Object.fromEntries(LEADS.map((option) => [option.value, option.label]));
+const clientItems = Object.fromEntries(
+  CLIENTS.map((option) => [option.value, option.label]),
+);
+const leadItems = Object.fromEntries(
+  LEADS.map((option) => [option.value, option.label]),
+);
 
 export function ProjectFormPage() {
   const navigate = useNavigate();
@@ -128,26 +135,45 @@ export function ProjectFormPage() {
                     id="projectName"
                     placeholder="e.g. Aurora Care Portal"
                     aria-invalid={Boolean(errors.projectName)}
-                    aria-describedby={errors.projectName ? "projectName-error" : undefined}
+                    aria-describedby={
+                      errors.projectName ? "projectName-error" : undefined
+                    }
                     {...register("projectName")}
                   />
-                  <FieldError id="projectName-error" errors={[errors.projectName]} />
+                  <FieldError
+                    id="projectName-error"
+                    errors={[errors.projectName]}
+                  />
                 </Field>
 
                 <Field>
                   <FieldLabel htmlFor="projectCode">Project code</FieldLabel>
-                  <Input id="projectCode" value="PRJ-2026-018" readOnly disabled />
-                  <FieldDescription>Generated automatically once the project is saved.</FieldDescription>
+                  <Input
+                    id="projectCode"
+                    value="PRJ-2026-018"
+                    readOnly
+                    disabled
+                  />
+                  <FieldDescription>
+                    Generated automatically once the project is saved.
+                  </FieldDescription>
                 </Field>
 
-                <section className={twoColumnStyles} aria-label="Client and start date">
+                <section
+                  className={twoColumnStyles}
+                  aria-label="Client and start date"
+                >
                   <Controller
                     control={control}
                     name="clientId"
                     render={({ field, fieldState }) => (
                       <Field data-invalid={Boolean(fieldState.error)}>
                         <FieldLabel htmlFor="clientId">Client</FieldLabel>
-                        <Select value={field.value} items={clientItems} onValueChange={field.onChange}>
+                        <Select
+                          value={field.value}
+                          items={clientItems}
+                          onValueChange={field.onChange}
+                        >
                           <SelectTrigger
                             id="clientId"
                             className={selectTriggerStyles}
@@ -157,7 +183,10 @@ export function ProjectFormPage() {
                           </SelectTrigger>
                           <SelectContent>
                             {CLIENTS.map((option) => (
-                              <SelectItem key={option.value} value={option.value}>
+                              <SelectItem
+                                key={option.value}
+                                value={option.value}
+                              >
                                 {option.label}
                               </SelectItem>
                             ))}
@@ -174,10 +203,15 @@ export function ProjectFormPage() {
                       id="startDate"
                       type="date"
                       aria-invalid={Boolean(errors.startDate)}
-                      aria-describedby={errors.startDate ? "startDate-error" : undefined}
+                      aria-describedby={
+                        errors.startDate ? "startDate-error" : undefined
+                      }
                       {...register("startDate")}
                     />
-                    <FieldError id="startDate-error" errors={[errors.startDate]} />
+                    <FieldError
+                      id="startDate-error"
+                      errors={[errors.startDate]}
+                    />
                   </Field>
                 </section>
 
@@ -190,7 +224,10 @@ export function ProjectFormPage() {
                     {...register("description")}
                   />
                   <FieldDescription>
-                    Optional. <small className={charCountStyles}>{description.length}/{DESCRIPTION_LIMIT}</small>
+                    Optional.{" "}
+                    <small className={charCountStyles}>
+                      {description.length}/{DESCRIPTION_LIMIT}
+                    </small>
                   </FieldDescription>
                   <FieldError errors={[errors.description]} />
                 </Field>
@@ -212,7 +249,10 @@ export function ProjectFormPage() {
                   render={({ field }) => (
                     <Field>
                       <FieldLabel>Priority</FieldLabel>
-                      <RadioGroup value={field.value} onValueChange={field.onChange}>
+                      <RadioGroup
+                        value={field.value}
+                        onValueChange={field.onChange}
+                      >
                         <FieldLabel htmlFor="priority-low">
                           <RadioGroupItem id="priority-low" value="low" />
                           Low — nice to have this quarter
@@ -236,7 +276,9 @@ export function ProjectFormPage() {
                   render={({ field }) => (
                     <Field orientation="horizontal" className={switchRowStyles}>
                       <FieldContent>
-                        <FieldLabel htmlFor="emailUpdates">Weekly email updates</FieldLabel>
+                        <FieldLabel htmlFor="emailUpdates">
+                          Weekly email updates
+                        </FieldLabel>
                         <FieldDescription>
                           Send the client a Monday summary of progress.
                         </FieldDescription>
@@ -256,7 +298,9 @@ export function ProjectFormPage() {
                   render={({ field }) => (
                     <Field orientation="horizontal" className={switchRowStyles}>
                       <FieldContent>
-                        <FieldLabel htmlFor="makePrivate">Private project</FieldLabel>
+                        <FieldLabel htmlFor="makePrivate">
+                          Private project
+                        </FieldLabel>
                         <FieldDescription>
                           Only invited members can see this project.
                         </FieldDescription>
@@ -297,13 +341,22 @@ export function ProjectFormPage() {
                               field.onChange(
                                 next
                                   ? [...field.value, member.id]
-                                  : field.value.filter((id) => id !== member.id)
+                                  : field.value.filter(
+                                      (id) => id !== member.id,
+                                    ),
                               );
                             }}
                           />
-                          <FieldLabel htmlFor={`member-${member.id}`} className={checkboxTextStyles}>
-                            <strong className={checkboxNameStyles}>{member.name}</strong>
-                            <small className={checkboxRoleStyles}>{member.role}</small>
+                          <FieldLabel
+                            htmlFor={`member-${member.id}`}
+                            className={checkboxTextStyles}
+                          >
+                            <strong className={checkboxNameStyles}>
+                              {member.name}
+                            </strong>
+                            <small className={checkboxRoleStyles}>
+                              {member.role}
+                            </small>
                           </FieldLabel>
                         </li>
                       );
@@ -320,7 +373,11 @@ export function ProjectFormPage() {
               render={({ field, fieldState }) => (
                 <Field data-invalid={Boolean(fieldState.error)}>
                   <FieldLabel htmlFor="projectLead">Project lead</FieldLabel>
-                  <Select value={field.value} items={leadItems} onValueChange={field.onChange}>
+                  <Select
+                    value={field.value}
+                    items={leadItems}
+                    onValueChange={field.onChange}
+                  >
                     <SelectTrigger
                       id="projectLead"
                       className={selectTriggerStyles}
@@ -344,7 +401,10 @@ export function ProjectFormPage() {
         </Card>
 
         <footer className={footerStyles}>
-          <Link to={ROUTES.PREVIEW_LISTING} className={buttonVariants({ variant: "secondary" })}>
+          <Link
+            to={ROUTES.PREVIEW_LISTING}
+            className={buttonVariants({ variant: "secondary" })}
+          >
             Cancel
           </Link>
           <Button type="submit" disabled={isSubmitting}>

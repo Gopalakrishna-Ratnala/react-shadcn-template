@@ -23,7 +23,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 import {
   Pagination,
   PaginationContent,
@@ -59,11 +66,17 @@ import {
   tableCardContentStyles,
   updatedCellStyles,
 } from "./ListingPage.styles";
-import type { ProjectClientFilterValue, ProjectStatusFilterValue } from "./types";
+import type {
+  ProjectClientFilterValue,
+  ProjectStatusFilterValue,
+} from "./types";
 
 const PAGE_SIZE = 5;
 
-const STATUS_META: Record<ProjectStatus, { tone: StatusBadgeTone; label: string }> = {
+const STATUS_META: Record<
+  ProjectStatus,
+  { tone: StatusBadgeTone; label: string }
+> = {
   "in-progress": { tone: "info", label: "In progress" },
   "in-review": { tone: "warning", label: "In review" },
   completed: { tone: "success", label: "Completed" },
@@ -81,25 +94,39 @@ const STATUS_OPTIONS: { value: ProjectStatusFilterValue; label: string }[] = [
 ];
 
 const formatUpdatedAt = (isoDate: string): string =>
-  new Date(isoDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+  new Date(isoDate).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
 
 export function ListingPage() {
   const { state } = useProjects();
 
   const [searchValue, setSearchValue] = useState("");
-  const [statusFilter, setStatusFilter] = useState<ProjectStatusFilterValue>("all");
-  const [clientFilter, setClientFilter] = useState<ProjectClientFilterValue>("all");
+  const [statusFilter, setStatusFilter] =
+    useState<ProjectStatusFilterValue>("all");
+  const [clientFilter, setClientFilter] =
+    useState<ProjectClientFilterValue>("all");
   const [previewEmptyState, setPreviewEmptyState] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [page, setPage] = useState(1);
 
-  const projects = useMemo(() => (state.status === "success" ? state.data : []), [state]);
+  const projects = useMemo(
+    () => (state.status === "success" ? state.data : []),
+    [state],
+  );
 
   const clientOptions = useMemo(() => {
-    const uniqueClients = Array.from(new Set(projects.map((project) => project.clientName))).sort();
+    const uniqueClients = Array.from(
+      new Set(projects.map((project) => project.clientName)),
+    ).sort();
     return [
       { value: "all", label: "All clients" },
-      ...uniqueClients.map((clientName) => ({ value: clientName, label: clientName })),
+      ...uniqueClients.map((clientName) => ({
+        value: clientName,
+        label: clientName,
+      })),
     ];
   }, [projects]);
 
@@ -112,18 +139,27 @@ export function ListingPage() {
         query.length === 0 ||
         project.name.toLowerCase().includes(query) ||
         project.clientName.toLowerCase().includes(query);
-      const matchesStatus = statusFilter === "all" || project.status === statusFilter;
-      const matchesClient = clientFilter === "all" || project.clientName === clientFilter;
+      const matchesStatus =
+        statusFilter === "all" || project.status === statusFilter;
+      const matchesClient =
+        clientFilter === "all" || project.clientName === clientFilter;
       return matchesQuery && matchesStatus && matchesClient;
     });
   }, [projects, searchValue, statusFilter, clientFilter, previewEmptyState]);
 
-  const totalPages = Math.max(1, Math.ceil(filteredProjects.length / PAGE_SIZE));
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredProjects.length / PAGE_SIZE),
+  );
   const safePage = Math.min(page, totalPages);
-  const pagedProjects = filteredProjects.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
+  const pagedProjects = filteredProjects.slice(
+    (safePage - 1) * PAGE_SIZE,
+    safePage * PAGE_SIZE,
+  );
 
   const allOnPageSelected =
-    pagedProjects.length > 0 && pagedProjects.every((project) => selectedIds.has(project.id));
+    pagedProjects.length > 0 &&
+    pagedProjects.every((project) => selectedIds.has(project.id));
 
   const toggleRow = (id: string, checked: boolean): void => {
     setSelectedIds((prev) => {
@@ -156,7 +192,10 @@ export function ListingPage() {
   return (
     <section className={pageStyles} aria-label="Projects listing">
       <PageHeader
-        breadcrumbs={[{ label: "Divami", href: ROUTES.PREVIEW_LISTING }, { label: "Projects" }]}
+        breadcrumbs={[
+          { label: "Divami", href: ROUTES.PREVIEW_LISTING },
+          { label: "Projects" },
+        ]}
         title="Projects"
         description="All active client engagements across the studio."
         action={
@@ -199,7 +238,10 @@ export function ListingPage() {
         ]}
         onClear={handleClearFilters}
         extra={
-          <label htmlFor="preview-empty-state" className={previewEmptyToggleStyles}>
+          <label
+            htmlFor="preview-empty-state"
+            className={previewEmptyToggleStyles}
+          >
             <Switch
               id="preview-empty-state"
               checked={previewEmptyState}
@@ -257,11 +299,16 @@ export function ListingPage() {
                 </EmptyMedia>
                 <EmptyTitle>No projects found</EmptyTitle>
                 <EmptyDescription>
-                  Try adjusting your search or filters, or clear them to see every project.
+                  Try adjusting your search or filters, or clear them to see
+                  every project.
                 </EmptyDescription>
               </EmptyHeader>
               <EmptyContent>
-                <Button type="button" variant="outline" onClick={handleClearFilters}>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleClearFilters}
+                >
                   Clear filters
                 </Button>
               </EmptyContent>
@@ -274,7 +321,9 @@ export function ListingPage() {
                     <Checkbox
                       aria-label="Select all projects on this page"
                       checked={allOnPageSelected}
-                      onCheckedChange={(checked) => toggleAllOnPage(checked === true)}
+                      onCheckedChange={(checked) =>
+                        toggleAllOnPage(checked === true)
+                      }
                     />
                   </TableHead>
                   <TableHead>Project</TableHead>
@@ -294,7 +343,9 @@ export function ListingPage() {
                       <Checkbox
                         aria-label={`Select ${project.name}`}
                         checked={selectedIds.has(project.id)}
-                        onCheckedChange={(checked) => toggleRow(project.id, checked === true)}
+                        onCheckedChange={(checked) =>
+                          toggleRow(project.id, checked === true)
+                        }
                       />
                     </TableCell>
                     <TableCell>{project.name}</TableCell>
@@ -329,7 +380,9 @@ export function ListingPage() {
                           }
                         />
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem render={<Link to={ROUTES.PREVIEW_DETAILS} />}>
+                          <DropdownMenuItem
+                            render={<Link to={ROUTES.PREVIEW_DETAILS} />}
+                          >
                             <EyeIcon />
                             View details
                           </DropdownMenuItem>

@@ -57,7 +57,9 @@ export function PageHeader({
       <section className={rowStyles}>
         <section className={titleWrapStyles}>
           <h1 className={titleStyles}>{title}</h1>
-          {description ? <p className={descriptionStyles}>{description}</p> : null}
+          {description ? (
+            <p className={descriptionStyles}>{description}</p>
+          ) : null}
         </section>
         {action ? <section className={actionStyles}>{action}</section> : null}
       </section>

@@ -10,7 +10,9 @@ describe("Specimen", () => {
         <button type="button">Demo</button>
       </Specimen>,
     );
-    expect(screen.getByRole("heading", { name: "Primary" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Primary" }),
+    ).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Demo" })).toBeInTheDocument();
   });
 });

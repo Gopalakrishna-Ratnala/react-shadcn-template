@@ -11,7 +11,7 @@ beforeAll(() => {
       observe() {}
       unobserve() {}
       disconnect() {}
-    }
+    },
   );
 });
 
@@ -19,15 +19,19 @@ const renderPage = () =>
   render(
     <MemoryRouter>
       <DashboardPage />
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 
 describe("DashboardPage", () => {
   it("renders the page header with title and reporting period", () => {
     renderPage();
 
-    expect(screen.getByRole("heading", { name: "Dashboard", level: 1 })).toBeInTheDocument();
-    expect(screen.getByText(/Studio performance for Q3 2026/)).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Dashboard", level: 1 }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/Studio performance for Q3 2026/),
+    ).toBeInTheDocument();
   });
 
   it("renders all four KPI stat cards", () => {
@@ -51,17 +55,20 @@ describe("DashboardPage", () => {
 
     expect(screen.getByText("Recent activity")).toBeInTheDocument();
     expect(screen.getByText("Priya Sharma")).toBeInTheDocument();
-    expect(screen.getByText(/shipped Lumen Storefront Refresh/)).toBeInTheDocument();
+    expect(
+      screen.getByText(/shipped Lumen Storefront Refresh/),
+    ).toBeInTheDocument();
   });
 
   it("renders the quarterly goal progress card with an export action", () => {
     renderPage();
 
     expect(screen.getByText("Quarterly revenue goal")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /export report/i })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "View all projects" })).toHaveAttribute(
-      "href",
-      "/preview/listing"
-    );
+    expect(
+      screen.getByRole("button", { name: /export report/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: "View all projects" }),
+    ).toHaveAttribute("href", "/preview/listing");
   });
 });

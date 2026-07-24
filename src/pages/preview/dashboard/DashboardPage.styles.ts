@@ -2,7 +2,9 @@ import { cn } from "@/lib/utils";
 
 export const pageStyles = cn("flex flex-col gap-6");
 
-export const statGridStyles = cn("grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4");
+export const statGridStyles = cn(
+  "grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4",
+);
 
 export const chartsGridStyles = cn("grid grid-cols-1 gap-4 lg:grid-cols-2");
 
@@ -26,6 +28,8 @@ export const goalCaptionStyles = cn("text-sm text-muted-foreground");
 
 export const goalListStyles = cn("flex flex-col gap-3");
 
-export const goalListRowStyles = cn("flex items-center justify-between text-sm");
+export const goalListRowStyles = cn(
+  "flex items-center justify-between text-sm",
+);
 
 export const goalListLabelStyles = cn("text-muted-foreground");

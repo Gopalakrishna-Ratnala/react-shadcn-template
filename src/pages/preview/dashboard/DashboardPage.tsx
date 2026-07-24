@@ -1,10 +1,24 @@
 import { Link } from "react-router";
 import { DownloadIcon } from "lucide-react";
-import { Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, XAxis } from "recharts";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Cell,
+  Pie,
+  PieChart,
+  XAxis,
+} from "recharts";
 
 import { PageHeader, StatCard, StatusBadge } from "@/components/blocks";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   ChartContainer,
   ChartLegend,
@@ -13,9 +27,20 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart";
-import { Progress, ProgressLabel, ProgressValue } from "@/components/ui/progress";
+import {
+  Progress,
+  ProgressLabel,
+  ProgressValue,
+} from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { ROUTES } from "@/constants";
 
 import {
@@ -35,13 +60,38 @@ import {
   pageStyles,
   statGridStyles,
 } from "./DashboardPage.styles";
-import type { ActivityEntry, DashboardStat, RevenuePoint, StatusSlice } from "./types";
+import type {
+  ActivityEntry,
+  DashboardStat,
+  RevenuePoint,
+  StatusSlice,
+} from "./types";
 
 const STATS: DashboardStat[] = [
-  { label: "Active projects", value: "24", changePercent: 12, changeCaption: "vs last quarter" },
-  { label: "Revenue this quarter", value: "$482K", changePercent: 9, changeCaption: "vs last quarter" },
-  { label: "Billable utilization", value: "78%", changePercent: 4, changeCaption: "vs last quarter" },
-  { label: "Client satisfaction", value: "4.6 / 5", changePercent: -3, changeCaption: "vs last quarter" },
+  {
+    label: "Active projects",
+    value: "24",
+    changePercent: 12,
+    changeCaption: "vs last quarter",
+  },
+  {
+    label: "Revenue this quarter",
+    value: "$482K",
+    changePercent: 9,
+    changeCaption: "vs last quarter",
+  },
+  {
+    label: "Billable utilization",
+    value: "78%",
+    changePercent: 4,
+    changeCaption: "vs last quarter",
+  },
+  {
+    label: "Client satisfaction",
+    value: "4.6 / 5",
+    changePercent: -3,
+    changeCaption: "vs last quarter",
+  },
 ];
 
 const REVENUE: RevenuePoint[] = [
@@ -157,13 +207,23 @@ export function DashboardPage() {
         <Card>
           <CardHeader>
             <CardTitle>Revenue vs target</CardTitle>
-            <CardDescription>Monthly billings in thousands (USD)</CardDescription>
+            <CardDescription>
+              Monthly billings in thousands (USD)
+            </CardDescription>
           </CardHeader>
           <CardContent>
-            <ChartContainer config={revenueChartConfig} className={chartBoxStyles}>
+            <ChartContainer
+              config={revenueChartConfig}
+              className={chartBoxStyles}
+            >
               <BarChart data={REVENUE} accessibilityLayer>
                 <CartesianGrid vertical={false} />
-                <XAxis dataKey="month" tickLine={false} axisLine={false} tickMargin={8} />
+                <XAxis
+                  dataKey="month"
+                  tickLine={false}
+                  axisLine={false}
+                  tickMargin={8}
+                />
                 <ChartTooltip content={<ChartTooltipContent />} />
                 <ChartLegend content={<ChartLegendContent />} />
                 <Bar dataKey="revenue" fill="var(--color-revenue)" radius={4} />
@@ -176,13 +236,25 @@ export function DashboardPage() {
         <Card>
           <CardHeader>
             <CardTitle>Projects by status</CardTitle>
-            <CardDescription>Distribution across the active portfolio</CardDescription>
+            <CardDescription>
+              Distribution across the active portfolio
+            </CardDescription>
           </CardHeader>
           <CardContent>
-            <ChartContainer config={statusChartConfig} className={donutBoxStyles}>
+            <ChartContainer
+              config={statusChartConfig}
+              className={donutBoxStyles}
+            >
               <PieChart>
-                <ChartTooltip content={<ChartTooltipContent nameKey="key" hideLabel />} />
-                <Pie data={STATUS_SLICES} dataKey="count" nameKey="key" innerRadius={55}>
+                <ChartTooltip
+                  content={<ChartTooltipContent nameKey="key" hideLabel />}
+                />
+                <Pie
+                  data={STATUS_SLICES}
+                  dataKey="count"
+                  nameKey="key"
+                  innerRadius={55}
+                >
                   {STATUS_SLICES.map((slice) => (
                     <Cell key={slice.key} fill={`var(--color-${slice.key})`} />
                   ))}
@@ -194,7 +266,10 @@ export function DashboardPage() {
         </Card>
       </section>
 
-      <section className={bottomGridStyles} aria-label="Recent activity and goals">
+      <section
+        className={bottomGridStyles}
+        aria-label="Recent activity and goals"
+      >
         <Card className={activityColumnStyles}>
           <CardHeader>
             <CardTitle>Recent activity</CardTitle>
@@ -218,9 +293,14 @@ export function DashboardPage() {
                       {entry.action} {entry.target}
                     </TableCell>
                     <TableCell>
-                      <StatusBadge tone={entry.tone} label={entry.statusLabel} />
+                      <StatusBadge
+                        tone={entry.tone}
+                        label={entry.statusLabel}
+                      />
                     </TableCell>
-                    <TableCell className={activityCellMutedStyles}>{entry.timestamp}</TableCell>
+                    <TableCell className={activityCellMutedStyles}>
+                      {entry.timestamp}
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -236,7 +316,9 @@ export function DashboardPage() {
           <CardContent className={goalCardBodyStyles}>
             <section className={goalMetaRowStyles} aria-label="Goal progress">
               <strong className={goalValueStyles}>${GOAL_BOOKED}K</strong>
-              <small className={goalCaptionStyles}>of ${GOAL_TARGET}K target</small>
+              <small className={goalCaptionStyles}>
+                of ${GOAL_TARGET}K target
+              </small>
             </section>
             <Progress value={GOAL_PERCENT}>
               <ProgressLabel>Booked revenue</ProgressLabel>
@@ -257,7 +339,10 @@ export function DashboardPage() {
                 <strong>${GOAL_TARGET - GOAL_BOOKED}K</strong>
               </li>
             </ul>
-            <Link to={ROUTES.PREVIEW_LISTING} className={buttonVariants({ variant: "outline" })}>
+            <Link
+              to={ROUTES.PREVIEW_LISTING}
+              className={buttonVariants({ variant: "outline" })}
+            >
               View all projects
             </Link>
           </CardContent>

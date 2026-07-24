@@ -285,7 +285,11 @@ import {
   PopoverTitle,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Progress, ProgressLabel, ProgressValue } from "@/components/ui/progress";
+import {
+  Progress,
+  ProgressLabel,
+  ProgressValue,
+} from "@/components/ui/progress";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   ResizableHandle,
@@ -384,44 +388,124 @@ const COLOR_GROUPS: TokenGroup[] = [
   {
     title: "Surfaces & text",
     tokens: [
-      { label: "background", cssVariable: "--background", swatchClassName: "bg-background" },
-      { label: "foreground", cssVariable: "--foreground", swatchClassName: "bg-foreground" },
+      {
+        label: "background",
+        cssVariable: "--background",
+        swatchClassName: "bg-background",
+      },
+      {
+        label: "foreground",
+        cssVariable: "--foreground",
+        swatchClassName: "bg-foreground",
+      },
       { label: "card", cssVariable: "--card", swatchClassName: "bg-card" },
-      { label: "card-foreground", cssVariable: "--card-foreground", swatchClassName: "bg-card-foreground" },
-      { label: "popover", cssVariable: "--popover", swatchClassName: "bg-popover" },
-      { label: "popover-foreground", cssVariable: "--popover-foreground", swatchClassName: "bg-popover-foreground" },
+      {
+        label: "card-foreground",
+        cssVariable: "--card-foreground",
+        swatchClassName: "bg-card-foreground",
+      },
+      {
+        label: "popover",
+        cssVariable: "--popover",
+        swatchClassName: "bg-popover",
+      },
+      {
+        label: "popover-foreground",
+        cssVariable: "--popover-foreground",
+        swatchClassName: "bg-popover-foreground",
+      },
     ],
   },
   {
     title: "Brand & actions",
     tokens: [
-      { label: "primary", cssVariable: "--primary", swatchClassName: "bg-primary" },
-      { label: "primary-foreground", cssVariable: "--primary-foreground", swatchClassName: "bg-primary-foreground" },
-      { label: "secondary", cssVariable: "--secondary", swatchClassName: "bg-secondary" },
-      { label: "secondary-foreground", cssVariable: "--secondary-foreground", swatchClassName: "bg-secondary-foreground" },
-      { label: "accent", cssVariable: "--accent", swatchClassName: "bg-accent" },
-      { label: "accent-foreground", cssVariable: "--accent-foreground", swatchClassName: "bg-accent-foreground" },
+      {
+        label: "primary",
+        cssVariable: "--primary",
+        swatchClassName: "bg-primary",
+      },
+      {
+        label: "primary-foreground",
+        cssVariable: "--primary-foreground",
+        swatchClassName: "bg-primary-foreground",
+      },
+      {
+        label: "secondary",
+        cssVariable: "--secondary",
+        swatchClassName: "bg-secondary",
+      },
+      {
+        label: "secondary-foreground",
+        cssVariable: "--secondary-foreground",
+        swatchClassName: "bg-secondary-foreground",
+      },
+      {
+        label: "accent",
+        cssVariable: "--accent",
+        swatchClassName: "bg-accent",
+      },
+      {
+        label: "accent-foreground",
+        cssVariable: "--accent-foreground",
+        swatchClassName: "bg-accent-foreground",
+      },
       { label: "muted", cssVariable: "--muted", swatchClassName: "bg-muted" },
-      { label: "muted-foreground", cssVariable: "--muted-foreground", swatchClassName: "bg-muted-foreground" },
+      {
+        label: "muted-foreground",
+        cssVariable: "--muted-foreground",
+        swatchClassName: "bg-muted-foreground",
+      },
     ],
   },
   {
     title: "Status",
     tokens: [
-      { label: "destructive", cssVariable: "--destructive", swatchClassName: "bg-destructive" },
-      { label: "destructive-foreground", cssVariable: "--destructive-foreground", swatchClassName: "bg-destructive-foreground" },
-      { label: "success", cssVariable: "--success", swatchClassName: "bg-success" },
-      { label: "success-foreground", cssVariable: "--success-foreground", swatchClassName: "bg-success-foreground" },
-      { label: "warning", cssVariable: "--warning", swatchClassName: "bg-warning" },
-      { label: "warning-foreground", cssVariable: "--warning-foreground", swatchClassName: "bg-warning-foreground" },
+      {
+        label: "destructive",
+        cssVariable: "--destructive",
+        swatchClassName: "bg-destructive",
+      },
+      {
+        label: "destructive-foreground",
+        cssVariable: "--destructive-foreground",
+        swatchClassName: "bg-destructive-foreground",
+      },
+      {
+        label: "success",
+        cssVariable: "--success",
+        swatchClassName: "bg-success",
+      },
+      {
+        label: "success-foreground",
+        cssVariable: "--success-foreground",
+        swatchClassName: "bg-success-foreground",
+      },
+      {
+        label: "warning",
+        cssVariable: "--warning",
+        swatchClassName: "bg-warning",
+      },
+      {
+        label: "warning-foreground",
+        cssVariable: "--warning-foreground",
+        swatchClassName: "bg-warning-foreground",
+      },
       { label: "info", cssVariable: "--info", swatchClassName: "bg-info" },
-      { label: "info-foreground", cssVariable: "--info-foreground", swatchClassName: "bg-info-foreground" },
+      {
+        label: "info-foreground",
+        cssVariable: "--info-foreground",
+        swatchClassName: "bg-info-foreground",
+      },
     ],
   },
   {
     title: "Lines & focus",
     tokens: [
-      { label: "border", cssVariable: "--border", swatchClassName: "bg-border" },
+      {
+        label: "border",
+        cssVariable: "--border",
+        swatchClassName: "bg-border",
+      },
       { label: "input", cssVariable: "--input", swatchClassName: "bg-input" },
       { label: "ring", cssVariable: "--ring", swatchClassName: "bg-ring" },
     ],
@@ -429,37 +513,121 @@ const COLOR_GROUPS: TokenGroup[] = [
   {
     title: "Charts",
     tokens: [
-      { label: "chart-1", cssVariable: "--chart-1", swatchClassName: "swatch-chart-1" },
-      { label: "chart-2", cssVariable: "--chart-2", swatchClassName: "swatch-chart-2" },
-      { label: "chart-3", cssVariable: "--chart-3", swatchClassName: "swatch-chart-3" },
-      { label: "chart-4", cssVariable: "--chart-4", swatchClassName: "swatch-chart-4" },
-      { label: "chart-5", cssVariable: "--chart-5", swatchClassName: "swatch-chart-5" },
+      {
+        label: "chart-1",
+        cssVariable: "--chart-1",
+        swatchClassName: "swatch-chart-1",
+      },
+      {
+        label: "chart-2",
+        cssVariable: "--chart-2",
+        swatchClassName: "swatch-chart-2",
+      },
+      {
+        label: "chart-3",
+        cssVariable: "--chart-3",
+        swatchClassName: "swatch-chart-3",
+      },
+      {
+        label: "chart-4",
+        cssVariable: "--chart-4",
+        swatchClassName: "swatch-chart-4",
+      },
+      {
+        label: "chart-5",
+        cssVariable: "--chart-5",
+        swatchClassName: "swatch-chart-5",
+      },
     ],
   },
   {
     title: "Sidebar",
     tokens: [
-      { label: "sidebar", cssVariable: "--sidebar", swatchClassName: "bg-sidebar" },
-      { label: "sidebar-foreground", cssVariable: "--sidebar-foreground", swatchClassName: "bg-sidebar-foreground" },
-      { label: "sidebar-primary", cssVariable: "--sidebar-primary", swatchClassName: "bg-sidebar-primary" },
-      { label: "sidebar-primary-foreground", cssVariable: "--sidebar-primary-foreground", swatchClassName: "bg-sidebar-primary-foreground" },
-      { label: "sidebar-accent", cssVariable: "--sidebar-accent", swatchClassName: "bg-sidebar-accent" },
-      { label: "sidebar-accent-foreground", cssVariable: "--sidebar-accent-foreground", swatchClassName: "bg-sidebar-accent-foreground" },
-      { label: "sidebar-border", cssVariable: "--sidebar-border", swatchClassName: "bg-sidebar-border" },
-      { label: "sidebar-ring", cssVariable: "--sidebar-ring", swatchClassName: "bg-sidebar-ring" },
+      {
+        label: "sidebar",
+        cssVariable: "--sidebar",
+        swatchClassName: "bg-sidebar",
+      },
+      {
+        label: "sidebar-foreground",
+        cssVariable: "--sidebar-foreground",
+        swatchClassName: "bg-sidebar-foreground",
+      },
+      {
+        label: "sidebar-primary",
+        cssVariable: "--sidebar-primary",
+        swatchClassName: "bg-sidebar-primary",
+      },
+      {
+        label: "sidebar-primary-foreground",
+        cssVariable: "--sidebar-primary-foreground",
+        swatchClassName: "bg-sidebar-primary-foreground",
+      },
+      {
+        label: "sidebar-accent",
+        cssVariable: "--sidebar-accent",
+        swatchClassName: "bg-sidebar-accent",
+      },
+      {
+        label: "sidebar-accent-foreground",
+        cssVariable: "--sidebar-accent-foreground",
+        swatchClassName: "bg-sidebar-accent-foreground",
+      },
+      {
+        label: "sidebar-border",
+        cssVariable: "--sidebar-border",
+        swatchClassName: "bg-sidebar-border",
+      },
+      {
+        label: "sidebar-ring",
+        cssVariable: "--sidebar-ring",
+        swatchClassName: "bg-sidebar-ring",
+      },
     ],
   },
 ];
 
 const TYPE_SCALE = [
-  { token: "--text-4xl", className: styles.text4xlStyles, sample: "Design that ships" },
-  { token: "--text-3xl", className: styles.text3xlStyles, sample: "Design that ships" },
-  { token: "--text-2xl", className: styles.text2xlStyles, sample: "Design that ships" },
-  { token: "--text-xl", className: styles.textXlStyles, sample: "Design that ships" },
-  { token: "--text-lg", className: styles.textLgStyles, sample: "Design that ships" },
-  { token: "--text-base", className: styles.textBaseStyles, sample: "Design that ships" },
-  { token: "--text-sm", className: styles.textSmStyles, sample: "Design that ships" },
-  { token: "--text-xs", className: styles.textXsStyles, sample: "Design that ships" },
+  {
+    token: "--text-4xl",
+    className: styles.text4xlStyles,
+    sample: "Design that ships",
+  },
+  {
+    token: "--text-3xl",
+    className: styles.text3xlStyles,
+    sample: "Design that ships",
+  },
+  {
+    token: "--text-2xl",
+    className: styles.text2xlStyles,
+    sample: "Design that ships",
+  },
+  {
+    token: "--text-xl",
+    className: styles.textXlStyles,
+    sample: "Design that ships",
+  },
+  {
+    token: "--text-lg",
+    className: styles.textLgStyles,
+    sample: "Design that ships",
+  },
+  {
+    token: "--text-base",
+    className: styles.textBaseStyles,
+    sample: "Design that ships",
+  },
+  {
+    token: "--text-sm",
+    className: styles.textSmStyles,
+    sample: "Design that ships",
+  },
+  {
+    token: "--text-xs",
+    className: styles.textXsStyles,
+    sample: "Design that ships",
+  },
 ];
 
 const WEIGHTS = [
@@ -493,10 +661,34 @@ const FRAMEWORKS = [
 ];
 
 const INVOICES: InvoiceRow[] = [
-  { id: "NST-1042", client: "Aurora Labs", service: "Brand system", status: "Paid", amount: "$18,400" },
-  { id: "NST-1043", client: "Meridian AI", service: "Design sprint", status: "Pending", amount: "$9,750" },
-  { id: "NST-1044", client: "Northwind", service: "Design ops retainer", status: "Overdue", amount: "$12,000" },
-  { id: "NST-1045", client: "Helix Health", service: "Research study", status: "Paid", amount: "$6,300" },
+  {
+    id: "NST-1042",
+    client: "Aurora Labs",
+    service: "Brand system",
+    status: "Paid",
+    amount: "$18,400",
+  },
+  {
+    id: "NST-1043",
+    client: "Meridian AI",
+    service: "Design sprint",
+    status: "Pending",
+    amount: "$9,750",
+  },
+  {
+    id: "NST-1044",
+    client: "Northwind",
+    service: "Design ops retainer",
+    status: "Overdue",
+    amount: "$12,000",
+  },
+  {
+    id: "NST-1045",
+    client: "Helix Health",
+    service: "Research study",
+    status: "Paid",
+    amount: "$6,300",
+  },
 ];
 
 const TRAFFIC = [
@@ -526,10 +718,34 @@ const CHANNELS: ChannelSlice[] = [
 ];
 
 const CONVERSATION: ChatMessage[] = [
-  { id: "m1", author: "Priya (Design lead)", text: "The Aurora dashboard tokens are merged — take a look at the gallery.", time: "9:32 AM", align: "start" },
-  { id: "m2", author: "You", text: "Looks sharp. Can we bump the primary a touch warmer?", time: "9:34 AM", align: "end" },
-  { id: "m3", author: "Priya (Design lead)", text: "Done — pushed a new theme.css. Everything reskinned instantly.", time: "9:36 AM", align: "start" },
-  { id: "m4", author: "You", text: "Perfect. Shipping the preview now.", time: "9:37 AM", align: "end" },
+  {
+    id: "m1",
+    author: "Priya (Design lead)",
+    text: "The Aurora dashboard tokens are merged — take a look at the gallery.",
+    time: "9:32 AM",
+    align: "start",
+  },
+  {
+    id: "m2",
+    author: "You",
+    text: "Looks sharp. Can we bump the primary a touch warmer?",
+    time: "9:34 AM",
+    align: "end",
+  },
+  {
+    id: "m3",
+    author: "Priya (Design lead)",
+    text: "Done — pushed a new theme.css. Everything reskinned instantly.",
+    time: "9:36 AM",
+    align: "start",
+  },
+  {
+    id: "m4",
+    author: "You",
+    text: "Perfect. Shipping the preview now.",
+    time: "9:37 AM",
+    align: "end",
+  },
 ];
 
 const BAR_CONFIG: ChartConfig = {
@@ -584,15 +800,18 @@ export function ComponentsGalleryPage() {
                 Design system — components
               </strong>
               <small className={styles.topBarHelperStyles}>
-                This page reflects the currently active theme. Toggle the mode or
-                edit theme.css and every element re-skins.
+                This page reflects the currently active theme. Toggle the mode
+                or edit theme.css and every element re-skins.
               </small>
             </section>
           </section>
         </header>
 
         <section className={styles.layoutStyles}>
-          <aside className={styles.navAsideStyles} aria-label="Section navigation">
+          <aside
+            className={styles.navAsideStyles}
+            aria-label="Section navigation"
+          >
             <p className={styles.navHeadingStyles}>Sections</p>
             <nav>
               <ul className={styles.navListStyles}>
@@ -611,7 +830,9 @@ export function ComponentsGalleryPage() {
             {/* ============ 1. FOUNDATIONS ============ */}
             <section id="foundations" className={styles.sectionStyles}>
               <header className={styles.sectionHeaderStyles}>
-                <small className={styles.sectionKickerStyles}>Foundations</small>
+                <small className={styles.sectionKickerStyles}>
+                  Foundations
+                </small>
                 <h2 className={styles.sectionTitleStyles}>Design tokens</h2>
                 <p className={styles.sectionDescStyles}>
                   Every semantic token in the theme contract, resolved live from
@@ -642,7 +863,9 @@ export function ComponentsGalleryPage() {
                   {TYPE_SCALE.map((step) => (
                     <li key={step.token} className={styles.typeRowStyles}>
                       <p className={step.className}>{step.sample}</p>
-                      <code className={styles.typeTokenStyles}>{step.token}</code>
+                      <code className={styles.typeTokenStyles}>
+                        {step.token}
+                      </code>
                     </li>
                   ))}
                 </ul>
@@ -669,10 +892,7 @@ export function ComponentsGalleryPage() {
                 <ul className={styles.sampleGridStyles}>
                   {RADII.map((radius) => (
                     <li key={radius.token} className={styles.sampleCellStyles}>
-                      <figure
-                        className={radius.className}
-                        aria-hidden="true"
-                      />
+                      <figure className={radius.className} aria-hidden="true" />
                       <code className={styles.sampleCaptionStyles}>
                         {radius.token}
                       </code>
@@ -686,10 +906,7 @@ export function ComponentsGalleryPage() {
                 <ul className={styles.sampleGridStyles}>
                   {SHADOWS.map((shadow) => (
                     <li key={shadow.token} className={styles.sampleCellStyles}>
-                      <figure
-                        className={shadow.className}
-                        aria-hidden="true"
-                      />
+                      <figure className={shadow.className} aria-hidden="true" />
                       <code className={styles.sampleCaptionStyles}>
                         {shadow.token}
                       </code>
@@ -723,7 +940,9 @@ export function ComponentsGalleryPage() {
             <section id="typography" className={styles.sectionStyles}>
               <header className={styles.sectionHeaderStyles}>
                 <small className={styles.sectionKickerStyles}>Section 2</small>
-                <h2 className={styles.sectionTitleStyles}>Typography & labels</h2>
+                <h2 className={styles.sectionTitleStyles}>
+                  Typography & labels
+                </h2>
                 <p className={styles.sectionDescStyles}>
                   Label, kbd and marker primitives.
                 </p>
@@ -750,7 +969,10 @@ export function ComponentsGalleryPage() {
                     </KbdGroup>
                   </section>
                 </Specimen>
-                <Specimen title="Marker" description="Emphasized inline markers">
+                <Specimen
+                  title="Marker"
+                  description="Emphasized inline markers"
+                >
                   <section className={styles.markerColStyles}>
                     <Marker>
                       <MarkerIcon>
@@ -850,7 +1072,11 @@ export function ComponentsGalleryPage() {
                   </Toggle>
                 </Specimen>
                 <Specimen title="Toggle group" description="Single select">
-                  <ToggleGroup defaultValue={["center"]} variant="outline" spacing={0}>
+                  <ToggleGroup
+                    defaultValue={["center"]}
+                    variant="outline"
+                    spacing={0}
+                  >
                     <ToggleGroupItem value="left" aria-label="Align left">
                       <Icon icon={AlignLeftIcon} size="sm" />
                     </ToggleGroupItem>
@@ -886,10 +1112,12 @@ export function ComponentsGalleryPage() {
             <section id="form-inputs" className={styles.sectionStyles}>
               <header className={styles.sectionHeaderStyles}>
                 <small className={styles.sectionKickerStyles}>Section 4</small>
-                <h2 className={styles.sectionTitleStyles}>Form fields — inputs</h2>
+                <h2 className={styles.sectionTitleStyles}>
+                  Form fields — inputs
+                </h2>
                 <p className={styles.sectionDescStyles}>
-                  Input, input-group, input-otp, textarea, native-select, select,
-                  combobox and the field wrapper.
+                  Input, input-group, input-otp, textarea, native-select,
+                  select, combobox and the field wrapper.
                 </p>
               </header>
               <section className={styles.specimenGridStyles}>
@@ -920,7 +1148,10 @@ export function ComponentsGalleryPage() {
                         aria-describedby="email-error"
                         defaultValue="not-an-email"
                       />
-                      <small id="email-error" className={styles.errorTextStyles}>
+                      <small
+                        id="email-error"
+                        className={styles.errorTextStyles}
+                      >
                         Enter a valid email address.
                       </small>
                     </section>
@@ -989,7 +1220,9 @@ export function ComponentsGalleryPage() {
                       United States
                     </NativeSelectOption>
                     <NativeSelectOptGroup label="Europe">
-                      <NativeSelectOption value="de">Germany</NativeSelectOption>
+                      <NativeSelectOption value="de">
+                        Germany
+                      </NativeSelectOption>
                       <NativeSelectOption value="fr">France</NativeSelectOption>
                     </NativeSelectOptGroup>
                   </NativeSelect>
@@ -1007,7 +1240,11 @@ export function ComponentsGalleryPage() {
                   </Select>
                 </Specimen>
                 <Specimen title="Combobox" description="Open with results">
-                  <Combobox items={FRAMEWORKS} defaultValue="Vite + React" defaultOpen>
+                  <Combobox
+                    items={FRAMEWORKS}
+                    defaultValue="Vite + React"
+                    defaultOpen
+                  >
                     <ComboboxInput
                       className={styles.constrainedStyles}
                       placeholder="Search framework…"
@@ -1031,7 +1268,11 @@ export function ComponentsGalleryPage() {
                   <FieldGroup className={styles.constrainedMdStyles}>
                     <Field>
                       <FieldLabel htmlFor="field-email">Work email</FieldLabel>
-                      <Input id="field-email" type="email" placeholder="you@novastudio.com" />
+                      <Input
+                        id="field-email"
+                        type="email"
+                        placeholder="you@novastudio.com"
+                      />
                       <FieldDescription>
                         We only use this for project updates.
                       </FieldDescription>
@@ -1039,7 +1280,9 @@ export function ComponentsGalleryPage() {
                     <Field>
                       <FieldLabel htmlFor="field-seats">Seats</FieldLabel>
                       <Input id="field-seats" aria-invalid defaultValue="0" />
-                      <FieldError errors={[{ message: "At least one seat is required." }]} />
+                      <FieldError
+                        errors={[{ message: "At least one seat is required." }]}
+                      />
                     </Field>
                   </FieldGroup>
                 </Specimen>
@@ -1050,7 +1293,9 @@ export function ComponentsGalleryPage() {
             <section id="form-choice" className={styles.sectionStyles}>
               <header className={styles.sectionHeaderStyles}>
                 <small className={styles.sectionKickerStyles}>Section 5</small>
-                <h2 className={styles.sectionTitleStyles}>Form fields — choice</h2>
+                <h2 className={styles.sectionTitleStyles}>
+                  Form fields — choice
+                </h2>
                 <p className={styles.sectionDescStyles}>
                   Checkbox, radio-group, switch and slider.
                 </p>
@@ -1158,7 +1403,10 @@ export function ComponentsGalleryPage() {
                 </p>
               </header>
               <section className={styles.specimenGridStyles}>
-                <Specimen title="Alert" description="Base + destructive variants">
+                <Specimen
+                  title="Alert"
+                  description="Base + destructive variants"
+                >
                   <section className={styles.alertColStyles}>
                     <Alert>
                       <InfoIcon />
@@ -1176,7 +1424,10 @@ export function ComponentsGalleryPage() {
                     </Alert>
                   </section>
                 </Specimen>
-                <Specimen title="Badge" description="All variants, with/without icon">
+                <Specimen
+                  title="Badge"
+                  description="All variants, with/without icon"
+                >
                   <Badge>Default</Badge>
                   <Badge variant="secondary">Secondary</Badge>
                   <Badge variant="destructive">Overdue</Badge>
@@ -1188,7 +1439,10 @@ export function ComponentsGalleryPage() {
                     Verified
                   </Badge>
                 </Specimen>
-                <Specimen title="Progress" description="0 · 45 · 100 · indeterminate">
+                <Specimen
+                  title="Progress"
+                  description="0 · 45 · 100 · indeterminate"
+                >
                   <section className={styles.progressColStyles}>
                     <Progress value={0} />
                     <Progress value={45}>
@@ -1236,16 +1490,32 @@ export function ComponentsGalleryPage() {
                   </Empty>
                 </Specimen>
                 <Specimen title="Sonner" description="Themed toast previews">
-                  <Button variant="outline" size="sm" onClick={toastPreview.showInfo}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={toastPreview.showInfo}
+                  >
                     Info
                   </Button>
-                  <Button variant="outline" size="sm" onClick={toastPreview.showSuccess}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={toastPreview.showSuccess}
+                  >
                     Success
                   </Button>
-                  <Button variant="outline" size="sm" onClick={toastPreview.showWarning}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={toastPreview.showWarning}
+                  >
                     Warning
                   </Button>
-                  <Button variant="outline" size="sm" onClick={toastPreview.showError}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={toastPreview.showError}
+                  >
                     Error
                   </Button>
                 </Specimen>
@@ -1268,7 +1538,9 @@ export function ComponentsGalleryPage() {
                 <Specimen title="Popover" description="Open with content">
                   <Popover defaultOpen modal={false}>
                     <PopoverTrigger
-                      render={<Button variant="outline">Layout settings</Button>}
+                      render={
+                        <Button variant="outline">Layout settings</Button>
+                      }
                     />
                     <PopoverContent>
                       <PopoverHeader>
@@ -1288,7 +1560,11 @@ export function ComponentsGalleryPage() {
                   <Tooltip defaultOpen>
                     <TooltipTrigger
                       render={
-                        <Button variant="outline" size="icon-sm" aria-label="Info">
+                        <Button
+                          variant="outline"
+                          size="icon-sm"
+                          aria-label="Info"
+                        >
                           <Icon icon={InfoIcon} size="sm" />
                         </Button>
                       }
@@ -1298,7 +1574,9 @@ export function ComponentsGalleryPage() {
                 </Specimen>
                 <Specimen title="Hover card" description="Rich content">
                   <HoverCard defaultOpen>
-                    <HoverCardTrigger render={<Button variant="link">@nova-studio</Button>} />
+                    <HoverCardTrigger
+                      render={<Button variant="link">@nova-studio</Button>}
+                    />
                     <HoverCardContent>
                       <strong>Nova Studio</strong>
                       <p className={styles.noteStyles}>
@@ -1327,10 +1605,15 @@ export function ComponentsGalleryPage() {
                     </DialogContent>
                   </Dialog>
                 </Specimen>
-                <Specimen title="Alert dialog" description="Destructive confirm">
+                <Specimen
+                  title="Alert dialog"
+                  description="Destructive confirm"
+                >
                   <AlertDialog>
                     <AlertDialogTrigger
-                      render={<Button variant="destructive">Delete workspace</Button>}
+                      render={
+                        <Button variant="destructive">Delete workspace</Button>
+                      }
                     />
                     <AlertDialogContent>
                       <AlertDialogHeader>
@@ -1351,7 +1634,9 @@ export function ComponentsGalleryPage() {
                 </Specimen>
                 <Specimen title="Sheet" description="Side panel">
                   <Sheet modal={false}>
-                    <SheetTrigger render={<Button variant="outline">Open panel</Button>} />
+                    <SheetTrigger
+                      render={<Button variant="outline">Open panel</Button>}
+                    />
                     <SheetContent side="right">
                       <SheetHeader>
                         <SheetTitle>Project settings</SheetTitle>
@@ -1367,7 +1652,9 @@ export function ComponentsGalleryPage() {
                 </Specimen>
                 <Specimen title="Drawer" description="Bottom overlay">
                   <Drawer modal={false}>
-                    <DrawerTrigger render={<Button variant="outline">Open drawer</Button>} />
+                    <DrawerTrigger
+                      render={<Button variant="outline">Open drawer</Button>}
+                    />
                     <DrawerContent>
                       <DrawerHeader>
                         <DrawerTitle>Filters</DrawerTitle>
@@ -1423,7 +1710,10 @@ export function ComponentsGalleryPage() {
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </Specimen>
-                <Specimen title="Context menu" description="Right-click the area">
+                <Specimen
+                  title="Context menu"
+                  description="Right-click the area"
+                >
                   <ContextMenu>
                     <ContextMenuTrigger className={styles.contextTargetStyles}>
                       Right-click here
@@ -1438,7 +1728,9 @@ export function ComponentsGalleryPage() {
                         <ContextMenuItem>Rename</ContextMenuItem>
                       </ContextMenuGroup>
                       <ContextMenuSeparator />
-                      <ContextMenuItem variant="destructive">Delete</ContextMenuItem>
+                      <ContextMenuItem variant="destructive">
+                        Delete
+                      </ContextMenuItem>
                     </ContextMenuContent>
                   </ContextMenu>
                 </Specimen>
@@ -1525,7 +1817,9 @@ export function ComponentsGalleryPage() {
                                 href="#navigation"
                                 className={styles.navMenuLinkStyles}
                               >
-                                <strong className={styles.navMenuLinkTitleStyles}>
+                                <strong
+                                  className={styles.navMenuLinkTitleStyles}
+                                >
                                   Design system
                                 </strong>
                                 <small className={styles.navMenuLinkDescStyles}>
@@ -1538,7 +1832,9 @@ export function ComponentsGalleryPage() {
                                 href="#navigation"
                                 className={styles.navMenuLinkStyles}
                               >
-                                <strong className={styles.navMenuLinkTitleStyles}>
+                                <strong
+                                  className={styles.navMenuLinkTitleStyles}
+                                >
                                   Aurora AI
                                 </strong>
                                 <small className={styles.navMenuLinkDescStyles}>
@@ -1566,13 +1862,22 @@ export function ComponentsGalleryPage() {
                         <TabsTrigger value="activity">Activity</TabsTrigger>
                         <TabsTrigger value="settings">Settings</TabsTrigger>
                       </TabsList>
-                      <TabsContent value="overview" className={styles.tabPanelStyles}>
+                      <TabsContent
+                        value="overview"
+                        className={styles.tabPanelStyles}
+                      >
                         42 active projects across 8 clients.
                       </TabsContent>
-                      <TabsContent value="activity" className={styles.tabPanelStyles}>
+                      <TabsContent
+                        value="activity"
+                        className={styles.tabPanelStyles}
+                      >
                         14 updates this week.
                       </TabsContent>
-                      <TabsContent value="settings" className={styles.tabPanelStyles}>
+                      <TabsContent
+                        value="settings"
+                        className={styles.tabPanelStyles}
+                      >
                         Manage workspace preferences.
                       </TabsContent>
                     </Tabs>
@@ -1583,10 +1888,16 @@ export function ComponentsGalleryPage() {
                         <TabsTrigger value="specs">Specs</TabsTrigger>
                         <TabsTrigger value="assets">Assets</TabsTrigger>
                       </TabsList>
-                      <TabsContent value="specs" className={styles.tabPanelStyles}>
+                      <TabsContent
+                        value="specs"
+                        className={styles.tabPanelStyles}
+                      >
                         Redlines and tokens.
                       </TabsContent>
-                      <TabsContent value="assets" className={styles.tabPanelStyles}>
+                      <TabsContent
+                        value="assets"
+                        className={styles.tabPanelStyles}
+                      >
                         Exports and source files.
                       </TabsContent>
                     </Tabs>
@@ -1601,7 +1912,9 @@ export function ComponentsGalleryPage() {
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                          <BreadcrumbLink href="#navigation">Projects</BreadcrumbLink>
+                          <BreadcrumbLink href="#navigation">
+                            Projects
+                          </BreadcrumbLink>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
@@ -1614,7 +1927,10 @@ export function ComponentsGalleryPage() {
                       </BreadcrumbList>
                     </Breadcrumb>
                   </Specimen>
-                  <Specimen title="Pagination" description="Prev/next + ellipsis">
+                  <Specimen
+                    title="Pagination"
+                    description="Prev/next + ellipsis"
+                  >
                     <Pagination>
                       <PaginationContent>
                         <PaginationItem>
@@ -1651,19 +1967,26 @@ export function ComponentsGalleryPage() {
                         </Avatar>
                         <section className={styles.directionLabelStyles}>
                           <strong>Left to right</strong>
-                          <small className={styles.noteStyles}>Default reading order</small>
+                          <small className={styles.noteStyles}>
+                            Default reading order
+                          </small>
                         </section>
                         <Icon icon={ArrowRightIcon} size="sm" />
                       </section>
                     </DirectionProvider>
                     <DirectionProvider direction="rtl">
-                      <section className={styles.directionBlockStyles} dir="rtl">
+                      <section
+                        className={styles.directionBlockStyles}
+                        dir="rtl"
+                      >
                         <Avatar size="sm">
                           <AvatarFallback>عن</AvatarFallback>
                         </Avatar>
                         <section className={styles.directionLabelStyles}>
                           <strong>من اليمين لليسار</strong>
-                          <small className={styles.noteStyles}>Right to left</small>
+                          <small className={styles.noteStyles}>
+                            Right to left
+                          </small>
                         </section>
                         <Icon icon={ArrowRightIcon} size="sm" />
                       </section>
@@ -1687,8 +2010,14 @@ export function ComponentsGalleryPage() {
                             <SidebarGroupContent>
                               <SidebarMenu>
                                 <SidebarMenuItem>
-                                  <SidebarMenuButton isActive tooltip="Dashboard">
-                                    <Icon icon={LayoutDashboardIcon} size="sm" />
+                                  <SidebarMenuButton
+                                    isActive
+                                    tooltip="Dashboard"
+                                  >
+                                    <Icon
+                                      icon={LayoutDashboardIcon}
+                                      size="sm"
+                                    />
                                     Dashboard
                                   </SidebarMenuButton>
                                 </SidebarMenuItem>
@@ -1749,7 +2078,9 @@ export function ComponentsGalleryPage() {
                 <Card>
                   <CardHeader>
                     <CardDescription>Monthly recurring revenue</CardDescription>
-                    <CardTitle className={styles.statValueStyles}>$46,450</CardTitle>
+                    <CardTitle className={styles.statValueStyles}>
+                      $46,450
+                    </CardTitle>
                     <CardAction>
                       <Button variant="ghost" size="icon-sm" aria-label="More">
                         <Icon icon={MoreHorizontalIcon} size="sm" />
@@ -1757,7 +2088,9 @@ export function ComponentsGalleryPage() {
                     </CardAction>
                   </CardHeader>
                   <CardFooter>
-                    <small className={styles.statTrendStyles}>+12.4% vs last month</small>
+                    <small className={styles.statTrendStyles}>
+                      +12.4% vs last month
+                    </small>
                   </CardFooter>
                 </Card>
                 <Card>
@@ -1789,7 +2122,11 @@ export function ComponentsGalleryPage() {
                 </Card>
               </section>
 
-              <Specimen title="Table" description="Status + actions column" bodyClassName={styles.colStyles}>
+              <Specimen
+                title="Table"
+                description="Status + actions column"
+                bodyClassName={styles.colStyles}
+              >
                 <Table>
                   <TableCaption>Recent invoices — Q3 2026</TableCaption>
                   <TableHeader>
@@ -1798,7 +2135,9 @@ export function ComponentsGalleryPage() {
                       <TableHead>Client</TableHead>
                       <TableHead>Service</TableHead>
                       <TableHead>Status</TableHead>
-                      <TableHead className={styles.cellNumericStyles}>Amount</TableHead>
+                      <TableHead className={styles.cellNumericStyles}>
+                        Amount
+                      </TableHead>
                       <TableHead>Actions</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -1818,10 +2157,18 @@ export function ComponentsGalleryPage() {
                         </TableCell>
                         <TableCell>
                           <section className={styles.tableActionsStyles}>
-                            <Button variant="ghost" size="icon-sm" aria-label="Download">
+                            <Button
+                              variant="ghost"
+                              size="icon-sm"
+                              aria-label="Download"
+                            >
                               <Icon icon={DownloadIcon} size="sm" />
                             </Button>
-                            <Button variant="ghost" size="icon-sm" aria-label="Delete">
+                            <Button
+                              variant="ghost"
+                              size="icon-sm"
+                              aria-label="Delete"
+                            >
                               <Icon icon={TrashIcon} size="sm" />
                             </Button>
                           </section>
@@ -1874,10 +2221,14 @@ export function ComponentsGalleryPage() {
                 <Specimen title="Aspect ratio" description="16:9 and 1:1">
                   <section className={styles.aspectGridStyles}>
                     <AspectRatio ratio={16 / 9}>
-                      <figure className={styles.aspectFigureStyles}>16 : 9</figure>
+                      <figure className={styles.aspectFigureStyles}>
+                        16 : 9
+                      </figure>
                     </AspectRatio>
                     <AspectRatio ratio={1}>
-                      <figure className={styles.aspectFigureStyles}>1 : 1</figure>
+                      <figure className={styles.aspectFigureStyles}>
+                        1 : 1
+                      </figure>
                     </AspectRatio>
                   </section>
                 </Specimen>
@@ -1885,10 +2236,7 @@ export function ComponentsGalleryPage() {
                   <ScrollArea className={styles.scrollAreaStyles}>
                     <ul className={styles.scrollAreaListStyles}>
                       {Array.from({ length: 12 }, (_, index) => (
-                        <li
-                          key={index}
-                          className={styles.scrollAreaItemStyles}
-                        >
+                        <li key={index} className={styles.scrollAreaItemStyles}>
                           Release note v2.{index + 1}
                         </li>
                       ))}
@@ -1896,7 +2244,10 @@ export function ComponentsGalleryPage() {
                   </ScrollArea>
                 </Specimen>
                 <Specimen title="Accordion" description="One open">
-                  <Accordion defaultValue={["a"]} className={styles.constrainedMdStyles}>
+                  <Accordion
+                    defaultValue={["a"]}
+                    className={styles.constrainedMdStyles}
+                  >
                     <AccordionItem value="a">
                       <AccordionTrigger>What's included?</AccordionTrigger>
                       <AccordionContent>
@@ -1918,9 +2269,14 @@ export function ComponentsGalleryPage() {
                   </Accordion>
                 </Specimen>
                 <Specimen title="Collapsible" description="Open state">
-                  <Collapsible defaultOpen className={styles.constrainedMdStyles}>
+                  <Collapsible
+                    defaultOpen
+                    className={styles.constrainedMdStyles}
+                  >
                     <CollapsibleTrigger
-                      render={<Button variant="ghost">Advanced settings</Button>}
+                      render={
+                        <Button variant="ghost">Advanced settings</Button>
+                      }
                     />
                     <CollapsibleContent>
                       <p className={styles.noteStyles}>
@@ -1931,22 +2287,34 @@ export function ComponentsGalleryPage() {
                 </Specimen>
               </section>
 
-              <Specimen title="Resizable" description="Two-panel layout" bodyClassName={styles.colStyles}>
+              <Specimen
+                title="Resizable"
+                description="Two-panel layout"
+                bodyClassName={styles.colStyles}
+              >
                 <ResizablePanelGroup
                   orientation="horizontal"
                   className={styles.resizableGroupStyles}
                 >
                   <ResizablePanel defaultSize={40}>
-                    <section className={styles.resizablePanelStyles}>Layers</section>
+                    <section className={styles.resizablePanelStyles}>
+                      Layers
+                    </section>
                   </ResizablePanel>
                   <ResizableHandle withHandle />
                   <ResizablePanel defaultSize={60}>
-                    <section className={styles.resizablePanelStyles}>Canvas</section>
+                    <section className={styles.resizablePanelStyles}>
+                      Canvas
+                    </section>
                   </ResizablePanel>
                 </ResizablePanelGroup>
               </Specimen>
 
-              <Specimen title="Item" description="Generic list rows" bodyClassName={styles.colStyles}>
+              <Specimen
+                title="Item"
+                description="Generic list rows"
+                bodyClassName={styles.colStyles}
+              >
                 <ItemGroup className={styles.itemListStyles}>
                   <Item variant="outline">
                     <ItemMedia variant="icon">
@@ -1954,10 +2322,16 @@ export function ComponentsGalleryPage() {
                     </ItemMedia>
                     <ItemContent>
                       <ItemTitle>Brand guidelines.pdf</ItemTitle>
-                      <ItemDescription>Updated 2 days ago · 4.2 MB</ItemDescription>
+                      <ItemDescription>
+                        Updated 2 days ago · 4.2 MB
+                      </ItemDescription>
                     </ItemContent>
                     <ItemActions>
-                      <Button variant="ghost" size="icon-sm" aria-label="Download">
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        aria-label="Download"
+                      >
                         <Icon icon={DownloadIcon} size="sm" />
                       </Button>
                     </ItemActions>
@@ -1980,20 +2354,46 @@ export function ComponentsGalleryPage() {
               </Specimen>
 
               <section className={styles.chartGridStyles}>
-                <Specimen title="Bar chart" description="Acquisition by month" bodyClassName={styles.colStyles}>
-                  <ChartContainer config={BAR_CONFIG} className={styles.chartBodyStyles}>
+                <Specimen
+                  title="Bar chart"
+                  description="Acquisition by month"
+                  bodyClassName={styles.colStyles}
+                >
+                  <ChartContainer
+                    config={BAR_CONFIG}
+                    className={styles.chartBodyStyles}
+                  >
                     <BarChart data={TRAFFIC}>
                       <CartesianGrid vertical={false} />
-                      <XAxis dataKey="month" tickLine={false} axisLine={false} />
+                      <XAxis
+                        dataKey="month"
+                        tickLine={false}
+                        axisLine={false}
+                      />
                       <ChartTooltip content={<ChartTooltipContent />} />
                       <ChartLegend content={<ChartLegendContent />} />
-                      <Bar dataKey="organic" fill="var(--color-organic)" radius={4} />
-                      <Bar dataKey="referral" fill="var(--color-referral)" radius={4} />
+                      <Bar
+                        dataKey="organic"
+                        fill="var(--color-organic)"
+                        radius={4}
+                      />
+                      <Bar
+                        dataKey="referral"
+                        fill="var(--color-referral)"
+                        radius={4}
+                      />
                     </BarChart>
                   </ChartContainer>
                 </Specimen>
-                <Specimen title="Area chart" description="Weekly sessions" bodyClassName={styles.colStyles}>
-                  <ChartContainer config={AREA_CONFIG} className={styles.chartBodyStyles}>
+                <Specimen
+                  title="Area chart"
+                  description="Weekly sessions"
+                  bodyClassName={styles.colStyles}
+                >
+                  <ChartContainer
+                    config={AREA_CONFIG}
+                    className={styles.chartBodyStyles}
+                  >
                     <AreaChart data={ENGAGEMENT}>
                       <CartesianGrid vertical={false} />
                       <XAxis dataKey="week" tickLine={false} axisLine={false} />
@@ -2008,10 +2408,19 @@ export function ComponentsGalleryPage() {
                     </AreaChart>
                   </ChartContainer>
                 </Specimen>
-                <Specimen title="Donut chart" description="Traffic by channel" bodyClassName={styles.colStyles}>
-                  <ChartContainer config={PIE_CONFIG} className={styles.chartBodyStyles}>
+                <Specimen
+                  title="Donut chart"
+                  description="Traffic by channel"
+                  bodyClassName={styles.colStyles}
+                >
+                  <ChartContainer
+                    config={PIE_CONFIG}
+                    className={styles.chartBodyStyles}
+                  >
                     <PieChart>
-                      <ChartTooltip content={<ChartTooltipContent nameKey="channel" />} />
+                      <ChartTooltip
+                        content={<ChartTooltipContent nameKey="channel" />}
+                      />
                       <Pie
                         data={CHANNELS}
                         dataKey="value"
@@ -2023,7 +2432,9 @@ export function ComponentsGalleryPage() {
                           <Cell key={slice.channel} fill={slice.fill} />
                         ))}
                       </Pie>
-                      <ChartLegend content={<ChartLegendContent nameKey="channel" />} />
+                      <ChartLegend
+                        content={<ChartLegendContent nameKey="channel" />}
+                      />
                     </PieChart>
                   </ChartContainer>
                 </Specimen>
@@ -2040,7 +2451,11 @@ export function ComponentsGalleryPage() {
                 </p>
               </header>
               <section className={styles.specimenGridTwoStyles}>
-                <Specimen title="Attachment" description="Document + image tiles" bodyClassName={styles.colStyles}>
+                <Specimen
+                  title="Attachment"
+                  description="Document + image tiles"
+                  bodyClassName={styles.colStyles}
+                >
                   <AttachmentGroup className={styles.attachmentRowStyles}>
                     <Attachment>
                       <AttachmentMedia variant="icon">
@@ -2072,18 +2487,29 @@ export function ComponentsGalleryPage() {
                     </Attachment>
                   </AttachmentGroup>
                 </Specimen>
-                <Specimen title="Carousel" description="Prev/next controls" bodyClassName={styles.colStyles}>
-                  <Carousel opts={{ align: "start" }} className={styles.carouselWrapStyles}>
+                <Specimen
+                  title="Carousel"
+                  description="Prev/next controls"
+                  bodyClassName={styles.colStyles}
+                >
+                  <Carousel
+                    opts={{ align: "start" }}
+                    className={styles.carouselWrapStyles}
+                  >
                     <CarouselContent>
-                      {["Discover", "Define", "Design", "Deliver"].map((phase) => (
-                        <CarouselItem key={phase}>
-                          <figure className={styles.carouselItemInnerStyles}>
-                            <strong className={styles.carouselItemLabelStyles}>
-                              {phase}
-                            </strong>
-                          </figure>
-                        </CarouselItem>
-                      ))}
+                      {["Discover", "Define", "Design", "Deliver"].map(
+                        (phase) => (
+                          <CarouselItem key={phase}>
+                            <figure className={styles.carouselItemInnerStyles}>
+                              <strong
+                                className={styles.carouselItemLabelStyles}
+                              >
+                                {phase}
+                              </strong>
+                            </figure>
+                          </CarouselItem>
+                        ),
+                      )}
                     </CarouselContent>
                     <CarouselPrevious />
                     <CarouselNext />
@@ -2102,18 +2528,30 @@ export function ComponentsGalleryPage() {
                 </p>
               </header>
               <section className={styles.specimenGridTwoStyles}>
-                <Specimen title="Bubble" description="Sent + received" bodyClassName={styles.colStyles}>
+                <Specimen
+                  title="Bubble"
+                  description="Sent + received"
+                  bodyClassName={styles.colStyles}
+                >
                   <BubbleGroup className={styles.chatWrapStyles}>
                     <Bubble variant="muted" align="start">
-                      <BubbleContent>Morning! Did the tokens land?</BubbleContent>
+                      <BubbleContent>
+                        Morning! Did the tokens land?
+                      </BubbleContent>
                     </Bubble>
                     <Bubble align="end">
-                      <BubbleContent>Yes — reskinned instantly ✨</BubbleContent>
+                      <BubbleContent>
+                        Yes — reskinned instantly ✨
+                      </BubbleContent>
                     </Bubble>
                     <time className={styles.timeStyles}>9:41 AM</time>
                   </BubbleGroup>
                 </Specimen>
-                <Specimen title="Message" description="Avatar + bubble + meta" bodyClassName={styles.colStyles}>
+                <Specimen
+                  title="Message"
+                  description="Avatar + bubble + meta"
+                  bodyClassName={styles.colStyles}
+                >
                   <MessageGroup className={styles.chatWrapStyles}>
                     <Message align="start">
                       <MessageAvatar>
@@ -2141,11 +2579,17 @@ export function ComponentsGalleryPage() {
                     </Message>
                   </MessageGroup>
                 </Specimen>
-                <Specimen title="Message scroller" description="Scrollable conversation" bodyClassName={styles.colStyles}>
+                <Specimen
+                  title="Message scroller"
+                  description="Scrollable conversation"
+                  bodyClassName={styles.colStyles}
+                >
                   <MessageScrollerProvider>
                     <MessageScroller className={styles.scrollerStyles}>
                       <MessageScrollerViewport>
-                        <MessageScrollerContent className={styles.scrollerBodyStyles}>
+                        <MessageScrollerContent
+                          className={styles.scrollerBodyStyles}
+                        >
                           {CONVERSATION.map((message, index) => (
                             <MessageScrollerItem
                               key={message.id}
@@ -2160,12 +2604,20 @@ export function ComponentsGalleryPage() {
                                   </MessageAvatar>
                                 ) : null}
                                 <MessageContent>
-                                  <MessageHeader>{message.author}</MessageHeader>
+                                  <MessageHeader>
+                                    {message.author}
+                                  </MessageHeader>
                                   <Bubble
                                     align={message.align}
-                                    variant={message.align === "end" ? "default" : "muted"}
+                                    variant={
+                                      message.align === "end"
+                                        ? "default"
+                                        : "muted"
+                                    }
                                   >
-                                    <BubbleContent>{message.text}</BubbleContent>
+                                    <BubbleContent>
+                                      {message.text}
+                                    </BubbleContent>
                                   </Bubble>
                                   <MessageFooter>{message.time}</MessageFooter>
                                 </MessageContent>

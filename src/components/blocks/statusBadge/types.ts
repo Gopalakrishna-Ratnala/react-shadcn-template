@@ -1,9 +1,5 @@
 export type StatusBadgeTone =
-  | "info"
-  | "warning"
-  | "success"
-  | "destructive"
-  | "muted";
+  "info" | "warning" | "success" | "destructive" | "muted";
 
 export interface StatusBadgeProps {
   tone: StatusBadgeTone;

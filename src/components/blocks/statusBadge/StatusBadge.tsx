@@ -9,6 +9,8 @@ import type { StatusBadgeProps } from "./types";
  */
 export function StatusBadge({ tone, label, className }: StatusBadgeProps) {
   return (
-    <mark className={cn(statusBadgeVariants({ tone }), className)}>{label}</mark>
+    <mark className={cn(statusBadgeVariants({ tone }), className)}>
+      {label}
+    </mark>
   );
 }

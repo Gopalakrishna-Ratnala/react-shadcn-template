@@ -5,7 +5,9 @@ import { describe, expect, it, vi } from "vitest";
 
 import type { Project } from "@/types/project.types";
 
-let mockState: { status: string; data?: Project[]; message?: string } = { status: "loading" };
+let mockState: { status: string; data?: Project[]; message?: string } = {
+  status: "loading",
+};
 
 vi.mock("@/hooks/useProjects", () => ({
   useProjects: () => ({ state: mockState }),
@@ -38,7 +40,7 @@ const renderPage = () =>
   render(
     <MemoryRouter>
       <ListingPage />
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 
 describe("ListingPage", () => {
@@ -46,14 +48,21 @@ describe("ListingPage", () => {
     mockState = { status: "loading" };
     renderPage();
 
-    expect(screen.getByRole("heading", { name: "Projects" })).toBeInTheDocument();
-    expect(screen.getByRole("searchbox", { name: "Search" })).toBeInTheDocument();
-    expect(screen.getByRole("combobox", { name: "Filter by status" })).toBeInTheDocument();
-    expect(screen.getByRole("combobox", { name: "Filter by client" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Add new project" })).toHaveAttribute(
-      "href",
-      "/preview/form"
-    );
+    expect(
+      screen.getByRole("heading", { name: "Projects" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("searchbox", { name: "Search" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("combobox", { name: "Filter by status" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("combobox", { name: "Filter by client" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: "Add new project" }),
+    ).toHaveAttribute("href", "/preview/form");
   });
 
   it("shows loading placeholders without rendering project data", () => {
@@ -88,13 +97,19 @@ describe("ListingPage", () => {
     const user = userEvent.setup();
     renderPage();
 
-    await user.type(screen.getByRole("searchbox", { name: "Search" }), "Aurora");
+    await user.type(
+      screen.getByRole("searchbox", { name: "Search" }),
+      "Aurora",
+    );
 
     expect(screen.getByText("Aurora Care Portal")).toBeInTheDocument();
     expect(screen.queryByText("Northwind Mobile App")).not.toBeInTheDocument();
 
     await user.clear(screen.getByRole("searchbox", { name: "Search" }));
-    await user.type(screen.getByRole("searchbox", { name: "Search" }), "no-such-project");
+    await user.type(
+      screen.getByRole("searchbox", { name: "Search" }),
+      "no-such-project",
+    );
 
     expect(screen.getByText("No projects found")).toBeInTheDocument();
   });
@@ -104,10 +119,15 @@ describe("ListingPage", () => {
     const user = userEvent.setup();
     renderPage();
 
-    await user.type(screen.getByRole("searchbox", { name: "Search" }), "no-such-project");
+    await user.type(
+      screen.getByRole("searchbox", { name: "Search" }),
+      "no-such-project",
+    );
     expect(screen.getByText("No projects found")).toBeInTheDocument();
 
-    const [clearFiltersButton] = screen.getAllByRole("button", { name: "Clear filters" });
+    const [clearFiltersButton] = screen.getAllByRole("button", {
+      name: "Clear filters",
+    });
     await user.click(clearFiltersButton);
 
     expect(screen.getByText("Aurora Care Portal")).toBeInTheDocument();
@@ -119,7 +139,9 @@ describe("ListingPage", () => {
     const user = userEvent.setup();
     renderPage();
 
-    await user.click(screen.getByRole("switch", { name: /preview empty state/i }));
+    await user.click(
+      screen.getByRole("switch", { name: /preview empty state/i }),
+    );
 
     expect(screen.getByText("No projects found")).toBeInTheDocument();
   });
@@ -129,7 +151,9 @@ describe("ListingPage", () => {
     const user = userEvent.setup();
     renderPage();
 
-    const rowCheckbox = screen.getByRole("checkbox", { name: "Select Aurora Care Portal" });
+    const rowCheckbox = screen.getByRole("checkbox", {
+      name: "Select Aurora Care Portal",
+    });
     expect(rowCheckbox).not.toBeChecked();
 
     await user.click(rowCheckbox);

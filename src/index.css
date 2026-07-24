@@ -136,11 +136,21 @@
    color chips (Tailwind `bg-chart-N` classes collide with the palette-class
    lint rule). These reference tokens only — no hardcoded values. */
 @layer components {
-  .swatch-chart-1 { background-color: var(--chart-1); }
-  .swatch-chart-2 { background-color: var(--chart-2); }
-  .swatch-chart-3 { background-color: var(--chart-3); }
-  .swatch-chart-4 { background-color: var(--chart-4); }
-  .swatch-chart-5 { background-color: var(--chart-5); }
+  .swatch-chart-1 {
+    background-color: var(--chart-1);
+  }
+  .swatch-chart-2 {
+    background-color: var(--chart-2);
+  }
+  .swatch-chart-3 {
+    background-color: var(--chart-3);
+  }
+  .swatch-chart-4 {
+    background-color: var(--chart-4);
+  }
+  .swatch-chart-5 {
+    background-color: var(--chart-5);
+  }
 }
 
 @layer base {

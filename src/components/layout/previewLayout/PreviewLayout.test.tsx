@@ -16,6 +16,8 @@ describe("PreviewLayout", () => {
     );
     expect(screen.getByRole("link", { name: "Dashboard" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Projects" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Components" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: "Components" }),
+    ).toBeInTheDocument();
   });
 });

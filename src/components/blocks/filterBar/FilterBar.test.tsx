@@ -22,7 +22,9 @@ describe("FilterBar", () => {
         onClear={vi.fn()}
       />,
     );
-    expect(screen.getByRole("searchbox", { name: "Search" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("searchbox", { name: "Search" }),
+    ).toBeInTheDocument();
     expect(
       screen.getByRole("combobox", { name: "Filter by status" }),
     ).toBeInTheDocument();

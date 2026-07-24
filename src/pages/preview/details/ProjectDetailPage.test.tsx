@@ -9,17 +9,24 @@ const renderPage = () =>
   render(
     <MemoryRouter>
       <ProjectDetailPage />
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 
 describe("ProjectDetailPage", () => {
   it("renders the record title, status badge, and action buttons", () => {
     renderPage();
 
-    expect(screen.getByRole("heading", { name: "Aurora Care Portal", level: 1 })).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Aurora Care Portal", level: 1 }),
+    ).toBeInTheDocument();
     expect(screen.getByText("In review")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /edit/i })).toHaveAttribute("href", "/preview/form");
-    expect(screen.getByRole("button", { name: "Mark as complete" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /edit/i })).toHaveAttribute(
+      "href",
+      "/preview/form",
+    );
+    expect(
+      screen.getByRole("button", { name: "Mark as complete" }),
+    ).toBeInTheDocument();
   });
 
   it("renders the three tabs with Overview content visible by default", () => {
@@ -40,7 +47,9 @@ describe("ProjectDetailPage", () => {
     await user.click(screen.getByRole("tab", { name: "Activity" }));
 
     await waitFor(() => {
-      expect(screen.getByText(/updated the component inventory/)).toBeInTheDocument();
+      expect(
+        screen.getByText(/updated the component inventory/),
+      ).toBeInTheDocument();
     });
   });
 
@@ -54,7 +63,11 @@ describe("ProjectDetailPage", () => {
       expect(screen.getByRole("dialog")).toBeInTheDocument();
     });
     expect(screen.getByText("Delete this project?")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Delete project" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Keep project" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Delete project" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Keep project" }),
+    ).toBeInTheDocument();
   });
 });

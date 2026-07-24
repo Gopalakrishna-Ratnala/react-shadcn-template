@@ -21,9 +21,7 @@ export const topBarHelperStyles = cn("text-xs text-muted-foreground");
 
 export const topBarActionsStyles = cn("flex items-center gap-2");
 
-export const layoutStyles = cn(
-  "flex flex-col gap-8 lg:flex-row lg:gap-10",
-);
+export const layoutStyles = cn("flex flex-col gap-8 lg:flex-row lg:gap-10");
 
 /* ---------- In-page navigation ---------- */
 export const navAsideStyles = cn(
@@ -80,7 +78,9 @@ export const specimenGridStyles = cn(
   "grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3",
 );
 
-export const specimenGridTwoStyles = cn("grid grid-cols-1 gap-4 md:grid-cols-2");
+export const specimenGridTwoStyles = cn(
+  "grid grid-cols-1 gap-4 md:grid-cols-2",
+);
 
 export const noteStyles = cn("text-xs text-muted-foreground");
 
@@ -165,7 +165,9 @@ export const shadowBoxFocusStyles = cn(
 
 /* ---------- Foundations: icon sizes ---------- */
 export const iconRowStyles = cn("flex items-end gap-6");
-export const iconCellStyles = cn("flex flex-col items-center gap-2 text-primary");
+export const iconCellStyles = cn(
+  "flex flex-col items-center gap-2 text-primary",
+);
 export const iconCaptionStyles = cn("font-mono text-xs text-muted-foreground");
 
 /* ---------- Section 2: labels, kbd, marker ---------- */
@@ -186,15 +188,11 @@ export const overlayTriggerRowStyles = cn("flex flex-wrap items-center gap-3");
 export const contextTargetStyles = cn(
   "flex h-28 w-full max-w-md items-center justify-center rounded-lg border border-dashed border-border bg-muted/40 text-sm text-muted-foreground",
 );
-export const navMenuPanelStyles = cn(
-  "grid w-72 gap-1 p-2 md:grid-cols-1",
-);
+export const navMenuPanelStyles = cn("grid w-72 gap-1 p-2 md:grid-cols-1");
 export const navMenuLinkStyles = cn(
   "flex flex-col gap-0.5 rounded-md p-2 hover:bg-muted",
 );
-export const navMenuLinkTitleStyles = cn(
-  "text-sm font-medium text-foreground",
-);
+export const navMenuLinkTitleStyles = cn("text-sm font-medium text-foreground");
 export const navMenuLinkDescStyles = cn("text-xs text-muted-foreground");
 export const commandWrapStyles = cn(
   "w-full max-w-md rounded-lg border border-border shadow-sm",
@@ -202,9 +200,7 @@ export const commandWrapStyles = cn(
 
 /* ---------- Section 10: navigation ---------- */
 export const paginationWrapStyles = cn("flex w-full justify-start");
-export const sidebarPairStyles = cn(
-  "grid grid-cols-1 gap-4 lg:grid-cols-2",
-);
+export const sidebarPairStyles = cn("grid grid-cols-1 gap-4 lg:grid-cols-2");
 export const sidebarFrameStyles = cn(
   "h-96 overflow-hidden rounded-lg border border-border",
 );
@@ -248,9 +244,7 @@ export const resizablePanelStyles = cn(
 );
 export const itemListStyles = cn("flex w-full max-w-lg flex-col");
 export const tableActionsStyles = cn("flex justify-end gap-1");
-export const chartGridStyles = cn(
-  "grid grid-cols-1 gap-4 lg:grid-cols-3",
-);
+export const chartGridStyles = cn("grid grid-cols-1 gap-4 lg:grid-cols-3");
 export const chartBodyStyles = cn("h-64 w-full");
 export const cellNumericStyles = cn("text-right font-mono text-sm");
 

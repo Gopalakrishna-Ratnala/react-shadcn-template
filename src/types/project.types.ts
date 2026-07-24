@@ -1,9 +1,5 @@
 export type ProjectStatus =
-  | "in-progress"
-  | "in-review"
-  | "completed"
-  | "on-hold"
-  | "at-risk";
+  "in-progress" | "in-review" | "completed" | "on-hold" | "at-risk";
 
 export interface Project {
   id: string;
