@@ -49,7 +49,7 @@ During refactoring:
 - [ ] no hardcoded design values *(hook-enforced)* — scan every style file and every component file for raw numbers (widths, heights, margins, padding, line-heights, max-widths, min-heights) and verify each references a design token
 - [ ] no library-specific inline style props (e.g. `sx`) *(hook-enforced)*
 - [ ] no inline `style` attribute *(hook-enforced)*
-- [ ] no hardcoded colors or library palette classes *(hook-enforced)* — shadcn/ui: no Tailwind palette classes (e.g. `bg-blue-500`), use semantic tokens; MUI: no raw hex in `styled()`
+- [ ] no hardcoded colors or Tailwind palette classes *(hook-enforced)* — no `bg-blue-500` etc., use semantic tokens instead
 - [ ] no multi-token className strings inlined in .tsx — extracted to `.styles.ts` *(shadcn/Tailwind — hook-enforced — warning)*
 - [ ] no template literals in `className` — use `cn()` with imported base *(shadcn/Tailwind only)*
 - [ ] no raw HTTP calls in UI components
@@ -61,7 +61,7 @@ During refactoring:
 - [ ] no `<div>` or `<span>` in any .tsx file *(hook-enforced)*
 - [ ] semantic HTML used intentionally — structural/typography/list/media elements chosen for meaning, not as a layout convenience
 - [ ] accessibility verified
-- [ ] responsive behavior verified (breakpoints; dark mode via `dark:` Tailwind classes for shadcn/Tailwind projects, or via MUI theme palette for MUI projects)
+- [ ] responsive behavior verified (breakpoints; dark mode via `dark:` Tailwind classes)
 - [ ] all new types, services, stores, hooks, components, and tests follow project structure *(+ stories when Storybook is enabled)*
 - [ ] no `console.log`, `console.warn`, or `console.error` left in source files
 - [ ] no commented-out code blocks

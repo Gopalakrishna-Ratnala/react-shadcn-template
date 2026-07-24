@@ -42,7 +42,7 @@ This repository is a **clean project template**. It ships with a minimal placeho
 
 | Decision | Options |
 | --- | --- |
-| Styling library | MUI (Material UI) or shadcn/ui + Tailwind CSS v4 (`@tailwindcss/vite` — not PostCSS) |
+| Styling library | shadcn/ui + Tailwind CSS v4 (`@tailwindcss/vite` — not PostCSS) — fixed for this template, not a choice |
 | Icon source | `public/assets/icons/` (SVG sprites) or `lucide-react` library |
 | State management | Zustand or Redux Toolkit |
 | Forms & validation | React Hook Form + Yup or React Hook Form + Zod |
@@ -105,16 +105,15 @@ Rules are split into three categories:
 
 ## Strategy Rules — Conditionally Loaded (scoped by `paths`)
 
-Each folder below contains mutually exclusive strategy files. **Keep only the file matching your chosen library; delete the rest.**
+Other strategy folders below (state management, forms, data fetching) still contain mutually exclusive files. **Keep only the file matching your chosen library; delete the rest.**
 
-### Styling (`.claude/rules/styling/`) — pick one + optional
+### Styling (`.claude/rules/styling/`) — fixed, not a choice
 
-| Strategy | Files to keep | Files to delete | Loaded when editing |
-| --- | --- | --- | --- |
-| **MUI (Material UI)** | `styling/mui/01-mui-styling.md` + `styling/mui/02-mui-usage.md` | `styling/shadcn/` | `src/**/styles.ts`, `src/**/*.tsx` |
-| **shadcn/ui + Tailwind CSS v4** | `styling/shadcn/01-tailwind-shadcn-styling.md` — uses `@tailwindcss/vite` (not PostCSS) | `styling/mui/` | `src/**/*.tsx`, `src/**/*.ts`, `src/**/*.css` |
+| Strategy | Files | Loaded when editing |
+| --- | --- | --- |
+| **shadcn/ui + Tailwind CSS v4** | `styling/shadcn/01-tailwind-shadcn-styling.md` — uses `@tailwindcss/vite` (not PostCSS) | `src/**/*.tsx`, `src/**/*.ts`, `src/**/*.css` |
 
-Optional (shadcn/ui only):
+Optional:
 
 | File | Feature | Keep when | Loaded when editing |
 | --- | --- | --- | --- |
@@ -195,7 +194,7 @@ Hook configuration is in `.claude/settings.json`.
 
 | Tier | Elements | Rule |
 | --- | --- | --- |
-| **Forbidden** | `<div>`, `<span>` | No semantic meaning — always replace with a UI library primitive (shadcn/ui or MUI) or a semantic HTML element |
+| **Forbidden** | `<div>`, `<span>` | No semantic meaning — always replace with a shadcn/ui primitive or a semantic HTML element |
 | **Allowed** | Structural: `<main>`, `<section>`, `<article>`, `<aside>`, `<header>`, `<footer>`, `<nav>` | Permitted when no UI library primitive satisfies the semantic need |
 | **Allowed** | Lists: `<ul>`, `<ol>`, `<li>` | Permitted when no UI library primitive satisfies the semantic need |
 | **Allowed** | Typography: `<h1>`–`<h6>`, `<p>`, `<em>`, `<strong>`, `<small>`, `<mark>`, `<time>`, `<abbr>`, `<code>`, `<kbd>` | Permitted when no UI library primitive satisfies the semantic need |
@@ -217,7 +216,7 @@ The `check-no-div-span.sh` hook enforces the **Forbidden** tier automatically. A
 - **Forms (Yup)**: Yup schema, yupResolver, Controller integration (`forms/02-rhf-yup.md`)
 - **Testing**: all required test cases, 100% coverage, ThemeProvider in render (`testing/01-vitest-rtl.md`)
 - **Accessibility**: aria-labels, keyboard navigation, semantic elements (`core/08-accessibility.md`)
-- **Responsive**: mobile-first breakpoint handling required for all projects — shadcn/Tailwind: use breakpoint prefixes (`sm:`, `md:`, `lg:`, `xl:`) in `.styles.ts` and `dark:` classes for dark mode (`styling/shadcn/01-tailwind-shadcn-styling.md`); MUI: use theme breakpoints via `styled()` and theme palette for dark mode (`styling/mui/01-mui-styling.md`)
+- **Responsive**: mobile-first breakpoint handling required for all projects — use breakpoint prefixes (`sm:`, `md:`, `lg:`, `xl:`) in `.styles.ts` and `dark:` classes for dark mode (`styling/shadcn/01-tailwind-shadcn-styling.md`)
 - **Naming intent**: business-purpose names, not generic labels (`core/02-project-structure.md`)
 - **Final validation checklist**: lint, format, test, build all pass (`core/09-anti-patterns-checklist.md`)
 - **Dependency security**: run `/dependency-security` to audit, fix, and document vulnerabilities before committing

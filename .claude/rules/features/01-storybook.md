@@ -48,16 +48,14 @@ export default config;
 ## `.storybook/preview.ts` Contract
 
 MUST:
-- Import global styles so resets and CSS variables are applied — for shadcn/Tailwind: `import "../src/styles/globals.css"`; for MUI: configure `CssBaseline` via the `ThemeProvider` decorator instead
+- Import global styles so resets and CSS variables are applied — `import "../src/styles/globals.css"`
 - Wrap all stories with `MemoryRouter` via a decorator so any story containing `Link` or `useNavigate` does not crash
 - Apply the `ThemeProvider` decorator if one is used in `App.tsx`
-
-The example below is for shadcn/Tailwind. MUI projects should replace the CSS import with a `ThemeProvider` decorator wrapping `<CssBaseline />`.
 
 ```ts
 import type { Preview } from "@storybook/react";
 import { MemoryRouter } from "react-router";
-import "../src/styles/globals.css"; // shadcn/Tailwind only — replace with ThemeProvider for MUI
+import "../src/styles/globals.css";
 
 const preview: Preview = {
   decorators: [
@@ -84,7 +82,7 @@ When Storybook is enabled, components in `components/layout/`, `components/share
 
 - Export a `default` meta object with `title` and `component`
 - Export at least one named story (`Default`, plus one per meaningful variant)
-- Stories must not import raw style strings inline — always import from `ComponentName.styles.ts` *(shadcn/Tailwind: no raw Tailwind class strings; MUI: no inline `styled()` calls)*
+- Stories must not import raw style strings inline — always import from `ComponentName.styles.ts` (no raw Tailwind class strings)
 
 ```tsx
 import type { Meta, StoryObj } from "@storybook/react";

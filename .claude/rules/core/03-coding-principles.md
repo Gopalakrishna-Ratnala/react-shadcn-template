@@ -109,7 +109,7 @@ Use these when no UI library primitive satisfies the semantic need. They must be
 // WRONG — <div> with no semantic role
 <div className="card">...</div>
 
-// CORRECT — UI library primitive (e.g. shadcn/ui Card, MUI Paper)
+// CORRECT — shadcn/ui primitive
 <Card>...</Card>
 
 // WRONG — <div> used as a page section wrapper
@@ -117,7 +117,7 @@ Use these when no UI library primitive satisfies the semantic need. They must be
   <h1>Title</h1>
 </div>
 
-// CORRECT — semantic HTML when no UI library primitive fits
+// CORRECT — semantic HTML when no shadcn/ui primitive fits
 <section aria-labelledby="section-title">
   <h2 id="section-title">Title</h2>
 </section>
@@ -125,13 +125,13 @@ Use these when no UI library primitive satisfies the semantic need. They must be
 // WRONG — <span> wrapping inline text
 <span className="label">Status</span>
 
-// CORRECT — UI library primitive (e.g. shadcn/ui Badge, MUI Chip) or semantic element
+// CORRECT — shadcn/ui primitive or semantic element
 <Badge>Status</Badge>
 // or, when purely typographic
 <em>Status</em>
 
-// FINE — <p> for prose content when no UI library typography component is appropriate
+// FINE — <p> for prose content when no shadcn/ui typography component is appropriate
 <p>Supporting description text.</p>
-// prefer your UI library's card description component when inside a card context
-// e.g. shadcn/ui: <CardDescription>, MUI: <Typography variant="body2">
+// prefer shadcn/ui's card description component when inside a card context
+// e.g. <CardDescription>
 ```

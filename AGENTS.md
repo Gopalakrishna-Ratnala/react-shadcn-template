@@ -34,7 +34,7 @@ If anything is unclear:
 
 | Decision | Options |
 | --- | --- |
-| Styling library | MUI (Material UI) or shadcn/ui + Tailwind CSS v4 (`@tailwindcss/vite` — not PostCSS) |
+| Styling library | shadcn/ui + Tailwind CSS v4 (`@tailwindcss/vite` — not PostCSS) — fixed for this template, not a choice |
 | Icon source | `public/assets/icons/` (SVG sprites) or `lucide-react` library |
 | State management | Zustand or Redux Toolkit |
 | Forms & validation | React Hook Form + Yup or React Hook Form + Zod |

@@ -18,9 +18,6 @@ project-root/
 │   ├── main.tsx                         # App entry point
 │   ├── App.tsx                          # Root component with providers
 │   │
-│   ├── theme/                           # Theme configuration (MUI only — shadcn/Tailwind uses globals.css instead)
-│   │   └── theme.ts                     # MUI theme object: palette, typography, spacing tokens
-│   │
 │   ├── components/                      # Component tiers (see Component Tiers section)
 │   │   ├── ui/                          # Vendored UI library primitives (shadcn/ui) — NEVER modified
 │   │   │   ├── button.tsx               # Installed by shadcn CLI only

@@ -29,12 +29,6 @@
           },
           {
             "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/check-no-sx-prop.sh",
-            "timeout": 5000,
-            "statusMessage": "Checking for production sx prop..."
-          },
-          {
-            "type": "command",
             "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/check-no-inline-style.sh",
             "timeout": 5000,
             "statusMessage": "Checking for inline style..."
