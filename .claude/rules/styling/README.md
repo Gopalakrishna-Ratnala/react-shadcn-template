@@ -34,6 +34,6 @@
 ### shadcn/ui + Tailwind — `shadcn/`
 - Tailwind utility classes extracted into co-located `ComponentName.styles.ts` files
 - `cva()` for variants, `cn()` for composition
-- CSS variables for theming in `src/styles/globals.css`
+- CSS variables for theming in the project's theme file (`src/styles/themes/theme.css` here)
 - Forbidden: inline `style`, raw hex/rgb/rgba, `@apply`, component-scoped CSS
 - Optional: `02-theming.md` — adds `next-themes` ThemeProvider + ThemeToggle component
