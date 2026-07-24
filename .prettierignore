@@ -1,0 +1,6 @@
+dist
+node_modules
+coverage
+src/components/ui
+pnpm-lock.yaml
+package-lock.json

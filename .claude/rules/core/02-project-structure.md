@@ -219,7 +219,7 @@ Names must reflect:
 - ❌ `components/shared/card/Card.tsx` for a job posting card
 - ✅ `components/shared/jobCard/JobCard.tsx`
 
-Derive the name from the Figma design's frame name, content, or feature purpose. Never default to "home", "main", "page1", or other generic placeholders.
+Derive the name from the feature's business purpose as described in the prompt or discussion with the designer/PO. Never default to "home", "main", "page1", or other generic placeholders.
 
 ---
 
