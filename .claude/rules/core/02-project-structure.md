@@ -41,6 +41,16 @@ project-root/
 │   │   │   │   ├── ProductCard.test.tsx
 │   │   │   │   └── index.ts
 │   │   │
+│   │   ├── blocks/                      # Generic composite UI patterns — assembled from ui/ primitives,
+│   │   │   │                            # carry no domain/business data (see Component Tiers section)
+│   │   │   ├── statCard/                # Component folder (camelCase)
+│   │   │   │   ├── StatCard.tsx         # Component (PascalCase)
+│   │   │   │   ├── StatCard.styles.ts
+│   │   │   │   ├── types.ts
+│   │   │   │   ├── StatCard.stories.tsx     # only when Storybook is enabled
+│   │   │   │   ├── StatCard.test.tsx
+│   │   │   │   └── index.ts
+│   │   │
 │   │   └── animated/                    # [OPTIONAL] Reusable animation wrappers — only if animation feature is enabled
 │   │       ├── fadeIn/                  # One folder per wrapper (camelCase)
 │   │       │   ├── FadeIn.tsx
@@ -58,6 +68,14 @@ project-root/
 │   │   │   ├── types.ts                 # Page-specific types
 │   │   │   ├── HomePage.schema.ts       # Form validation schema (required only when page has a form)
 │   │   │   ├── HomePage.test.tsx        # Page tests (NO stories required)
+│   │   │   ├── components/              # [ONLY when needed] Feature-scoped components used
+│   │   │   │   │                        # ONLY by this page — see Component Tiers section
+│   │   │   │   └── homeHeroBanner/
+│   │   │   │       ├── HomeHeroBanner.tsx
+│   │   │   │       ├── HomeHeroBanner.styles.ts
+│   │   │   │       ├── types.ts
+│   │   │   │       ├── HomeHeroBanner.test.tsx
+│   │   │   │       └── index.ts
 │   │   │   └── index.ts                 # Barrel export
 │   │
 │   ├── hooks/                           # Custom React hooks
@@ -119,27 +137,68 @@ project-root/
 
 ## Component Tiers
 
-`src/components/` is split into tiers. Place every component in the correct tier before writing any code.
+`src/components/` is split into tiers, plus one feature-scoped location inside `pages/`.
+Place every component in the correct tier before writing any code.
 
-| Tier | Folder | What belongs here | Examples |
-| --- | --- | --- | --- |
-| **Primitives** | `components/ui/` | Vendored UI library primitives (shadcn/ui: installed by CLI) — never manually edited | `Button`, `Card`, `Input`, `Dialog` |
-| **Layout** | `components/layout/` | Structural wrappers that frame every or most pages — contain no business data | `Navbar`, `Footer`, `Sidebar`, `PageWrapper` |
-| **Shared** | `components/shared/` | All custom components for this app — used by one page or many, they all live here | `ProductCard`, `CategoryFilter`, `OrderSummary` |
-| **Animated** *(optional)* | `components/animated/` | Reusable animation wrapper components — only create this tier if the animation feature is enabled (see `features/04-animated-components.md`) | `FadeIn`, `SlideUp`, `ScaleIn` |
+| Tier | Folder | What belongs here | Carries domain data? | Examples |
+| --- | --- | --- | --- | --- |
+| **Primitives** | `components/ui/` | Vendored UI library primitives (shadcn/ui: installed by CLI) — never manually edited | No | `Button`, `Card`, `Input`, `Dialog` |
+| **Layout** | `components/layout/` | Structural wrappers that frame every or most pages — contain no business data | No | `Navbar`, `Footer`, `Sidebar`, `PageWrapper` |
+| **Blocks** | `components/blocks/` | Generic composite UI patterns assembled from `ui/` primitives — reusable across *any* project, regardless of domain | **No** — props are generic (`title`, `value`, `icon`), never app-specific entities | `StatCard`, `FilterBar`, `PageHeader`, `StatusBadge` |
+| **Shared** | `components/shared/` | Reusable components specific to *this app's* domain — used by two or more pages/features | **Yes** — props are or reference actual domain entities | `ProductCard`, `CategoryFilter`, `OrderSummary`, `JobCard` |
+| **Feature-scoped** | `pages/{page}/components/` | Components used by exactly **one** page/feature — not reusable (yet) | Either | `HomeHeroBanner` (only `pages/home/` ever needs it) |
+| **Animated** *(optional)* | `components/animated/` | Reusable animation wrapper components — only create this tier if the animation feature is enabled (see `features/04-animated-components.md`) | No | `FadeIn`, `SlideUp`, `ScaleIn` |
 
-**Decision rule:**
-- Is it a vendored UI library primitive (shadcn/ui)? → `ui/`
-- Does it frame the page structure with no business data? → `layout/`
-- Is it a reusable animation wrapper with no business logic? → `animated/` *(only if feature enabled — ask user first)*
-- Is it any other custom component? → `shared/` — regardless of how many pages use it
+**Decision rule — walk this in order, stop at the first match:**
+1. Is it a vendored UI library primitive (shadcn/ui)? → `ui/`
+2. Does it frame the page structure with no business data? → `layout/`
+3. Is it a reusable animation wrapper with no business logic? → `animated/` *(only if feature enabled — ask user first)*
+4. Is it used by **exactly one** page/feature right now, with no known plan to reuse it elsewhere? → `pages/{page}/components/` (feature-scoped)
+5. Does it carry no domain-specific data — generic props only (a title, a value, an icon), not references to this app's actual entities? → `blocks/`
+6. Otherwise (reusable across pages/features AND tied to this app's domain) → `shared/`
 
-**Pages NEVER own components.** A page composes components from `shared/`, `layout/`, and `animated/`. It never defines a component inline or in a co-located subfolder.
+**The `blocks/` vs `shared/` distinction, precisely:** both are reusable across the app,
+but `blocks/` components would work unmodified if copy-pasted into a *completely
+different project* (their props are generic — `title: string`, `value: number`). If a
+component's props reference this app's actual domain types (`Product`, `Order`, `Job`,
+etc.), it belongs in `shared/` even if it's visually similar to something in `blocks/`.
+
+## Promotion Rule — the mechanism that prevents duplication
+
+A feature-scoped component (`pages/{page}/components/`) starts out non-reusable by
+definition. The moment a **second** page or feature needs the same thing, it MUST be
+**promoted**, never duplicated:
+
+1. **Never copy-paste** a feature-scoped component into a second page's `components/`
+   folder, even to "just tweak it slightly." Two near-identical components in two
+   different `pages/*/components/` folders is exactly the duplication this rule exists
+   to prevent — `check-component-duplicate.sh` will flag this, but don't rely on the
+   hook alone; check first.
+2. Before writing a new component, always check whether an existing one already covers
+   the need — search `shared/`, `blocks/`, and any other page's `components/` folder for
+   something close. If something close exists but needs a small variation, extend it
+   (e.g. a new prop or variant) rather than forking it.
+3. To promote: move the component's folder from `pages/{page}/components/{name}/` to
+   `components/shared/{name}/` (or `components/blocks/{name}/` if it turns out to carry
+   no domain data after all) as its own atomic step. Update the barrel exports in both
+   locations. Update every import site. Do not leave a duplicate or a re-export shim
+   behind in the old location.
+4. If a component is used by exactly one page today but the prompt/discussion makes
+   clear it's intended for reuse soon (e.g. "we'll need this same card on the dashboard
+   too"), place it directly in `shared/` or `blocks/` from the start — don't force an
+   unnecessary feature-scoped detour when reuse is already known.
+
+**Pages never own components directly inline or long-term** — a page's own
+`components/` folder is only ever a holding area for things not yet proven reusable,
+governed by the promotion rule above. It is never a place to permanently stash something
+just to avoid the promotion decision.
 
 ## Component Contract
 
 `ui/` components are vendored — no stories or tests required.
-`layout/`, `shared/`, and `animated/` components follow a file contract that depends on whether Storybook is enabled (see `features/01-storybook.md`).
+`layout/`, `shared/`, `blocks/`, `animated/`, and feature-scoped (`pages/{page}/components/`)
+components all follow the same file contract, which depends on whether Storybook is
+enabled (see `features/01-storybook.md`).
 
 ### With Storybook enabled — 6-file contract
 
@@ -177,6 +236,13 @@ page-name/
 ├── types.ts
 ├── PageName.schema.ts        ← required only when the page has a form
 ├── PageName.test.tsx
+├── components/               ← [OPTIONAL] feature-scoped components used ONLY by
+│   └── someThing/            #   this page (see Component Tiers → Promotion Rule);
+│       ├── SomeThing.tsx     #   each follows the same file contract as any other tier
+│       ├── SomeThing.styles.ts
+│       ├── types.ts
+│       ├── SomeThing.test.tsx
+│       └── index.ts
 └── index.ts
 ```
 
