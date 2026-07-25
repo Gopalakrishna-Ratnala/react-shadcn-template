@@ -206,16 +206,16 @@ to start with):
 - Every remaining "pick one, delete the rest" placeholder (state management: Zustand vs
   Redux Toolkit — neither installed yet) needs an actual decision made, not left open.
 
-**B. Three hooks have a real, unfixed bug:** `check-barrel-exports.sh`,
-`check-component-duplicate.sh`, `check-no-inline-classnames.sh` all print a warning to
-stderr then unconditionally `exit 0`. Claude Code silently discards `PostToolUse` hook
-output on exit 0 — so these warnings currently **never reach a live session**. This is
-high-priority: `check-component-duplicate.sh` exists specifically to catch duplicate
-components (directly relevant to the "no duplicate code" standard), but it's currently
-a no-op. Fix: keep `exit 0`, but emit
+**B. ~~Three hooks have a real, unfixed bug~~ — FIXED.** `check-barrel-exports.sh`,
+`check-component-duplicate.sh`, `check-no-inline-classnames.sh` previously printed a
+warning to stderr then unconditionally `exit 0`. Claude Code silently discards
+`PostToolUse` hook output on exit 0 — so these warnings never reached a live session.
+Fixed: kept `exit 0`, but now emit
 `{"hookSpecificOutput": {"hookEventName": "PostToolUse", "additionalContext": "..."}}`
 as JSON on stdout instead of plain stderr text (confirmed against Claude Code's actual
-docs).
+docs). Validated by direct invocation with synthetic `tool_input` JSON for every branch
+of every hook — all produce valid, well-formed JSON with correct escaping, and clean/
+no-violation cases still produce zero output with exit 0 as before.
 
 **C. Component tier system needs to be made explicit and unambiguous**, since the plan
 is: shadcn primitives now, project-specific and global/shared components later. Needs a
@@ -250,7 +250,38 @@ settled first.
 
 ---
 
-## 6. Working agreements / process notes
+## 6. Updates since this file was first written
+
+- **Baseline (commits 1-2) validated** against React/TS ecosystem standards. Config
+  (tsconfig, eslint.config.js, vite.config.ts) confirmed solid and current — closely
+  matches Vite's and shadcn's own official scaffolds. Three real gaps found and fixed:
+  1. `vite.config.ts` referenced `src/test/setup.ts`, which didn't exist in the true
+     baseline — turned out already fixed by the research-branch work (properly mocks
+     `matchMedia`/`ResizeObserver` for `next-themes`/Base UI/recharts). No action needed.
+  2. No Prettier/`.editorconfig` anywhere — fixed: added `.prettierrc` +
+     `.prettierignore` (excludes vendored `src/components/ui/`) + `prettier-plugin-tailwindcss`
+     pointed at `src/index.css` as the Tailwind v4 stylesheet entry, plus `format`/
+     `format:check` npm scripts. Verified end-to-end: `npm install`, `format:check` →
+     `format --write` → clean, `lint` (15 pre-existing errors remain, all in vendored
+     `ui/`, unrelated to this change), `tsc -b` clean, full vitest suite (16 files / 36
+     tests) passing.
+  3. `core/02-project-structure.md`'s naming rule told Claude to derive names from "the
+     Figma design's frame name" — contradicts the actual Figma-less workflow. Fixed to
+     reference business purpose from the prompt/discussion instead.
+  - Pushed as 3 commits: `b8465ab` (Prettier + Figma fix), `f5323ca` (formatting applied
+    to existing files), on top of `232ab81` (this context file's initial commit).
+- **Section 5 item B (hook bug) — FIXED.** See Section 5 above for detail. Pushed as
+  commit `8296d52`.
+- **Still pending, not yet done:** the git housekeeping plan (branch off
+  `reference/research-exploration`, reset `main` to `117d42e`) — still just a proposal,
+  not executed. Getting more expensive to do cleanly the longer it's deferred, since
+  each new validated fix (Prettier, hook fixes) lands on top of the research-laden
+  `main` rather than a clean trunk; would need cherry-picking onto a fresh branch rather
+  than a simple reset if done now.
+- **Next up (per discussion):** component tier system (item C) — proposed as the next
+  step after hook fixes, since it's foundational to items D and E.
+
+## 7. Working agreements / process notes
 
 - User wants to **hold all pushes until explicitly requested** — make local commits
   freely, but don't push to any remote without being asked first, so they can review
