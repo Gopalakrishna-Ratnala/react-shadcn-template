@@ -3,17 +3,23 @@ function App() {
     <main className="ph-root">
       <article className="ph-card">
         <header className="ph-header">
-          <figure className="ph-logo" aria-hidden="true">⬡</figure>
+          <figure className="ph-logo" aria-hidden="true">
+            ⬡
+          </figure>
           <strong className="ph-title">AI Ready React Template</strong>
           <em className="ph-tagline">Your project starts here</em>
         </header>
 
         <section className="ph-section" aria-label="Files to replace or delete">
-          <strong className="ph-section-heading">🔧 Replace or delete before starting</strong>
+          <strong className="ph-section-heading">
+            🔧 Replace or delete before starting
+          </strong>
           <ul className="ph-delete-list">
             <li className="ph-replace-item">
               <code>src/App.tsx</code>
-              <em>— replace this content with your root component and providers</em>
+              <em>
+                — replace this content with your root component and providers
+              </em>
             </li>
             <li className="ph-delete-item">
               <code>src/index.css</code>
@@ -35,14 +41,17 @@ function App() {
         </section>
 
         <section className="ph-section" aria-label="Getting started steps">
-          <strong className="ph-section-heading">✅ Then follow these steps</strong>
+          <strong className="ph-section-heading">
+            ✅ Then follow these steps
+          </strong>
           <ul className="ph-step-list">
             <li className="ph-step">
               <strong className="ph-step-num">1</strong>
               <section className="ph-step-body">
                 <strong className="ph-step-title">Choose your libraries</strong>
                 <em className="ph-step-desc">
-                  Keep one file per strategy folder in <code>.claude/rules/</code>, delete the rest
+                  Keep one file per strategy folder in{" "}
+                  <code>.claude/rules/</code>, delete the rest
                 </em>
               </section>
             </li>
@@ -51,7 +60,8 @@ function App() {
               <section className="ph-step-body">
                 <strong className="ph-step-title">Install dependencies</strong>
                 <em className="ph-step-desc">
-                  UI library, state management, HTTP client, form library, testing
+                  UI library, state management, HTTP client, form library,
+                  testing
                 </em>
               </section>
             </li>
@@ -60,7 +70,8 @@ function App() {
               <section className="ph-step-body">
                 <strong className="ph-step-title">Replace this file</strong>
                 <em className="ph-step-desc">
-                  Build your root component and set up providers in <code>src/App.tsx</code>
+                  Build your root component and set up providers in{" "}
+                  <code>src/App.tsx</code>
                 </em>
               </section>
             </li>
@@ -72,7 +83,7 @@ function App() {
         </footer>
       </article>
     </main>
-  )
+  );
 }
 
-export default App
+export default App;
