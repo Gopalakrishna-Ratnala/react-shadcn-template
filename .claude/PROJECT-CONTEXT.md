@@ -186,11 +186,9 @@ Roughly in the order Claude suggested tackling them (user has not yet confirmed 
 to start with):
 
 **A. Rules still stale or undecided, need the same audit shadcn/MUI already got:**
-- `data-fetching/` — currently assumes **Axios** (never actually installed —
-  `package.json` has no axios) + a synchronous static-mock/mapper flow. Needs to be
-  rewritten around **json-server** actually running locally (real `fetch`/`axios` calls
-  hitting e.g. `http://localhost:3001/...`, a real `db.json`, real async loading states)
-  — not a synchronous mock function returning hardcoded arrays.
+- ~~`data-fetching/` — currently assumes Axios...~~ **DONE.** See Section 6 for full
+  detail — rewritten around json-server + a fetch-based `apiClient`, real HTTP calls,
+  real `db.json`, real async loading states.
 - `forms/` (RHF+Zod vs RHF+Yup — package.json only has zod, no yup — the "pick one"
   decision was never actually finalized in the docs)
 - `testing/`, `core/` — haven't had a "verify against current official docs" pass yet
@@ -332,6 +330,50 @@ settled first.
   most urgent of these, since it's actively wrong right now — assumes Axios, which was
   never installed), D (theme-versioning system), E (showcase page rebuild), F
   (`.github/copilot-instructions.md` full refresh, lowest priority).
+- **Item A (data-fetching/json-server rewrite) — DONE.**
+  - HTTP client decided and fixed (was an open "pick Axios or alternative" placeholder):
+    native `fetch`-based `src/services/apiClient.ts`, no HTTP library dependency.
+    Pinned `json-server` to the stable `^0.17.4` line, deliberately *not* the `1.0.0`
+    beta line (still marked "expect breaking changes" upstream as of this writing).
+  - Created what the bootstrap checklist always required but this repo never actually
+    had: `src/config/env.ts` (typed `requireEnv()` + `env` export, matching the
+    pre-existing pattern already documented in `core/13-environment.md`, which itself
+    still had a stale Axios code example — fixed too) and `.env.example`
+    (`VITE_API_BASE_URL`, `VITE_APP_ENV`). `.env.local` already covered by the
+    pre-existing `*.local` gitignore pattern — verified with `git check-ignore`, no
+    gitignore change needed.
+  - `db.json` (root) is the actual seed database; `npm run mock-api` starts json-server
+    on it. Conceptually reframed `03-data-layer.md`: `mocks.ts` is no longer the runtime
+    data source (that's now genuinely `db.json` served over real HTTP) — it's test-only
+    fixture data for unit tests that mock `fetch`.
+  - **Proved this actually works, not just typechecked**: started json-server for real
+    (`npx json-server --watch db.json --port 3001`) and exercised GET list, POST
+    create, GET-by-created-id, and a 404 error path — all correct — using fetch logic
+    identical to `apiClient`'s. Restored `db.json` to its clean seed state afterward
+    (json-server's `--watch` persists writes back to the file).
+  - Wrote a permanent `apiClient.test.ts` (4 tests, mocked `fetch`, not a live server
+    dependency) — surfaced and fixed a real gotcha: `apiClient` throws immediately at
+    import time if `VITE_API_BASE_URL` is unset, which would break in a fresh clone
+    with no `.env.local`. Fixed via Vitest's own `test.env` config in `vite.config.ts`
+    rather than requiring a checked-in `.env` file.
+  - Rewrote `01-axios.md` → `01-fetch-client.md`, plus `02-api-services.md`,
+    `03-data-layer.md`, and `data-fetching/README.md`. Fixed every remaining stale
+    Axios reference repo-wide: `core/01-tech-stack.md` (also fixed the Testing
+    placeholder — Vitest+RTL was already installed and configured, just never marked
+    decided), `core/13-environment.md`, `state-management/02-redux-toolkit.md`,
+    `CLAUDE.md`, `AGENTS.md` (two separate tables), and `.github/copilot-instructions.md`.
+  - Full validation re-run after every change: `format`/`format:check` clean, `lint`
+    (same 15 pre-existing vendored-file errors, nothing new), `tsc -b` clean, `test`
+    (4/4 passing), `build` succeeds. Confirmed `npm run build` currently succeeds even
+    without `.env.local` — not because validation is bypassed, but because nothing in
+    the still-placeholder `App.tsx` imports `apiClient`/`env` yet, so `requireEnv()`
+    never executes; this will correctly start failing fast once a real feature uses it.
+- **Next up (per discussion):** items B, C, and A are all done now. Remaining open:
+  `forms/` decision (RHF+Zod vs RHF+Yup — package.json only has zod), `testing/`/`core/`
+  doc audits, the state-management decision (Zustand vs Redux Toolkit — neither
+  installed), D (theme-versioning system), E (showcase page rebuild), F
+  (`.github/copilot-instructions.md`'s remaining stale rule-file numbering, lowest
+  priority).
 
 ## 7. Working agreements / process notes
 
