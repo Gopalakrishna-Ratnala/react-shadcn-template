@@ -44,10 +44,11 @@ BASE_DIR=$(dirname "$COMP_DIR")
 OTHER_FOLDERS=$(find "$BASE_DIR" -maxdepth 1 -mindepth 1 -type d ! -name "$FOLDER_NAME" -exec basename {} \; 2>/dev/null)
 
 if [[ -n "$OTHER_FOLDERS" ]]; then
-  echo "WARNING: Creating new component '$FOLDER_NAME' in components/$TIER/." >&2
-  echo "Before adding it, confirm none of these existing components already satisfy the need:" >&2
-  echo "$OTHER_FOLDERS" | sed 's/^/  - /' >&2
-  echo "Source: 04-execution-flow.md — 'NEVER create a new reusable component if one that satisfies the need already exists'" >&2
+  OTHER_LIST=$(echo "$OTHER_FOLDERS" | sed 's/^/  - /')
+  MSG="Creating new component '$FOLDER_NAME' in components/$TIER/. Before adding it, confirm none of these existing components already satisfy the need:
+$OTHER_LIST
+Source: 04-execution-flow.md — 'NEVER create a new reusable component if one that satisfies the need already exists'"
+  jq -n --arg msg "$MSG" '{hookSpecificOutput: {hookEventName: "PostToolUse", additionalContext: $msg}}'
 fi
 
 exit 0

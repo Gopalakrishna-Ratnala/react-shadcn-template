@@ -36,16 +36,13 @@ fi
 VIOLATIONS=$(echo "$CONTENT" | grep -nE 'className="[^"]*[[:space:]][^"]*"' | grep -vE '^\s*//' | grep -vE '^\s*\*' || true)
 
 if [[ -n "$VIOLATIONS" ]]; then
-  echo "WARNING: Inline multi-token className found in $FILE_PATH." >&2
-  echo "Violations:" >&2
-  echo "$VIOLATIONS" >&2
-  echo "" >&2
-  echo "Rule: Every className with more than one utility class MUST be extracted to" >&2
-  echo "the co-located ComponentName.styles.ts file as a named const." >&2
-  echo "Only a single-token utility (e.g. className=\"sr-only\") or a cn() call" >&2
-  echo "whose base classes come from styles.ts is allowed inline." >&2
-  echo "Source: tailwind-shadcn-styling.md" >&2
-  # Warning only — exit 0 so the write is not blocked
+  MSG="Inline multi-token className found in $FILE_PATH.
+Violations:
+$VIOLATIONS
+
+Every className with more than one utility class MUST be extracted to the co-located ComponentName.styles.ts file as a named const. Only a single-token utility (e.g. className=\"sr-only\") or a cn() call whose base classes come from styles.ts is allowed inline. Source: tailwind-shadcn-styling.md"
+  jq -n --arg msg "$MSG" '{hookSpecificOutput: {hookEventName: "PostToolUse", additionalContext: $msg}}'
+  # Warning only, exit 0 so the write is not blocked
 fi
 
 exit 0
