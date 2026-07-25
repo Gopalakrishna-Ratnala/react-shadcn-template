@@ -209,17 +209,47 @@ docs). Validated by direct invocation with synthetic `tool_input` JSON for every
 of every hook — all produce valid, well-formed JSON with correct escaping, and clean/
 no-violation cases still produce zero output with exit 0 as before.
 
-**C. Component tier system needs to be made explicit and unambiguous**, since the plan
-is: shadcn primitives now, project-specific and global/shared components later. Needs a
-clear rule (strengthening `core/02-project-structure.md`) covering:
-- `ui/` — vendored shadcn only, never modified
-- `shared/` — truly global, reusable anywhere
-- `blocks/` — composite, reusable but opinionated (the research branch's `FilterBar`,
-  `PageHeader`, `StatCard`, `StatusBadge` are a reasonable *shape* reference, not to be
-  reused verbatim per the Section 3 framing)
-- feature-specific components — not reusable, live with their feature
-- an explicit rule for **when/how something gets promoted** from feature-specific to
-  shared/blocks, so duplication doesn't creep in as features accumulate
+**C. ~~Component tier system needs to be made explicit and unambiguous~~ — DONE.**
+`core/02-project-structure.md` rewritten with:
+- `blocks/` formalized as a real tier (it already existed as a scaffolded folder with
+  zero documentation — a real gap). Distinguished precisely from `shared/`: `blocks/`
+  components carry no domain-specific data (generic props only — would work unmodified
+  in a different project); `shared/` components reference this app's actual domain
+  entities.
+- A new **feature-scoped tier** (`pages/{page}/components/`) for components used by
+  exactly one page — this didn't exist before; the old rule said "pages NEVER own
+  components," which forced every single custom component into `shared/` regardless of
+  whether it was ever going to be reused, which is itself a duplication-risk pattern
+  (no natural place for "not proven reusable yet" led to either premature promotion or
+  people ignoring the rule).
+- An explicit **Promotion Rule**: a feature-scoped component MUST be moved (not
+  copy-pasted) to `shared/` or `blocks/` the moment a second page/feature needs it — no
+  duplicate, no re-export shim left behind.
+- Full six-way decision tree (ui → layout → animated → feature-scoped → blocks →
+  shared), walked in order, stop at first match.
+
+**Two more real, previously-hidden hook bugs surfaced and fixed while validating this:**
+- `check-component-duplicate.sh` only ever checked `layout/` and `shared/` — `blocks/`
+  (despite being a real folder) and the new feature-scoped `pages/*/components/` tier
+  were completely unchecked. Rewritten to cover all four locations generically (derives
+  the tier name and base dir from the path itself rather than hardcoding two branches).
+- `check-barrel-exports.sh` was **actively misfiring** on vendored `ui/` files — it would
+  tell Claude to create a barrel export for shadcn CLI primitives, directly contradicting
+  "ui/ is never manually edited" and the fact that shadcn's CLI never creates a barrel
+  file there (each primitive is imported by direct path). Fixed with an explicit skip.
+
+Both hooks re-tested directly (same method as item B — synthetic `tool_input` JSON
+covering every branch) after the rewrite: `blocks/` duplicate-detection, feature-scoped
+`pages/*/components/` duplicate-detection (including correct page-name extraction),
+`ui/` no-longer-misfiring, and regression tests on the pre-existing `layout/`/`hooks/`
+branches all confirmed still correct.
+
+**Known follow-up, not yet done:** `check-barrel-exports.sh`'s tracked-directory
+matching still won't catch a missing barrel file inside `pages/{page}/components/{name}/`
+(it only matches `/src/components/` as a path substring, which doesn't appear in that
+nested path). Lower priority than the two fixes above since each component folder's own
+file-contract check already requires an `index.ts` regardless — this hook is a secondary
+backstop, not the only enforcement. Worth fixing if it becomes a real gap in practice.
 
 **D. Theme-versioning system** — planned in full above (Section 4), not yet built.
 
@@ -297,9 +327,11 @@ settled first.
     destructive, shared-repo operation (history rewrite of a branch already pushed) —
     holding for explicit confirmation before doing it, same as the push-hold agreement
     in Section 7.
-- **Next up (per discussion):** once `main` is confirmed/replaced, component tier
-  system (item C) — proposed as the step after this, since it's foundational to items D
-  and E.
+- **Next up (per discussion):** item C (component tier system) is now done — see Section
+  5 for full detail. Remaining open items: A (data-fetching/json-server rewrite is the
+  most urgent of these, since it's actively wrong right now — assumes Axios, which was
+  never installed), D (theme-versioning system), E (showcase page rebuild), F
+  (`.github/copilot-instructions.md` full refresh, lowest priority).
 
 ## 7. Working agreements / process notes
 
