@@ -86,28 +86,20 @@ proving things out (e.g. we used it to verify the hooks actually catch violation
 real generated code — they did, near-perfectly), but it is **not** to be treated as
 settled precedent or extended as-is going forward.
 
-**Planned (not yet executed) git housekeeping**, proposed by Claude, not yet confirmed
-by user:
-- Branch off current tip as `reference/research-exploration` (preserves everything,
-  permanently browsable, never deleted)
-- Reset `main` back to `117d42e` (the real clean baseline)
-- Real standardized development starts fresh from there
-- Anything from the research branch (e.g. `ComponentsGalleryPage`'s general *shape/idea*,
-  the theme-file format work, the rules-refresh fixes) can be used as **reference for
-  what worked**, but must be rebuilt clean against the finalized architecture — not
-  imported wholesale.
-
-**Action needed:** confirm with user whether to actually execute this branch/reset now,
-or continue treating it as a conversational understanding only.
-
-**Note on current local branch clutter (this working directory only):** local branches
-`feature/components-listing-page-theming-v2` and `feature/shadcn-rules-react-refresh`
-still exist here even though they were deleted from the `Gopalakrishna-Ratnala` remote
-(consolidation into `main` was the point — the local branches are just leftover, not
-meaningful). `origin`'s own remote-tracking branches (`template-test/dashboard`,
-`test/qad-theme-applied-1.0`, `feature/components-listing-page`) are untouched originals
-from `divamidesignlabs/shadcn-template` — never explored, not part of anything decided
-here.
+**Git housekeeping — executed, pending final confirmation (see Section 6 for full
+detail):**
+- `reference/research-exploration` branch created at the old `main` tip — everything
+  preserved permanently, browsable, never deleted.
+- `standardize/clean-baseline` branch built fresh from `117d42e`, with only the
+  validated infra/standardization commits cherry-picked on top (rules refresh, MUI
+  removal, this context file, Prettier+Figma fix, hook fix, context update) — research
+  commits and the research-only formatting commit deliberately excluded.
+- Validating this in isolation surfaced two real, previously-hidden baseline bugs
+  (missing `src/hooks/use-mobile.ts` and `src/test/setup.ts` — both restored, see
+  Section 6). Full validation (install, format, typecheck, lint, test, **build**) all
+  pass on this branch now.
+- **Not yet done:** replacing `main` with this branch, or touching the remote. Holding
+  for explicit confirmation since this rewrites already-pushed history.
 
 ---
 
@@ -254,32 +246,60 @@ settled first.
 
 - **Baseline (commits 1-2) validated** against React/TS ecosystem standards. Config
   (tsconfig, eslint.config.js, vite.config.ts) confirmed solid and current — closely
-  matches Vite's and shadcn's own official scaffolds. Three real gaps found and fixed:
-  1. `vite.config.ts` referenced `src/test/setup.ts`, which didn't exist in the true
-     baseline — turned out already fixed by the research-branch work (properly mocks
-     `matchMedia`/`ResizeObserver` for `next-themes`/Base UI/recharts). No action needed.
+  matches Vite's and shadcn's own official scaffolds. Three gaps found, later resolved
+  (see below for a correction to how one of these was tracked):
+  1. `vite.config.ts` referenced `src/test/setup.ts` — **this really was missing from
+     the true baseline.** An earlier note here incorrectly said this was "already fixed
+     by the research-branch work" — that check was run against `main`, which already
+     had the research commits (which happened to add this file for their own reasons)
+     sitting on top, masking the gap. Validating the baseline in true isolation (see
+     git housekeeping below) proved it out: `tsc -b` fails immediately on a clean
+     checkout of commits 1-2 alone. Properly fixed now — see below.
   2. No Prettier/`.editorconfig` anywhere — fixed: added `.prettierrc` +
      `.prettierignore` (excludes vendored `src/components/ui/`) + `prettier-plugin-tailwindcss`
      pointed at `src/index.css` as the Tailwind v4 stylesheet entry, plus `format`/
-     `format:check` npm scripts. Verified end-to-end: `npm install`, `format:check` →
-     `format --write` → clean, `lint` (15 pre-existing errors remain, all in vendored
-     `ui/`, unrelated to this change), `tsc -b` clean, full vitest suite (16 files / 36
-     tests) passing.
+     `format:check` npm scripts.
   3. `core/02-project-structure.md`'s naming rule told Claude to derive names from "the
      Figma design's frame name" — contradicts the actual Figma-less workflow. Fixed to
      reference business purpose from the prompt/discussion instead.
-  - Pushed as 3 commits: `b8465ab` (Prettier + Figma fix), `f5323ca` (formatting applied
-    to existing files), on top of `232ab81` (this context file's initial commit).
-- **Section 5 item B (hook bug) — FIXED.** See Section 5 above for detail. Pushed as
-  commit `8296d52`.
-- **Still pending, not yet done:** the git housekeeping plan (branch off
-  `reference/research-exploration`, reset `main` to `117d42e`) — still just a proposal,
-  not executed. Getting more expensive to do cleanly the longer it's deferred, since
-  each new validated fix (Prettier, hook fixes) lands on top of the research-laden
-  `main` rather than a clean trunk; would need cherry-picking onto a fresh branch rather
-  than a simple reset if done now.
-- **Next up (per discussion):** component tier system (item C) — proposed as the next
-  step after hook fixes, since it's foundational to items D and E.
+- **Section 5 item B (hook bug) — FIXED.** See Section 5 above for detail.
+- **Git housekeeping (the "still pending" item from before) — executed:**
+  - `reference/research-exploration` branch created, pointing at the old `main` tip
+    (everything preserved permanently: `ComponentsGalleryPage`, the `blocks/`
+    components, the `pages/preview/*` demo app, all of it — browsable forever, never
+    used as precedent going forward).
+  - `standardize/clean-baseline` branch built fresh from `117d42e` (the true baseline),
+    with only the validated infra/standardization commits cherry-picked on top, in
+    order: shadcn rules refresh, MUI removal, this context file, Prettier+Figma fix,
+    hook fix, context update. **Deliberately excluded:** the two research commits
+    (`made components list page`, `combined dev check branchs`) and the
+    formatting-application commit (`style: apply Prettier formatting across src/`),
+    since that one only reformatted files that exist solely in the research branch —
+    nothing to apply on a pure baseline.
+  - **Validating this clean baseline in isolation is what surfaced two real bugs** that
+    had been silently masked by the research commits sitting on top of `main` the whole
+    time:
+    - `src/hooks/use-mobile.ts` was missing entirely, even though the vendored
+      `ui/sidebar.tsx` (shadcn CLI output, never modified) imports `useIsMobile` from it
+      as its documented companion-hook contract. Without it, `tsc -b` fails immediately
+      on a clean baseline checkout. Restored (confirmed as standard shadcn CLI output
+      via its own doc comment, not custom research code).
+    - `src/test/setup.ts` was genuinely missing from the baseline lineage (see
+      correction to point 1 above). Restored.
+  - Full validation performed on `standardize/clean-baseline` after both restorations:
+    `npm install`, `format:check` → `format --write` → clean, `tsc -b` clean, `lint` (15
+    pre-existing errors, all in vendored `ui/`, unrelated to any of this work),
+    `vitest run` (correctly reports "no test files found" rather than a setup error —
+    expected, since the baseline has no feature code yet), and a full production
+    **`npm run build` succeeds**.
+  - **Not yet done:** actually replacing `main` with this validated clean baseline, or
+    deleting the old research-laden commits from the remote's `main`. This is a
+    destructive, shared-repo operation (history rewrite of a branch already pushed) —
+    holding for explicit confirmation before doing it, same as the push-hold agreement
+    in Section 7.
+- **Next up (per discussion):** once `main` is confirmed/replaced, component tier
+  system (item C) — proposed as the step after this, since it's foundational to items D
+  and E.
 
 ## 7. Working agreements / process notes
 
