@@ -38,7 +38,7 @@ If anything is unclear:
 | Icon source | `public/assets/icons/` (SVG sprites) or `lucide-react` library |
 | State management | Zustand or Redux Toolkit |
 | Forms & validation | React Hook Form + Yup or React Hook Form + Zod |
-| Data fetching | Axios or other (TanStack Query, SWR, native fetch) |
+| Data fetching | Fetch-based `apiClient` + json-server (local mock backend) — fixed for this template, not a choice |
 | Testing framework | Vitest + React Testing Library or Jest + React Testing Library |
 
 After collecting answers:
@@ -58,7 +58,7 @@ After collecting answers:
 | Language | TypeScript strict mode |
 | UI Library | shadcn/ui + Tailwind CSS v4 (`@tailwindcss/vite` — NOT PostCSS) |
 | State | Zustand |
-| HTTP | Axios (mock) |
+| HTTP | Fetch-based `apiClient` + json-server (local mock) |
 | Forms | React Hook Form + Yup |
 | Router | React Router DOM v7 |
 | Testing | Vitest + React Testing Library |

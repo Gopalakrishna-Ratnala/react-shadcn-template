@@ -18,7 +18,7 @@ Do not use Redux Toolkit for:
 
 - local one-component-only state — use `useState` instead
 - uncontrolled form field state already owned by RHF
-- server-cache state — use a data-fetching layer (Axios service + hook) instead
+- server-cache state — use a data-fetching layer (`apiClient` service + hook) instead
 
 ## Store Structure Requirements
 

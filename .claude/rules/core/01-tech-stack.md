@@ -10,9 +10,9 @@ Fill in your chosen library for each slot, then delete the strategy files you ar
 - **Language**: TypeScript (strict mode)
 - **UI Library**: shadcn/ui + Tailwind CSS v4 (Base UI backend) — see `styling/`
 - **State Management**: [e.g. Zustand] — see `state-management/`
-- **HTTP Client**: [e.g. Axios] — see `data-fetching/`
+- **HTTP Client**: Fetch-based `apiClient` + json-server as the local mock backend — fixed for this template, see `data-fetching/`
 - **Forms**: [e.g. React Hook Form + Zod] — see `forms/`
-- **Testing**: [e.g. Vitest + React Testing Library] — see `testing/`
+- **Testing**: Vitest + React Testing Library — installed and configured (see `testing/`)
 - **Storybook**: v8.x with a11y addon *(optional — see `features/01-storybook.md`)*
 - **Icons**: [e.g. `public/assets/icons/` (SVG sprites) or `lucide-react`] — see setup choices in `CLAUDE.md`
 

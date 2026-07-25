@@ -32,7 +32,7 @@ All guidelines are organized into `rules` (contextual guidance) and `hooks` (aut
 | --- | --- | --- |
 | `06-styling.md` | Styling rules, forbidden patterns, theme tokens, responsive rules | `src/**/styles.ts`, `src/**/*.tsx` |
 | `07-typescript.md` | TypeScript strict mode, enforcement rules | `src/**/*.ts`, `src/**/*.tsx` |
-| `08-axios-services.md` | Axios architecture, service patterns, error handling | `src/services/**/*.ts`, `src/hooks/**/*.ts` |
+| `data-fetching/01-fetch-client.md` | Fetch-based apiClient + json-server, service patterns, error handling | `src/services/**/*.ts`, `src/hooks/**/*.ts` |
 | `09-zustand-state.md` | Zustand usage, store structure, async actions | `src/store/**/*.ts`, `src/hooks/**/*.ts` |
 | `10-react-hooks.md` | Component responsibilities, hooks requirements | `src/**/*.tsx`, `src/hooks/**/*.ts` |
 | `11-forms.md` | React Hook Form + Zod rules | `src/**/*.tsx`, `src/hooks/**/*.ts` |
@@ -61,7 +61,7 @@ All hooks skip test files, story files, and theme files as configured in `.claud
 - Separation of concerns - Components vs Pages vs Store vs Services vs Hooks (`05-architecture.md`)
 - Reuse existing building blocks before creating new ones (`04-execution-flow.md`)
 - Zustand: no direct state mutation, domain-focused stores (`09-zustand-state.md`)
-- Axios: no raw Axios in UI components, typed responses, mapper usage (`08-axios-services.md`)
+- apiClient: no raw fetch in UI components, typed responses, mapper usage (`data-fetching/01-fetch-client.md`)
 - Forms: Zod validation, RHF resolver, Controller integration (`11-forms.md`)
 - Testing: all required test cases, ThemeProvider in render, expected coverage requirements (`13-testing.md`)
 - Accessibility: aria-labels, keyboard navigation, semantic elements (`14-accessibility.md`)

@@ -1,5 +1,5 @@
 ---
-description: Data layer architecture — mock → service → mapper → hook → UI flow, DTOs, domain models, ApiResponse<T> end-to-end. Active when using the API service + data layer pattern.
+description: Data layer architecture — db.json → service → mapper → hook → UI flow, DTOs, domain models, ApiResponse<T> end-to-end. Active when using the API service + data layer pattern.
 paths: ["src/services/**/*.ts", "src/hooks/**/*.ts", "src/types/**/*.ts"]
 ---
 
@@ -7,21 +7,31 @@ paths: ["src/services/**/*.ts", "src/hooks/**/*.ts", "src/types/**/*.ts"]
 
 ## Purpose
 
-Decouples the UI from the API response shape. Mock APIs can be replaced with real APIs without touching any UI code — only the service and mapper need updating.
+Decouples the UI from the API response shape. json-server (a real local HTTP server,
+not synchronous mock functions — see `01-fetch-client.md`) can be swapped for a real
+production backend without touching any UI code — only the service and mapper need
+updating, since both already speak in `ApiResponse<T>` and a stable domain model.
 
 ## Layer Flow
 
 ```
-Mocks  →  Service Layer  →  Mapper Layer  →  Hook  →  UI
+db.json (via json-server)  →  Service Layer  →  Mapper Layer  →  Hook  →  UI
 ```
 
 | Layer | Location | Responsibility |
 |---|---|---|
-| **Mocks** | `src/services/<domain>/mocks.ts` | Typed static objects simulating API responses |
-| **Service** | `src/services/<domain>/` | Returns mock (or real) data as `ApiResponse<T>` |
+| **Seed/fixture data** | `db.json` (root) — served live by json-server; `src/services/<domain>/mocks.ts` — typed fixtures for unit tests | `db.json` is the actual runtime data source in dev; `mocks.ts` is test-only, never imported at runtime |
+| **Service** | `src/services/<domain>/` | Calls `apiClient` (real async HTTP against json-server), returns `ApiResponse<T>` |
 | **Mapper** | `src/services/mappers/` | Transforms raw DTO into a stable domain model |
 | **Hook** | `src/hooks/` | Calls service → passes to mapper → returns domain model to UI |
 | **UI** | `src/components/`, `src/pages/` | Consumes domain model only — never raw DTO |
+
+**Important shift from a purely-mocked architecture:** `mocks.ts` is no longer where
+runtime data comes from — it's test-only fixture data for unit tests that mock
+`fetch` (see `apiClient.test.ts` for the pattern). The actual data the app sees while
+developing comes from a real network call to json-server, which is itself backed by
+`db.json`. This means loading states, network errors, and timeouts are all genuinely
+exercised during development, not just simulated.
 
 ## ApiResponse\<T\> Contract
 
@@ -44,25 +54,24 @@ Hooks unwrap `.data` before storing in state. Raw `ApiResponse<T>` never reaches
 ```text
 src/
 ├── services/
-│   ├── auth/
-│   │   ├── authService.ts      # Returns ApiResponse<AuthDto>
-│   │   ├── types.ts            # AuthDto (raw API shape / DTO)
-│   │   ├── mocks.ts            # Typed mock data
+│   ├── product/
+│   │   ├── productService.ts   # Calls apiClient, returns ApiResponse<ProductDto[]>
+│   │   ├── types.ts            # ProductDto (raw API shape / DTO, matches db.json)
+│   │   ├── mocks.ts            # Typed fixtures for unit tests only
 │   │   └── index.ts
 │   ├── mappers/
-│   │   └── authMapper.ts       # AuthDto → AuthUser
+│   │   └── productMapper.ts    # ProductDto -> Product
 │   └── index.ts
 ├── types/
 │   ├── common.types.ts         # ApiResponse<T>, AsyncState<T>
-│   ├── auth.types.ts           # AuthUser (domain model — UI-facing)
+│   ├── product.types.ts        # Product (domain model — UI-facing)
 │   └── index.ts
 ```
 
 ## Rules
 
-- Always store mock data as typed constants in `src/services/<domain>/mocks.ts` — never inline them in service files
-- Always type mock responses using the `ApiResponse<T>` wrapper
-- Always define raw API shapes in `services/<domain>/types.ts` (DTO types)
+- Always define `db.json`'s resource shape to match `services/<domain>/types.ts` (DTO types) — the DTO is a contract with the mock backend, not an arbitrary type
+- Always store test fixtures as typed constants in `src/services/<domain>/mocks.ts` — used only by that domain's tests, never imported by app code
 - Always define domain model types in `src/types/` — these are what the UI sees
 - Always write a mapper that converts the DTO → domain model in `src/services/mappers/`
 - Never let a raw DTO reach a UI component or hook return value
@@ -71,77 +80,77 @@ src/
 ## Full Pattern
 
 ```ts
-// src/types/auth.types.ts — stable domain model (UI-facing)
-export interface AuthUser {
-  id: string;
+// src/types/product.types.ts — stable domain model (UI-facing)
+export interface Product {
+  id: number;
   name: string;
-  token: string;
+  priceInCents: number;
 }
 ```
 
 ```ts
-// src/services/auth/types.ts — raw API shape (DTO)
-export interface AuthDto {
-  user_id: string;
-  display_name: string;
-  access_token: string;
+// src/services/product/types.ts — raw API shape (DTO), matches db.json's "products" key
+export interface ProductDto {
+  id: number;
+  product_name: string;
+  unit_price: number;
+}
+```
+
+```json
+// db.json (excerpt) — this is what json-server actually serves at GET /products
+{
+  "products": [
+    { "id": 1, "product_name": "Desk Lamp", "unit_price": 24.99 }
+  ]
 }
 ```
 
 ```ts
-// src/services/auth/mocks.ts
+// src/services/product/productService.ts
+import { apiClient } from "@/services/apiClient";
+import { API_ENDPOINTS } from "@/constants";
 import type { ApiResponse } from "@/types/common.types";
-import type { AuthDto } from "./types";
+import type { ProductDto } from "./types";
 
-export const mockAuthResponse: ApiResponse<AuthDto> = {
-  status: 200,
-  data: { user_id: "u_001", display_name: "Jane Doe", access_token: "mock-token-xyz" },
-  message: "Login successful",
+export const getProducts = async (): Promise<ApiResponse<ProductDto[]>> => {
+  const data = await apiClient.get<ProductDto[]>(API_ENDPOINTS.PRODUCTS);
+  return { status: 200, data, message: "OK" };
 };
 ```
 
 ```ts
-// src/services/auth/authService.ts
-import type { ApiResponse } from "@/types/common.types";
-import type { AuthDto } from "./types";
+// src/services/mappers/productMapper.ts
+import type { ProductDto } from "@/services/product/types";
+import type { Product } from "@/types/product.types";
 
-import { mockAuthResponse } from "./mocks";
-
-export const loginUser = async (): Promise<ApiResponse<AuthDto>> => {
-  return mockAuthResponse; // swap with real apiClient call when ready
-};
-```
-
-```ts
-// src/services/mappers/authMapper.ts
-import type { AuthDto } from "@/services/auth/types";
-import type { AuthUser } from "@/types/auth.types";
-
-export const mapAuthDtoToUser = (dto: AuthDto): AuthUser => ({
-  id: dto.user_id,
-  name: dto.display_name,
-  token: dto.access_token,
+export const mapProductDtoToProduct = (dto: ProductDto): Product => ({
+  id: dto.id,
+  name: dto.product_name,
+  priceInCents: Math.round(dto.unit_price * 100),
 });
 ```
 
 ```ts
-// src/hooks/useAuth.ts
-import { loginUser } from "@/services/auth/authService";
-import { mapAuthDtoToUser } from "@/services/mappers/authMapper";
-import type { AuthUser } from "@/types/auth.types";
+// src/hooks/useProducts.ts
+import { getProducts } from "@/services/product/productService";
+import { mapProductDtoToProduct } from "@/services/mappers/productMapper";
+import type { Product } from "@/types/product.types";
 
-export const useAuth = () => {
-  const login = async (): Promise<AuthUser> => {
-    const response = await loginUser();
-    return mapAuthDtoToUser(response.data); // unwrap envelope — UI always gets AuthUser, never AuthDto
+export const useProducts = () => {
+  const fetchProducts = async (): Promise<Product[]> => {
+    const response = await getProducts();
+    return response.data.map(mapProductDtoToProduct); // UI always gets Product[], never ProductDto[]
   };
 
-  return { login };
+  return { fetchProducts };
 };
 ```
 
-## Swapping Mock → Real API
+## Swapping json-server → a Real Backend
 
-1. Update `src/services/<domain>/<domainService>.ts` — replace mock return with a real `apiClient` call
-2. If the real API shape differs from the DTO, update `services/<domain>/types.ts` and `services/mappers/<domainMapper>.ts`
-3. UI components and hooks require **no changes**
+1. Update `.env.local`'s `VITE_API_BASE_URL` to point at the real backend
+2. Update `src/services/<domain>/<domainService>.ts` if the real API shape differs from
+   the DTO — update `services/<domain>/types.ts` and
+   `services/mappers/<domainMapper>.ts` accordingly
+3. UI components and hooks require **no changes** — they only ever saw the domain model

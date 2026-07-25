@@ -46,7 +46,7 @@ This repository is a **clean project template**. It ships with a minimal placeho
 | Icon source | `public/assets/icons/` (SVG sprites) or `lucide-react` library |
 | State management | Zustand or Redux Toolkit |
 | Forms & validation | React Hook Form + Yup or React Hook Form + Zod |
-| Data fetching | Axios or other (TanStack Query, SWR, native fetch) |
+| Data fetching | Fetch-based `apiClient` + json-server (local mock backend) — fixed for this template, not a choice |
 | Testing framework | Vitest + React Testing Library or Jest + React Testing Library |
 
 ### Step 2 — Optional features (ask yes/no for each)
@@ -133,11 +133,11 @@ Optional:
 | `state-management/01-zustand.md` | Zustand — store structure, async actions, no direct mutation | `src/store/**/*.ts`, `src/hooks/**/*.ts` |
 | `state-management/02-redux-toolkit.md` | Redux Toolkit — slices, async thunks, typed hooks, no direct mutation | `src/store/**/*.ts`, `src/hooks/**/*.ts` |
 
-### Data Fetching (`.claude/rules/data-fetching/`) — pick one + optional add-ons
+### Data Fetching (`.claude/rules/data-fetching/`) — fixed HTTP client + optional add-ons
 
 | File | Strategy | Loaded when editing |
 | --- | --- | --- |
-| `data-fetching/01-axios.md` | Axios — central API client, typed responses, error handling | `src/services/**/*.ts`, `src/hooks/**/*.ts` |
+| `data-fetching/01-fetch-client.md` | Fetch-based `apiClient` + json-server local mock backend — central client, typed responses, error handling | `src/services/**/*.ts`, `src/hooks/**/*.ts` |
 
 Optional (works alongside any HTTP client):
 
@@ -211,7 +211,7 @@ The `check-no-div-span.sh` hook enforces the **Forbidden** tier automatically. A
 - **Reuse existing building blocks** before creating new ones (`core/04-execution-flow.md`)
 - **Zustand**: no direct state mutation, domain-focused stores (`state-management/01-zustand.md`)
 - **Redux Toolkit**: no direct mutation, typed hooks only, async logic in thunks (`state-management/02-redux-toolkit.md`)
-- **Axios**: no raw Axios in UI components, typed responses, mapper usage (`data-fetching/01-axios.md`)
+- **apiClient**: no raw `fetch` in UI components, typed responses, mapper usage (`data-fetching/01-fetch-client.md`)
 - **Forms (Zod)**: Zod schema, RHF resolver, Controller integration (`forms/01-rhf-zod.md`)
 - **Forms (Yup)**: Yup schema, yupResolver, Controller integration (`forms/02-rhf-yup.md`)
 - **Testing**: all required test cases, 100% coverage, ThemeProvider in render (`testing/01-vitest-rtl.md`)
@@ -223,7 +223,7 @@ The `check-no-div-span.sh` hook enforces the **Forbidden** tier automatically. A
 - **className extraction** *(shadcn/Tailwind only)*: multi-token className strings must be in `.styles.ts` — single-token or `cn()` with imported base only inline (`styling/shadcn/01-tailwind-shadcn-styling.md`)
 - **No Tailwind palette classes** *(shadcn/Tailwind only)*: use shadcn/ui semantic tokens (`bg-primary`, `text-muted-foreground`, etc.) never `bg-blue-500` (`styling/shadcn/01-tailwind-shadcn-styling.md`)
 - **Barrel exports**: every new file in hooks/, components/, types/, constants/, services/, store/ must be re-exported from sibling `index.ts` (`core/03-coding-principles.md`)
-- **`ApiResponse<T>` envelope**: all mock services must wrap results in `ApiResponse<T>`; hooks unwrap `.data` before storing (`data-fetching/01-axios.md`, full pattern in `data-fetching/03-data-layer.md`)
+- **`ApiResponse<T>` envelope**: all services must wrap results in `ApiResponse<T>`; hooks unwrap `.data` before storing (`data-fetching/01-fetch-client.md`, full pattern in `data-fetching/03-data-layer.md`)
 - **Schema placement**: form validation schemas (Zod or Yup) live in `ComponentName.schema.ts`, never inside `.tsx` or hooks (`forms/01-rhf-zod.md`, `forms/02-rhf-yup.md`)
 - **Storybook** *(if enabled)*: `.storybook/main.ts` and `preview.ts` must follow the contract in `features/01-storybook.md`; components use the 6-file contract; if disabled, use 5-file contract and omit `.stories.tsx` everywhere
 - **Error handling**: `ErrorBoundary` at root + page level, `AsyncState<T>` for async state, `unknown` in catch blocks (`core/10-error-handling.md`)
