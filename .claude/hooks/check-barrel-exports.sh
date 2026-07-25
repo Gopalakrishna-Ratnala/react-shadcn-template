@@ -30,6 +30,12 @@ if [[ "$FILE_PATH" == *.test.* || "$FILE_PATH" == *.stories.* || "$FILE_PATH" ==
   exit 0
 fi
 
+# Skip vendored shadcn primitives entirely — ui/ is never manually edited and has
+# no barrel file by shadcn CLI convention (each primitive is imported by direct path)
+if [[ "$FILE_PATH" == */src/components/ui/* ]]; then
+  exit 0
+fi
+
 # Only check files directly inside the tracked directories
 DIR=$(dirname "$FILE_PATH")
 DIR_NAME=$(basename "$DIR")
