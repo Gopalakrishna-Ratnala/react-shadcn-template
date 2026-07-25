@@ -50,11 +50,8 @@ fi
 # Check that an index.ts exists alongside the file
 INDEX_FILE="$DIR/index.ts"
 if [[ ! -f "$INDEX_FILE" ]]; then
-  echo "WARNING: No index.ts found alongside $FILE_PATH." >&2
-  echo "Rule: Every directory in hooks/, components/, types/, constants/, services/, store/" >&2
-  echo "MUST have an index.ts that barrel-exports all modules." >&2
-  echo "Create $INDEX_FILE and add the appropriate export." >&2
-  echo "Source: 03-coding-principles.md" >&2
+  MSG="No index.ts found alongside $FILE_PATH. Every directory in hooks/, components/, types/, constants/, services/, store/ MUST have an index.ts that barrel-exports all modules. Create $INDEX_FILE and add the appropriate export. Source: 03-coding-principles.md"
+  jq -n --arg msg "$MSG" '{hookSpecificOutput: {hookEventName: "PostToolUse", additionalContext: $msg}}'
   exit 0
 fi
 
@@ -63,10 +60,8 @@ MODULE_NAME="${BASENAME%.*}"
 MODULE_NAME="${MODULE_NAME%.*}"  # strip second extension for .test.ts etc (already filtered above)
 
 if ! grep -qE "export.+['\"]\./${MODULE_NAME}['\"]|export.+from.*${MODULE_NAME}" "$INDEX_FILE"; then
-  echo "WARNING: $FILE_PATH is not exported from $INDEX_FILE." >&2
-  echo "Rule: Add a re-export for '$MODULE_NAME' to $INDEX_FILE." >&2
-  echo "Example: export { $MODULE_NAME } from './$MODULE_NAME';" >&2
-  echo "Source: 03-coding-principles.md" >&2
+  MSG="$FILE_PATH is not exported from $INDEX_FILE. Add a re-export for '$MODULE_NAME' to $INDEX_FILE, e.g.: export { $MODULE_NAME } from './$MODULE_NAME'; Source: 03-coding-principles.md"
+  jq -n --arg msg "$MSG" '{hookSpecificOutput: {hookEventName: "PostToolUse", additionalContext: $msg}}'
 fi
 
 exit 0
