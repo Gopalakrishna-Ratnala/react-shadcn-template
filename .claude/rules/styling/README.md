@@ -14,6 +14,14 @@ This project uses **shadcn/ui + Tailwind CSS** as its UI library, on the **Base 
 
 `shadcn/02-theming.md` requires `next-themes`. Delete it if the project has no theme toggle.
 
+## Theme candidate versioning — always active, not optional
+
+`shadcn/03-theme-versioning.md` governs how designer-supplied theme candidates get
+created, logged, compared, and promoted (`src/styles/themes/history/` +
+`THEME-LOG.json`). This applies to every project using this template — designers always
+arrive with their own values to apply, and the same round of client review repeats for
+later feature work too.
+
 ## Strategy Summary
 
 ### shadcn/ui + Tailwind — `shadcn/`
