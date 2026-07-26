@@ -606,12 +606,12 @@ lucide-react" placeholder in `CLAUDE.md`/`AGENTS.md`/`core/01-tech-stack.md` des
 template — every icon Claude adds from here forward has one unambiguous answer.
 
 **Still open, in priority order per the last few exchanges:** ~~Husky + lint-staged~~
-DONE — see Section 12. **CI pipeline explicitly deferred by user (2026-07-26) — not
+DONE — see Section 11. **CI pipeline explicitly deferred by user (2026-07-26) — not
 in scope right now, don't propose it again unless the user brings it back up.** Next:
-README/VERSIONS.md, then the vulnerability triage, then the reference-feature build
-(still waiting on the local-state-vs-global-state-library question from Section 8),
-then the tweakcn-derived typography/shadow bridging and theme-candidate-validation
-ideas above.
+~~README/VERSIONS.md~~ DONE — see Section 12. Then the vulnerability triage, then the
+reference-feature build (still waiting on the local-state-vs-global-state-library
+question from Section 8), then the tweakcn-derived typography/shadow bridging and
+theme-candidate-validation ideas above.
 
 ## 11. Husky + lint-staged (2026-07-26)
 
@@ -637,7 +637,21 @@ Confirmed as standard practice in this exact ecosystem via the tweakcn research
   error shown, nothing committed. Both test files and test commits removed/reset
   before the real commit landed.
 
-## 12. Working agreements / process notes
+## 12. README.md + VERSIONS.md (2026-07-26)
+
+- `README.md` was still the untouched default Vite template ("This template provides a
+  minimal setup to get React working in Vite") — flagged on day one of this whole
+  effort, never fixed until now. Rewritten to actually describe this repo: what it is
+  and why the rules matter (designer-prompts-Claude workflow), what's built in
+  (shadcn/Base UI, dark/light theming, theme versioning, json-server + apiClient,
+  component tiers, the gallery page), getting started (`npm install`, `npm run dev` +
+  `npm run mock-api` in a second terminal, `.env.example` → `.env.local`, the
+  `engines.node` requirement), the full scripts table, and where to look next.
+- `VERSIONS.md` hadn't been touched since `v0.1.0`. Added a `v0.2.0` entry
+  summarizing everything built since (items A-E, the git housekeeping, MUI removal,
+  dark/light theming, Husky/lint-staged) in one place.
+
+## 13. Working agreements / process notes
 
 - User wants to **hold all pushes until explicitly requested** — make local commits
   freely, but don't push to any remote without being asked first, so they can review
