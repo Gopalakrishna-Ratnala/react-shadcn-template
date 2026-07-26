@@ -11,8 +11,11 @@ paths: ["src/**/*.tsx", "src/**/*.ts", "src/**/*.css"]
 - Always extract all Tailwind class strings out of `.tsx` files into a co-located `ComponentName.styles.ts` file inside the same component or page folder
 - Always use `cva()` (from `class-variance-authority`) in `.styles.ts` files to define component variants
 - Always use `cn()` (from `src/lib/utils.ts`) for conditional or composed class strings
-- Always include `dark:` counterpart classes alongside every light-mode class — never write light-only styles
+- Semantic color tokens (`bg-primary`, `text-foreground`, `border-border`, etc.) never need a `dark:` variant — the token itself is redefined under `.dark` in `theme.css`, so it already resolves correctly in both modes automatically. Only reach for a `dark:` prefix for something that is genuinely not token-driven (rare — if you find yourself writing `dark:bg-blue-500` or similar, that's almost always a sign the value should be a semantic token instead, not a `dark:` override)
 - Always style responsively using Tailwind's mobile-first breakpoint prefixes (`sm:`, `md:`, `lg:`, `xl:`)
+- Always use `size-*` when width and height are equal — `size-10`, never `w-10 h-10`
+- Always use the `truncate` shorthand for single-line text overflow — never `overflow-hidden text-ellipsis whitespace-nowrap`
+- Never set a manual `z-index` on overlay components (`Dialog`, `Sheet`, `Popover`, `DropdownMenu`, etc.) — they manage their own stacking internally
 - Never use the inline `style` attribute — use a Tailwind class or CSS variable instead; inline style props are forbidden even for one-off values
 - Never write raw hex, rgb, or rgba values in className strings or style props — use CSS variables defined in the project's theme file (`src/styles/themes/theme.css` in this template; shadcn's own docs use `app/globals.css` for Next.js, but Vite projects keep the token file wherever `src/index.css` imports it from)
 - Never use `@apply` anywhere — compose Tailwind classes in `.styles.ts` files instead

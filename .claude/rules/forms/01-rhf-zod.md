@@ -104,3 +104,53 @@ wiring these manually on every field:
 - `aria-invalid` on the input itself, mirroring `data-invalid`
 - `FieldLabel`'s `htmlFor` correctly associates the label with its input —
   never a bare `<label>` or a `Label` with a mismatched `htmlFor`
+
+## InputGroup and ToggleGroup
+
+- To add an icon, prefix text, or a button inside an input (e.g. a search icon,
+  a "$" prefix, a copy button), use `InputGroup` + `InputGroupAddon` — never a
+  raw `Input` with manually-positioned absolute children.
+- Inside an `InputGroup`, use `InputGroupInput`/`InputGroupTextarea` — never the
+  plain `Input`/`Textarea` primitives, which don't account for the addon's space.
+
+```tsx
+// WRONG — manual absolute positioning
+<div className="relative">
+  <Input className="pl-8" />
+  <SearchIcon className="absolute left-2 top-2 size-4" />
+</div>
+
+// CORRECT
+<InputGroup>
+  <InputGroupAddon>
+    <SearchIcon />
+  </InputGroupAddon>
+  <InputGroupInput placeholder="Search..." />
+</InputGroup>
+```
+
+- For a set of 2–7 mutually exclusive or multi-select options (e.g. a view
+  toggle, a filter row), use `ToggleGroup` + `ToggleGroupItem` — never a loop of
+  `Button`s with manually-tracked active state.
+
+```tsx
+// WRONG — manual active-state tracking
+{options.map((opt) => (
+  <Button
+    key={opt}
+    variant={active === opt ? "default" : "outline"}
+    onClick={() => setActive(opt)}
+  >
+    {opt}
+  </Button>
+))}
+
+// CORRECT
+<ToggleGroup type="single" value={active} onValueChange={setActive}>
+  {options.map((opt) => (
+    <ToggleGroupItem key={opt} value={opt}>
+      {opt}
+    </ToggleGroupItem>
+  ))}
+</ToggleGroup>
+```

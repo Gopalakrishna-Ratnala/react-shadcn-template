@@ -6,6 +6,15 @@ This project uses **shadcn/ui + Tailwind CSS** as its UI library, on the **Base 
 | --- | --- |
 | **shadcn/ui + Tailwind** | `shadcn/01-tailwind-shadcn-styling.md` |
 
+## Composition patterns — always active, not optional
+
+`shadcn/04-composition-patterns.md` documents the correct usage of vendored shadcn/ui
+primitives — Group nesting (`SelectItem`→`SelectGroup`, etc.), overlay `Title`
+requirements, `Card`/`Avatar`/`Tabs` composition, icon `data-icon` wiring, and button
+loading states. Confirmed against the official shadcn-ui/ui skill
+(`github.com/shadcn-ui/ui/tree/main/skills/shadcn`). Applies to every project using
+this template, regardless of theming choices.
+
 ## Optional theming (ask the user)
 
 | Feature | File | Keep when | Delete when |
