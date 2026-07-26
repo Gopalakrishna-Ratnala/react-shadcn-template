@@ -551,7 +551,67 @@ project, Storybook (arguably more valuable here than usual, given designers are 
 primary users), whether to add a caching/retry data layer (TanStack Query) vs staying
 with raw fetch + manual hooks, i18n.
 
-## 10. Working agreements / process notes
+## 10. tweakcn research + dark/light theming + icon decision (2026-07-26)
+
+User asked for deep research into `github.com/jnsahaj/tweakcn` (a real, 10k-star visual
+theme editor for shadcn/ui) specifically to extract concrete, adoptable findings for
+our own repo. Findings and what was done with each:
+
+- **Husky + lint-staged confirmed present in their repo** (`.husky/` folder) — direct,
+  independent validation of a gap we'd already flagged (Section 9). Still not yet built
+  here — next up.
+- **The `!important`-override technique for typography/radius/shadow** — tweakcn hits
+  the identical problem we deferred in item D (some of their token names collide with
+  Tailwind's own reserved namespace too). Their solution: don't fight Tailwind's
+  `@theme` layer for these — generate literal CSS text for the affected utility
+  classes and inject it via a `<style>` tag with `!important`, overriding Tailwind's
+  own utilities directly (confirmed via their actual `public/live-preview.js` source,
+  read in real detail, not just a summary). **This is the approach to use when we
+  revisit the typography/radius/shadow bridging follow-up from item D** — better than
+  what was being considered (fighting the naming collision inside `@theme inline`
+  itself). Not yet implemented — still open.
+- **Compatibility validation before applying a theme** — their `checkShadcnSupport()`
+  checks ~18 required CSS variables exist before injecting a theme into a target page.
+  Adaptable idea for `check-theme-log-entry.sh`: validate a candidate `.css` file
+  actually defines every required token (matching `theme-template.css`'s full set)
+  before treating it as a valid candidate. Not yet implemented — still open.
+- **Confirmed our own architecture is the right shape, not missing something
+  structural**: their actual DOM-application mechanism for live theme injection is
+  `document.documentElement.style.setProperty('--' + key, value)` — i.e. CSS custom
+  properties on the root element, same principle we already use via `theme.css` +
+  Tailwind classes. No architectural change needed on this front.
+
+**Dark/light theme support — now real, not deferred.** User was clear (twice) this
+needs to actually work for a production-grade boilerplate, not stay
+ask-the-user/optional indefinitely. Fixed:
+- `App.tsx` wrapped in `next-themes`' `ThemeProvider` (`attribute="class"`,
+  `defaultTheme="system"`, `enableSystem`), exactly matching
+  `styling/shadcn/02-theming.md`'s documented pattern.
+- `<Toaster />` mounted at the root (previously flagged as missing entirely — the
+  vendored `ui/sonner.tsx` already calls `useTheme()` internally; it just needed a
+  `ThemeProvider` ancestor to actually resolve correctly).
+- New `ThemeToggle` component (`src/components/shared/themeToggle/`), exact pattern
+  from the rule doc — Sun/Moon `lucide-react` icons, cross-fade via `dark:` Tailwind
+  variants, no conditional JS styling. Added to the gallery page header so it's
+  actually visible/usable, not just wired in the abstract.
+- Validated for real: the `ThemeToggle` test clicks the actual button and asserts
+  `document.documentElement`'s `.dark` class is genuinely added/removed (twice,
+  toggling back) — real DOM behavior, not a mocked assertion. Full suite (17/17 tests),
+  `tsc -b`, lint (same 15 pre-existing vendored-file errors), format, and
+  `npm run build` all clean/passing after the change.
+
+**Icon source decision — resolved.** Was left as an open "SVG sprites or
+lucide-react" placeholder in `CLAUDE.md`/`AGENTS.md`/`core/01-tech-stack.md` despite
+`lucide-react` already being installed. Fixed to `lucide-react`, fixed for this
+template — every icon Claude adds from here forward has one unambiguous answer.
+
+**Still open, in priority order per the last few exchanges:** Husky + lint-staged,
+then CI pipeline, then README/VERSIONS.md, then the vulnerability triage, then the
+reference-feature build (still waiting on the local-state-vs-global-state-library
+question from Section 8), then the tweakcn-derived typography/shadow bridging and
+theme-candidate-validation ideas above.
+
+## 11. Working agreements / process notes
 
 - User wants to **hold all pushes until explicitly requested** — make local commits
   freely, but don't push to any remote without being asked first, so they can review
