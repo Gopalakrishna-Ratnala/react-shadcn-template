@@ -1,73 +1,78 @@
-# React + TypeScript + Vite
+# AI Ready React Template
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React + shadcn/ui boilerplate built by Divami for a specific workflow: **a
+designer prompts Claude directly to build the app** — no separate Figma-to-code
+handoff, minimal developer review in between. The `.claude/rules/` and
+`.claude/hooks/` in this repo exist to make that safe: they're the substitute
+for the code review that would normally catch inconsistency, duplication, or a
+badly-formed component before it ships.
 
-Currently, two official plugins are available:
+## What's in this template
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **React 19 + TypeScript (strict) + Vite 8**
+- **shadcn/ui + Tailwind CSS v4**, on the Base UI primitive backend
+  (`components.json` → `"style": "base-nova"`) — composition uses Base UI's
+  `render` prop, not Radix's `asChild`
+- **Dark/light theming**, wired and working (`next-themes` + a `ThemeToggle`)
+- **Theme candidate versioning** — designers can create multiple theme
+  candidates, compare them via the local dev server, and promote whichever one
+  a client approves, with every candidate (approved or rejected) permanently
+  recorded — see `.claude/rules/styling/shadcn/03-theme-versioning.md`
+- **A local mock API** via `json-server`, backed by `db.json`, with a
+  fetch-based `apiClient` (no HTTP library dependency)
+- **A component tier system** (`ui/` → `layout/` → `blocks/` → `shared/` →
+  feature-scoped `pages/*/components/`) with an explicit promotion rule, so a
+  one-off component doesn't get force-promoted into a shared folder just
+  because there's nowhere else for it to go
+- **A components gallery** at `/components-gallery` — a living reference of
+  every design token and shadcn/ui primitive in use, plus a Theme History view
 
-## React Compiler
+## Getting started
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run dev          # starts the app at http://localhost:5173
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+In a **second terminal**, start the local mock API (needed for anything that
+calls `apiClient`):
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run mock-api      # starts json-server at http://localhost:3001
 ```
+
+Copy `.env.example` to `.env.local` if you need to change the mock API's port
+or base URL.
+
+Requires **Node.js >= 22.22.1** (see `package.json`'s `engines` field — this is
+the actual strictest requirement among this project's own dependencies).
+
+## Available scripts
+
+| Script | What it does |
+| --- | --- |
+| `npm run dev` | Start the Vite dev server |
+| `npm run mock-api` | Start the local json-server mock API |
+| `npm run build` | Typecheck, then build for production |
+| `npm run preview` | Preview a production build locally |
+| `npm run lint` | Run ESLint |
+| `npm run format` | Format `src/**/*.{ts,tsx,css}` with Prettier |
+| `npm run format:check` | Check formatting without writing |
+| `npm run test` | Run the test suite once |
+| `npm run test:watch` | Run tests in watch mode |
+| `npm run test:coverage` | Run tests with coverage |
+
+A pre-commit hook (Husky + lint-staged) runs ESLint and Prettier automatically
+on staged files before every commit.
+
+## Where to look next
+
+- **`CLAUDE.md`** / **`AGENTS.md`** — the rules Claude follows in this repo:
+  tech stack decisions, component tiers, styling, data fetching, testing, and
+  everything else that keeps generated code consistent
+- **`.claude/rules/`** — the individual rule files referenced above, organized
+  by topic
+- **`.claude/PROJECT-CONTEXT.md`** — running project history and decisions,
+  meant to be read by Claude at the start of any new session working on this
+  repo
+- **`VERSIONS.md`** — version history for this template
