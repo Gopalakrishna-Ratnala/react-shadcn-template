@@ -606,10 +606,12 @@ lucide-react" placeholder in `CLAUDE.md`/`AGENTS.md`/`core/01-tech-stack.md` des
 template — every icon Claude adds from here forward has one unambiguous answer.
 
 **Still open, in priority order per the last few exchanges:** ~~Husky + lint-staged~~
-DONE — see Section 12. Next: CI pipeline, then README/VERSIONS.md, then the
-vulnerability triage, then the reference-feature build (still waiting on the
-local-state-vs-global-state-library question from Section 8), then the tweakcn-derived
-typography/shadow bridging and theme-candidate-validation ideas above.
+DONE — see Section 12. **CI pipeline explicitly deferred by user (2026-07-26) — not
+in scope right now, don't propose it again unless the user brings it back up.** Next:
+README/VERSIONS.md, then the vulnerability triage, then the reference-feature build
+(still waiting on the local-state-vs-global-state-library question from Section 8),
+then the tweakcn-derived typography/shadow bridging and theme-candidate-validation
+ideas above.
 
 ## 11. Husky + lint-staged (2026-07-26)
 
