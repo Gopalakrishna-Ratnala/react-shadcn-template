@@ -727,7 +727,60 @@ Full validation after all changes: 18/18 tests (including both fixed components'
 existing test suites, unchanged assertions), `tsc -b` clean, lint (same 15
 pre-existing vendored-file errors), format clean, build succeeds.
 
-## 14. Working agreements / process notes
+## 14. Typography/radius/shadow bridging — resolved (2026-07-26)
+
+The item D follow-up (deliberately deferred: bridging typography/radius/shadow into
+Tailwind's theme layer) is now done. User asked "what did we miss in the global
+theme," which led to checking shadcn's own current theming docs directly — this
+surfaced a more serious version of the problem than originally understood:
+
+**The real problem**: Tailwind v4 ships its own built-in default values for
+`text-*`, `rounded-*`, and `shadow-*` utilities. The item D color bridge (`@theme
+inline`) didn't touch this — those utility classes already existed and already
+worked, but silently used Tailwind's stock hardcoded values, not this project's
+theme tokens. Confirmed concretely via compiled build output: Tailwind's native
+`.rounded` rule is `border-radius:.25rem` — a **literal hardcoded value, not even a
+CSS variable** — meaning editing `theme.css`'s `--radius` would have had zero
+visible effect on any component using a plain `rounded` class, before this fix.
+
+**Why `@theme inline` still isn't the right mechanism for these tokens**: checked
+shadcn's own current official theming docs directly. Their `--radius-sm`/`-lg`/`-xl`
+etc. are only ever declared *inside* `@theme inline`, computed via `calc()` from a
+single, differently-named base (`--radius`) — never as standalone `:root`
+properties. Our `theme-template.css` intentionally keeps `--radius-sm`/`-lg` (and
+every `--text-*`/`--leading-*` step) as independent, designer-overridable `:root`
+values — exactly what that file's own "do not rename any variable" rule requires
+preserving. Bridging our existing names into `@theme inline` as-is would be
+genuinely self-referential/circular, not just a style bug — confirming the original
+caution from item D was correct, not overly conservative.
+
+**The fix**: plain, unlayered CSS rules with `!important` in `index.css`, directly
+overriding the specific utility classes (`text-xs` through `text-4xl`,
+`rounded-sm`/`rounded`/`rounded-lg`/`rounded-full`, `shadow-sm`/`md`/`lg`) that this
+project's token scale actually defines — the same technique confirmed from
+tweakcn's own production source (`public/live-preview.js`) solving the identical
+problem. No token renames, no changes to `theme-template.css`'s contract.
+
+Simplified every component using the interim arbitrary-value workaround
+(`text-[length:var(--text-2xl)]`, `rounded-[var(--radius)]`) to the real utility
+classes now that they're theme-aware: `ComponentsGalleryPage`, `ColorSwatch`,
+`ThemeHistoryPanel`, `ErrorBoundary`.
+
+**Validated against real compiled build output at every step**, not assumed:
+confirmed the override rules exist and reference the right tokens; confirmed
+Tailwind's native `.rounded` is a hardcoded literal (proving the fix necessary, not
+redundant); confirmed `.text-4xl` (a value that numerically differs from
+Tailwind's stock default — `2.5rem` vs `2.25rem` — making the comparison
+unambiguous) resolves to our token via the `!important` override, not Tailwind's
+stock value. Full suite: 18/18 tests, `tsc -b` clean, lint unchanged, format
+clean, build succeeds.
+
+**Remaining open from the original theming gap analysis**: theme-candidate
+completeness validation (does a candidate `.css` file define every required
+token before being treated as valid — the `checkShadcnSupport()`-inspired idea)
+and contrast/accessibility checking on candidates. Neither implemented yet.
+
+## 15. Working agreements / process notes
 
 - User wants to **hold all pushes until explicitly requested** — make local commits
   freely, but don't push to any remote without being asked first, so they can review
