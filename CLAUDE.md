@@ -44,7 +44,7 @@ This repository is a **clean project template**. It ships with a minimal placeho
 | --- | --- |
 | Styling library | shadcn/ui + Tailwind CSS v4 (`@tailwindcss/vite` — not PostCSS) — fixed for this template, not a choice |
 | Icon source | `lucide-react` — fixed for this template, already installed |
-| State management | Zustand or Redux Toolkit |
+| State management | Zustand — fixed for this template, not a choice |
 | Forms & validation | React Hook Form + Yup or React Hook Form + Zod |
 | Data fetching | Fetch-based `apiClient` + json-server (local mock backend) — fixed for this template, not a choice |
 | Testing framework | Vitest + React Testing Library or Jest + React Testing Library |
@@ -105,7 +105,10 @@ Rules are split into three categories:
 
 ## Strategy Rules — Conditionally Loaded (scoped by `paths`)
 
-Other strategy folders below (state management, forms, data fetching) still contain mutually exclusive files. **Keep only the file matching your chosen library; delete the rest.**
+The `forms/` folder below still contains mutually exclusive files (RHF+Zod vs
+RHF+Yup). **Keep only the file matching your chosen library; delete the rest.**
+Styling, state management, and data fetching are all fixed for this template, not
+choices — see each section below.
 
 ### Styling (`.claude/rules/styling/`) — fixed, not a choice
 
@@ -126,12 +129,11 @@ Optional:
 | `forms/01-rhf-zod.md` | React Hook Form + Zod | `src/**/*.tsx`, `src/hooks/**/*.ts` |
 | `forms/02-rhf-yup.md` | React Hook Form + Yup | `src/**/*.tsx`, `src/hooks/**/*.ts` |
 
-### State Management (`.claude/rules/state-management/`) — pick one
+### State Management (`.claude/rules/state-management/`) — fixed, not a choice
 
 | File | Strategy | Loaded when editing |
 | --- | --- | --- |
-| `state-management/01-zustand.md` | Zustand — store structure, async actions, no direct mutation | `src/store/**/*.ts`, `src/hooks/**/*.ts` |
-| `state-management/02-redux-toolkit.md` | Redux Toolkit — slices, async thunks, typed hooks, no direct mutation | `src/store/**/*.ts`, `src/hooks/**/*.ts` |
+| `state-management/01-zustand.md` | Zustand — store structure, async actions, no direct mutation. Fixed for this template — once a project has real stores, never suggest switching. | `src/store/**/*.ts`, `src/hooks/**/*.ts` |
 
 ### Data Fetching (`.claude/rules/data-fetching/`) — fixed HTTP client + optional add-ons
 

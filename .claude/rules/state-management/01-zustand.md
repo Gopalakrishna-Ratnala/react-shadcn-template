@@ -1,9 +1,14 @@
 ---
-description: Zustand state management — store structure, domain-focused stores, async actions, no direct mutation. Loaded when editing stores.
+description: Zustand state management — store structure, domain-focused stores, async actions, no direct mutation. Fixed for this template, always active when editing stores.
 paths: ["src/store/**/*.ts", "src/hooks/**/*.ts"]
 ---
 
 # Zustand Rules
+
+Zustand is fixed for this template — not a per-project choice. See
+`state-management/README.md` for why. **Once a project has real stores using it,
+never suggest switching to a different state management library** — that decision
+is made once, at project start, and kept for the project's lifetime.
 
 ## Mandatory Zustand Usage Principles
 

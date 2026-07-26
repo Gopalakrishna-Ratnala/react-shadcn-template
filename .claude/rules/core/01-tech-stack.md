@@ -9,7 +9,7 @@ Fill in your chosen library for each slot, then delete the strategy files you ar
 - **Framework**: React 19.x (latest stable version)
 - **Language**: TypeScript (strict mode)
 - **UI Library**: shadcn/ui + Tailwind CSS v4 (Base UI backend) — see `styling/`
-- **State Management**: [e.g. Zustand] — see `state-management/`
+- **State Management**: Zustand — fixed for this template, see `state-management/`
 - **HTTP Client**: Fetch-based `apiClient` + json-server as the local mock backend — fixed for this template, see `data-fetching/`
 - **Forms**: [e.g. React Hook Form + Zod] — see `forms/`
 - **Testing**: Vitest + React Testing Library — installed and configured (see `testing/`)

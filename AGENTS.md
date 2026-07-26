@@ -36,7 +36,7 @@ If anything is unclear:
 | --- | --- |
 | Styling library | shadcn/ui + Tailwind CSS v4 (`@tailwindcss/vite` — not PostCSS) — fixed for this template, not a choice |
 | Icon source | `lucide-react` — fixed for this template, already installed |
-| State management | Zustand or Redux Toolkit |
+| State management | Zustand — fixed for this template, not a choice |
 | Forms & validation | React Hook Form + Yup or React Hook Form + Zod |
 | Data fetching | Fetch-based `apiClient` + json-server (local mock backend) — fixed for this template, not a choice |
 | Testing framework | Vitest + React Testing Library or Jest + React Testing Library |
