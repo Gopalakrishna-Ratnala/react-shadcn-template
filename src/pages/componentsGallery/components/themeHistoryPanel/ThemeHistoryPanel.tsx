@@ -1,4 +1,14 @@
+import { Palette } from "lucide-react";
+
 import { Badge } from "@/components/ui/badge";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 
 import { themeHistoryPanelStyles } from "./ThemeHistoryPanel.styles";
 import type { ThemeCandidateStatus, ThemeHistoryPanelProps } from "./types";
@@ -15,10 +25,18 @@ const STATUS_VARIANT: Record<
 export function ThemeHistoryPanel({ entries }: ThemeHistoryPanelProps) {
   if (entries.length === 0) {
     return (
-      <p className={themeHistoryPanelStyles.empty}>
-        No theme candidates yet — see styling/shadcn/03-theme-versioning.md for
-        how to create one.
-      </p>
+      <Empty>
+        <EmptyHeader>
+          <EmptyMedia variant="icon">
+            <Palette />
+          </EmptyMedia>
+          <EmptyTitle>No theme candidates yet</EmptyTitle>
+          <EmptyDescription>
+            See styling/shadcn/03-theme-versioning.md for how to create one.
+          </EmptyDescription>
+        </EmptyHeader>
+        <EmptyContent />
+      </Empty>
     );
   }
 
