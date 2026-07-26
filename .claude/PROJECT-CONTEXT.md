@@ -775,12 +775,37 @@ unambiguous) resolves to our token via the `!important` override, not Tailwind's
 stock value. Full suite: 18/18 tests, `tsc -b` clean, lint unchanged, format
 clean, build succeeds.
 
-**Remaining open from the original theming gap analysis**: theme-candidate
-completeness validation (does a candidate `.css` file define every required
-token before being treated as valid — the `checkShadcnSupport()`-inspired idea)
-and contrast/accessibility checking on candidates. Neither implemented yet.
+**Remaining open from the original theming gap analysis**: ~~theme-candidate
+completeness validation~~ **DONE — see Section 15.** Contrast/accessibility checking
+on candidates is still not implemented.
 
-## 15. Working agreements / process notes
+## 15. Theme candidate token-completeness validation (2026-07-26)
+
+Resolved the last open item from the theming gap analysis — inspired by
+tweakcn's `checkShadcnSupport()` (validates a target page has all required shadcn
+CSS variables before injecting a theme into it, checked directly in their actual
+source during the earlier tweakcn research).
+
+`check-theme-log-entry.sh` now diffs every new candidate file under `history/`
+against `theme-template.css`'s own token list and warns, listing exactly which
+tokens are missing by name, if the candidate is incomplete. Required tokens are
+extracted from `theme-template.css` itself **at hook-run-time**, not hardcoded in
+the script — stays correct automatically if the template's token set ever changes,
+no second place to keep in sync. Documented in
+`styling/shadcn/03-theme-versioning.md`'s "Creating a candidate" section.
+
+Tested directly with synthetic `tool_input` JSON across every case: a complete
+candidate (full copy of the template) correctly produces no completeness warning;
+an intentionally incomplete candidate (missing most sections) correctly lists
+every genuinely missing token by name; a fully complete + already-logged candidate
+produces zero output; regression-tested the pre-existing naming-convention and
+unrelated-file branches still work unchanged. Full repo suite unaffected: 18/18
+tests, `tsc -b` clean, build succeeds.
+
+**Still open**: contrast/accessibility checking on theme candidates (from the same
+tweakcn research) — not implemented.
+
+## 16. Working agreements / process notes
 
 - User wants to **hold all pushes until explicitly requested** — make local commits
   freely, but don't push to any remote without being asked first, so they can review
