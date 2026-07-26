@@ -684,6 +684,49 @@ a stronger, always-current backstop than our own hand-maintained rule docs for t
 shadcn-API-correctness slice specifically. Not actionable in this environment right
 now, but a real option worth remembering.
 
+### Follow-up deep dive: the full `skills/shadcn/` folder content (2026-07-26)
+
+User asked to go deeper into the actual skill file content (fetched the real,
+current `SKILL.md` directly, 265 lines). This surfaced a much larger, precise list of
+conventions — cross-checked each one against our actual code/rules (not assumed) before
+acting. Two were **live violations in already-written code**, not just missing docs:
+
+- `ThemeHistoryPanel.tsx`'s empty state used a raw `<p>` instead of the vendored
+  `Empty` component — we had `empty.tsx` vendored and unused. **Fixed** — now uses
+  `Empty`/`EmptyHeader`/`EmptyMedia`/`EmptyTitle`/`EmptyDescription`/`EmptyContent`.
+- `ThemeToggle.tsx`'s `Sun`/`Moon` icons had redundant explicit `size-4` classes —
+  `Button`'s own base CSS already auto-sizes any child SVG without an explicit
+  `size-*` class. **Fixed** — removed the redundant sizing, confirmed via actual
+  compiled build output that the auto-sizing selector is genuinely present, not
+  just assumed. Deliberately did **not** force `data-icon` onto this component:
+  that attribute coordinates button padding with adjacent text, and `ThemeToggle`
+  is a pure icon-only button with no text to coordinate against — documented this
+  reasoning in a code comment rather than blindly applying the rule where its
+  underlying purpose doesn't apply.
+
+Everything else was a genuinely missing rule (all primitives already vendored,
+zero mentions anywhere in `.claude/rules/`, confirmed via direct `grep`) — added:
+- New file `styling/shadcn/04-composition-patterns.md`: use-components-not-custom-
+  markup table, Group nesting (`SelectItem`→`SelectGroup` etc.), `Dialog`/`Sheet`/
+  `Drawer` `Title` requirement + no manual `z-index` on overlays, full `Card`
+  composition, `Avatar`+`AvatarFallback`, `TabsTrigger` inside `TabsList`, Button
+  loading state (`Spinner`+`data-icon`+`disabled`, no `isPending`/`isLoading` prop).
+- `forms/01-rhf-zod.md`: added `InputGroup`/`InputGroupAddon` (with
+  `InputGroupInput`/`InputGroupTextarea`, never raw `Input`/`Textarea` inside it) and
+  `ToggleGroup` (for 2–7 option choices, never a manual `Button` loop with tracked
+  active state).
+- `01-tailwind-shadcn-styling.md`: added `size-*` (not `w-*`/`h-*`), `truncate`
+  shorthand, no manual `z-index` on overlays. **Also fixed a rule that actively
+  contradicted the correct convention**: it said to "always include `dark:`
+  counterpart classes alongside every light-mode class" — but semantic color
+  tokens already resolve correctly in both modes via the CSS variable redefinition
+  under `.dark`; they almost never need a `dark:` variant at all. This had been
+  wrong since the very first shadcn rules refresh, unnoticed until this deeper pass.
+
+Full validation after all changes: 18/18 tests (including both fixed components'
+existing test suites, unchanged assertions), `tsc -b` clean, lint (same 15
+pre-existing vendored-file errors), format clean, build succeeds.
+
 ## 14. Working agreements / process notes
 
 - User wants to **hold all pushes until explicitly requested** — make local commits
