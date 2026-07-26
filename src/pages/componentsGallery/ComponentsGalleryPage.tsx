@@ -11,6 +11,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { ThemeToggle } from "@/components/shared";
 
 import themeLog from "@/styles/themes/history/THEME-LOG.json";
 
@@ -123,7 +124,10 @@ export function ComponentsGalleryPage() {
 
       <main className={styles.main}>
         <header className={styles.header}>
-          <h1 className={styles.title}>Components Gallery</h1>
+          <div className={styles.headerRow}>
+            <h1 className={styles.title}>Components Gallery</h1>
+            <ThemeToggle />
+          </div>
           <p className={styles.subtitle}>
             A living reference of this project's design tokens and shadcn/ui
             primitives, styled entirely from{" "}

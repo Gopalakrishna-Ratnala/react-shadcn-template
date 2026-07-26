@@ -8,6 +8,7 @@ export const componentsGalleryPageStyles = {
     "rounded-[var(--radius)] px-2 py-1.5 text-sm text-muted-foreground hover:bg-muted hover:text-foreground",
   main: "mx-auto w-full max-w-4xl flex-1 px-6 py-10 sm:px-10",
   header: "mb-8 flex flex-col gap-2",
+  headerRow: "flex items-start justify-between gap-4",
   title: "text-3xl font-bold text-foreground",
   subtitle: "text-sm text-muted-foreground",
   swatchGrid: "grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4",
