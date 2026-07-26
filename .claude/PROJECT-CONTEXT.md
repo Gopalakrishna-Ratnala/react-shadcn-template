@@ -605,13 +605,37 @@ lucide-react" placeholder in `CLAUDE.md`/`AGENTS.md`/`core/01-tech-stack.md` des
 `lucide-react` already being installed. Fixed to `lucide-react`, fixed for this
 template — every icon Claude adds from here forward has one unambiguous answer.
 
-**Still open, in priority order per the last few exchanges:** Husky + lint-staged,
-then CI pipeline, then README/VERSIONS.md, then the vulnerability triage, then the
-reference-feature build (still waiting on the local-state-vs-global-state-library
-question from Section 8), then the tweakcn-derived typography/shadow bridging and
-theme-candidate-validation ideas above.
+**Still open, in priority order per the last few exchanges:** ~~Husky + lint-staged~~
+DONE — see Section 12. Next: CI pipeline, then README/VERSIONS.md, then the
+vulnerability triage, then the reference-feature build (still waiting on the
+local-state-vs-global-state-library question from Section 8), then the tweakcn-derived
+typography/shadow bridging and theme-candidate-validation ideas above.
 
-## 11. Working agreements / process notes
+## 11. Husky + lint-staged (2026-07-26)
+
+Confirmed as standard practice in this exact ecosystem via the tweakcn research
+(Section 10) — nothing new to decide, just built it.
+
+- `husky@9.1.7` via the modern `npx husky init` workflow — created `.husky/pre-commit`,
+  added `"prepare": "husky"` to `package.json`. `.husky/_/` (husky's internal generated
+  shims) is self-gitignored via its own `.gitignore`; nothing needed in our root one.
+- `lint-staged@17.2.0` — runs `eslint --fix` + `prettier --write` on staged
+  `*.ts`/`*.tsx`, `prettier --write` on staged `*.css`. Scoped to what's actually being
+  committed, not the whole repo.
+- Added `engines.node: ">=22.22.1"` to `package.json` — this is the actual strictest
+  requirement among our own dependencies (`lint-staged` itself needs this; `react-router`
+  needs `>=22.22.0`). Made explicit so a Node version mismatch surfaces as a clear npm
+  error instead of the confusing "Cannot find native binding" rolldown crash the user
+  hit firsthand on their local machine (Node 20.13.1) before this was declared.
+- **Validated end-to-end for real, not just configured**: staged a deliberately
+  badly-formatted file and committed it — confirmed `eslint --fix`/`prettier --write`
+  actually ran and auto-fixed it, which then got committed with corrected formatting.
+  Separately staged a file with a real, non-auto-fixable error (unused variable) and
+  confirmed the commit was genuinely rejected — working tree correctly reverted, clear
+  error shown, nothing committed. Both test files and test commits removed/reset
+  before the real commit landed.
+
+## 12. Working agreements / process notes
 
 - User wants to **hold all pushes until explicitly requested** — make local commits
   freely, but don't push to any remote without being asked first, so they can review
