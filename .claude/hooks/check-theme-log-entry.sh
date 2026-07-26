@@ -35,4 +35,28 @@ if [[ "$HAS_ENTRY" == "0" ]]; then
   jq -n --arg msg "$MSG" '{hookSpecificOutput: {hookEventName: "PostToolUse", additionalContext: $msg}}'
 fi
 
+# Check token completeness: every token declared in theme-template.css must also
+# be present in the candidate file (compares --token-name declarations, not
+# values - the source of truth for "what's required" is always the template
+# file itself, so this stays correct automatically if the template ever changes).
+THEMES_DIR=$(dirname "$HISTORY_DIR")
+TEMPLATE_FILE="$THEMES_DIR/theme-template.css"
+
+if [[ -f "$TEMPLATE_FILE" && -f "$FILE_PATH" ]]; then
+  REQUIRED_TOKENS=$(grep -oE '^[[:space:]]*--[a-z0-9-]+:' "$TEMPLATE_FILE" | sed 's/^[[:space:]]*//;s/:$//' | sort -u)
+  MISSING=""
+  while IFS= read -r token; do
+    [[ -z "$token" ]] && continue
+    if ! grep -qE "^[[:space:]]*${token}:" "$FILE_PATH"; then
+      MISSING="$MISSING $token"
+    fi
+  done <<< "$REQUIRED_TOKENS"
+
+  if [[ -n "$MISSING" ]]; then
+    MISSING_TRIMMED=$(echo "$MISSING" | xargs)
+    MSG="Theme candidate '$FILENAME' is missing required tokens (present in theme-template.css but not in this candidate): $MISSING_TRIMMED. Every token must be filled in before this is a complete, valid candidate - never a partial file. Source: styling/shadcn/03-theme-versioning.md"
+    jq -n --arg msg "$MSG" '{hookSpecificOutput: {hookEventName: "PostToolUse", additionalContext: $msg}}'
+  fi
+fi
+
 exit 0

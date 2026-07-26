@@ -67,7 +67,9 @@ An array of objects, one per candidate, in creation order:
 1. Take the designer-supplied values (colors, and any other tokens they specify) and
    fill them into a **full copy of `theme-template.css`** (every variable filled, none
    renamed, none deleted — matching `theme-template.css`'s own documented rules) —
-   don't hand-write a partial file.
+   don't hand-write a partial file. `check-theme-log-entry.sh` automatically checks
+   this: it diffs every candidate file against `theme-template.css`'s own token list
+   and warns, listing exactly which tokens are missing, if any weren't filled in.
 2. Save it under `history/` using the naming convention above.
 3. Append a new entry to `THEME-LOG.json` with `"status": "candidate"`.
 4. **Never edit `theme.css` directly to preview a candidate.** To preview one locally,
