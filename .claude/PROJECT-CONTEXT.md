@@ -805,7 +805,46 @@ tests, `tsc -b` clean, build succeeds.
 **Still open**: contrast/accessibility checking on theme candidates (from the same
 tweakcn research) — not implemented.
 
-## 16. Working agreements / process notes
+## 16. State management decision — Zustand, fixed (2026-07-26)
+
+User asked for a recommendation based on cross-referencing both shadcn-ui/ui and
+tweakcn, given this is a boilerplate needing one default that stays locked in
+per-project once adopted. Findings, verified directly:
+
+- This template's own original `state-management/README.md` already labeled
+  Zustand "(default)" before this was ever formally closed out.
+- **tweakcn** confirmed uses Zustand for all client-side state (three domain
+  stores) — checked directly in their own architecture docs during the earlier
+  research.
+- **shadcn-ui/ui's own demo app actually uses Jotai** — confirmed directly in
+  `apps/v4/package.json` (`"jotai": "^2.15.0"`). This was a genuine split across
+  real ecosystem projects, documented honestly in `state-management/README.md`
+  rather than claiming false consensus — with the reasoning for choosing Zustand
+  anyway (smaller API surface, more centralized/predictable single-store-per-domain
+  model, fewer ways for an AI generating code with minimal developer review to get
+  subtly wrong compared to an atom-based composition model).
+
+**Resolved**: `state-management/02-redux-toolkit.md` removed. `README.md`
+rewritten as a fixed decision, not pick-one. `CLAUDE.md`/`AGENTS.md`/
+`core/01-tech-stack.md` placeholders fixed. Two more stale rule-file references
+fixed in `.github/copilot-instructions.md` (`09-zustand-state.md`, a pre-reorg
+filename). `zustand@5.0.14` (verified current stable) installed as an actual
+dependency, matching the treatment given to other now-fixed decisions.
+
+**The explicit rule requested, now encoded in two places** (`state-management/README.md`
+and directly in `01-zustand.md` itself, since that's the file most likely loaded
+when actually working on stores): once a downstream project has Zustand installed
+with real stores, **never suggest switching state management libraries**,
+regardless of what a later prompt might imply.
+
+Validated: 18/18 tests, `tsc -b` clean, lint unchanged, format clean, build
+succeeds.
+
+**Still open**: `forms/` decision (RHF+Zod vs RHF+Yup — Zod already installed,
+same "just needs the docs formally closed out" situation as HTTP client/icons/
+state management all were before their respective fixes).
+
+## 17. Working agreements / process notes
 
 - User wants to **hold all pushes until explicitly requested** — make local commits
   freely, but don't push to any remote without being asked first, so they can review
