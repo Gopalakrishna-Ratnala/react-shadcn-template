@@ -457,7 +457,101 @@ settled first.
   typography/radius/shadow tokens into Tailwind's theme layer properly (flagged in
   `src/index.css` as needing its own verified pass).
 
-## 7. Working agreements / process notes
+## 7. Final validation methodology (future — not yet, we're not at that stage)
+
+User has a proven methodology from prior experience, to be used **once the boilerplate
+itself is otherwise in the shape we want** — not now, we're still in build-out phase.
+Recorded here so it survives a fresh session:
+
+**"run feature test N" — a Claude Code skill:**
+- Invoked as `run feature test N`, where `N` indexes into a pre-written table of
+  test scenarios/combinations, defined once up front (not improvised per run).
+- **Fully autonomous, never asks questions** — any ambiguity during generation gets
+  resolved conservatively and *documented*, never escalated mid-run.
+- **Two separate phases, two separate sessions:**
+  1. Phase 1 (current session): generates/scaffolds the test scenario.
+  2. Phase 2 (a **fresh** Claude Code session, opened inside the generated project):
+     this is the session that actually builds a concrete feature and reports back —
+     deliberately separate because this is the one where the repo's hooks are
+     genuinely live and can actually fire against real generated code, not just a
+     scaffold being assembled in the same session that built it.
+- Reports get **unique timestamped filenames** to avoid collisions across runs.
+- Pushes use a **retry loop with random jitter**, since multiple people/runs may push
+  to the same repo around the same time.
+
+This is the *real* test of whether the hooks/rules actually work as designed — not
+"does this typecheck," but "does a fresh Claude Code session, building something for
+real, actually get caught/guided correctly by the live hooks." Don't confuse this with
+the smaller-scale validation I've been doing throughout (direct hook invocation with
+synthetic `tool_input` JSON) — that proves the hooks are mechanically correct; this
+proves the whole system holds up under real, autonomous use.
+
+## 8. Development-experience gap analysis (2026-07-26)
+
+User asked to look at readiness from a **development workflow** angle specifically,
+not an infra-checklist angle. Findings, most consequential first:
+
+- **The core gap: pieces exist, but nothing is wired together end-to-end.**
+  `apiClient`, the data-layer pattern, `AsyncState<T>`, the component tiers — every one
+  of these has only ever been validated in isolation. Zero real feature anywhere in the
+  repo chains them together: no hook calls a service, no service feeds a mapper,
+  `AsyncState<T>` exists only as prose in `core/10-error-handling.md`, never written in
+  real code. This means the first real feature a designer asks Claude to build would be
+  the first time these conventions are tested together — the wrong moment to discover
+  they don't quite compose. **Recommended fix (not yet built, pending user direction):**
+  one small, genuinely complete reference feature — `db.json` resource → service →
+  mapper → domain model → hook using real `AsyncState<T>` → page with real
+  loading/error/empty/success states → toast on success → full test coverage per layer.
+  Open question sent to user: should this reference feature use real shared/global
+  state (meaning Zustand/Redux Toolkit needs deciding right now), or local
+  component-level state for now with global state layered in once that's decided?
+  **Not yet answered.**
+- **`Sonner`'s `<Toaster />` is never mounted anywhere.** The primitive is vendored,
+  but nothing renders its host in `App.tsx`. A real feature calling `toast.success(...)`
+  would silently do nothing — worse than crashing, harder to debug.
+- **Icon convention still an open placeholder** (`CLAUDE.md`/`AGENTS.md`: "SVG sprites
+  or lucide-react") despite `lucide-react` already being installed. Every icon Claude
+  adds from here forward is a small, avoidable ambiguity that compounds across a real
+  app.
+
+## 9. Broader production-readiness gap analysis (2026-07-26, infra/checklist angle)
+
+Separate from Section 9 — this is the "high standards, real company project, not a
+basic v1" pass. Confirmed concretely (not assumed) via direct inspection:
+
+- **No automated CI at all.** The only GitHub Actions file
+  (`.github/workflows/environment-1.yaml`) is a manual-trigger-only (`workflow_dispatch`)
+  deploy pipeline to Divami's own AWS account (specific role ARN, S3 bucket,
+  CloudFront distribution) — doesn't apply to this repo at all, and isn't a quality
+  gate (no lint/test/build-on-push/PR). This is why we've been stripping it from every
+  push (token lacked `workflow` scope) — but that also means this repo currently has
+  **zero** automated lint/test/build enforcement on push.
+- **No pre-commit enforcement** — no Husky, no lint-staged. Nothing stops a
+  broken/unformatted commit locally; we've been relying on manually running
+  format/lint/test before every commit in this session.
+- **`README.md` is still the untouched default Vite template** — flagged on day one of
+  this whole effort, never fixed. Real first-impression gap for a repo designers are
+  meant to pick up.
+- **`VERSIONS.md` hasn't been touched since `v0.1.0`** — everything from item A through
+  E, git housekeeping, MUI removal, etc. has no version tag.
+- **8 known `npm audit` vulnerabilities (3 moderate, 5 high)** — all trace to
+  *dev-tooling* transitive deps (shadcn CLI's MCP SDK chain; ESLint's own transitive
+  minimatch/brace-expansion), not runtime app code. Still un-triaged. `npm audit fix
+  --force` would downgrade the shadcn CLI and bump ESLint as breaking changes — needs a
+  deliberate look, not a blind force-fix.
+- **No `eslint-plugin-jsx-a11y`** — `core/08-accessibility.md` exists as a rule, but
+  nothing automatically enforces it at lint time.
+- Dark/light theming, typography/radius/shadow Tailwind bridging — already tracked as
+  open items elsewhere in this file (Section 6/item D follow-up, and the theming
+  question from the "did we have a ThemeProvider" conversation).
+
+**Decisions still needed from user, not something to silently pick:** state management
+library, whether auth needs a real implementation in this template or is left to each
+project, Storybook (arguably more valuable here than usual, given designers are the
+primary users), whether to add a caching/retry data layer (TanStack Query) vs staying
+with raw fetch + manual hooks, i18n.
+
+## 10. Working agreements / process notes
 
 - User wants to **hold all pushes until explicitly requested** — make local commits
   freely, but don't push to any remote without being asked first, so they can review
