@@ -1,3 +1,81 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "@fontsource-variable/geist";
+@import "./styles/themes/theme.css";
+
+/* Dark mode is driven by the `.dark` class on <html> (next-themes attribute="class",
+   if the optional theme-toggle feature is enabled — see styling/shadcn/02-theming.md).
+   Without next-themes, .dark simply never gets added and the app stays in light mode. */
+@custom-variant dark (&:is(.dark *));
+
+/* ============================================================
+   TOKEN -> TAILWIND MAPPING (colors only — see note below)
+   Maps the semantic color tokens defined in styles/themes/theme.css
+   onto Tailwind's theme namespace so utilities such as `bg-primary`,
+   `text-muted-foreground`, and `border-border` resolve to the active
+   theme. Editing theme.css re-skins every one of these utilities
+   across the whole app, because they reference the token vars at
+   runtime, not a compiled value.
+
+   NOT YET BRIDGED: theme.css also defines typography (--text-*,
+   --leading-*), radius (--radius, --radius-sm/-lg/-full), shadow, icon,
+   and motion tokens. Several of those names collide with Tailwind v4's
+   own reserved theme namespace (e.g. --radius-sm, --text-xs), and
+   bridging them incorrectly risks a genuine circular CSS variable
+   reference rather than a silent style bug. Wiring those correctly
+   needs its own careful pass (verified against real Tailwind v4
+   compiled output), not something to guess at alongside color wiring.
+   Until then, consume those tokens directly via var(), e.g.
+   className="rounded-[var(--radius)]", not via a bare `rounded` utility.
+   ============================================================ */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
 *,
 *::before,
 *::after {
