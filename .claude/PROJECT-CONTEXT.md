@@ -171,7 +171,7 @@ src/styles/themes/
   archive, not dead code to flag.
 - Still needed: a new rule file (proposed name `styling/shadcn/03-theme-versioning.md`)
   documenting this entire flow for Claude — how to create a candidate, name it, log it,
-  and promote it. **Not yet written.**
+  and promote it. **Now implemented — see Section 6 for full detail.**
 
 ### Other repo-wide standing rules from earlier work (already fixed, stay fixed)
 - shadcn rule docs refreshed against current official docs (chart/sidebar tokens added,
@@ -374,6 +374,48 @@ settled first.
   installed), D (theme-versioning system), E (showcase page rebuild), F
   (`.github/copilot-instructions.md`'s remaining stale rule-file numbering, lowest
   priority).
+- **Item D (theme candidate versioning system) — DONE.**
+  - **Real prerequisite gap found and fixed first:** the true baseline never actually
+    wired Tailwind into `index.css` or activated a real `theme.css` — that was only
+    ever done on the research branch, which we deliberately excluded during the git
+    housekeeping. Item D would have had no visible effect without this, since swapping
+    which theme file is "active" does nothing if Tailwind isn't generating utilities
+    from theme tokens at all. Fixed: `index.css` now imports `tailwindcss`,
+    `tw-animate-css`, the Geist font, and `theme.css`; added `@custom-variant dark` for
+    `next-themes`' class strategy; added a **color-only** `@theme inline` bridge
+    (background, primary/secondary/accent, card/popover, muted,
+    destructive/success/warning/info, border/input/ring, chart-1..5, sidebar tokens).
+  - **Deliberately did NOT bridge typography/radius/shadow/motion tokens into
+    Tailwind's theme layer this pass** — several of our token names (`--radius-sm`,
+    `--text-xs`, etc.) collide with Tailwind v4's own reserved namespace, and bridging
+    them incorrectly risks a genuine circular CSS variable reference, not just a visual
+    bug. This is flagged clearly in a code comment in `index.css` as a distinct
+    follow-up needing its own verified pass — don't assume it's done, and don't guess at
+    it without checking real compiled Tailwind v4 output first.
+  - `theme.css` created from `theme-template.css`, unchanged except `--font-sans`/
+    `--font-display` corrected to reference `'Geist Variable'` (the font actually
+    loaded) instead of the template's placeholder `"Inter"` example.
+  - **Validated against real compiled CSS output**, not just typechecked: ran
+    `npm run build` and grepped the actual output, confirming the full chain resolves
+    correctly (`.bg-primary{background-color:var(--primary)}` →
+    `--color-primary:var(--primary)` → `:root{--primary:#e71e0e...}`), plus the
+    `.dark{}` override. Zero build warnings.
+  - Built the actual versioning system: `src/styles/themes/history/THEME-LOG.json`
+    (structured log, schema in Section 4 above) and
+    `.claude/rules/styling/shadcn/03-theme-versioning.md` (naming convention, full
+    create/compare/promote workflow, explicit "never auto-delete rejected candidates"
+    rule).
+  - New hook `check-theme-log-entry.sh` (registered under `PostToolUse`): warns if a
+    new file under `history/` doesn't match the naming convention or has no matching
+    `THEME-LOG.json` entry. Tested directly with synthetic `tool_input` JSON covering
+    all 4 branches (bad filename, missing entry, matching entry present → no output,
+    unrelated file → no output) — all confirmed correct.
+  - `styling/README.md` documents this as **always-active** for every project using
+    this template (unlike the theme-toggle feature, which stays ask-the-user/optional).
+- **Next up:** E (showcase page rebuild) is the natural follow-on now that theming is
+  real — a rebuilt component gallery could reasonably include a "theme history" view
+  reading `THEME-LOG.json` directly, matching what this was designed for. Also still
+  open: `forms/` decision, `testing/`/`core/` doc audits, state-management decision, F.
 
 ## 7. Working agreements / process notes
 
