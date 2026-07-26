@@ -651,7 +651,40 @@ Confirmed as standard practice in this exact ecosystem via the tweakcn research
   summarizing everything built since (items A-E, the git housekeeping, MUI removal,
   dark/light theming, Husky/lint-staged) in one place.
 
-## 13. Working agreements / process notes
+## 13. Standards cross-check against shadcn-ui/ui (2026-07-26)
+
+User asked to cross-check our conventions against the official `github.com/shadcn-ui/ui`
+repo. Found something directly actionable: an **official, shadcn-team-maintained
+Claude Code skill** exists specifically to prevent Claude from guessing wrong
+shadcn/ui APIs — its stated purpose is preventing exactly "wrong import paths,
+incorrect Combobox composition, missing Registry configurations, deprecated API
+usage." It explicitly calls out two concrete anti-patterns:
+
+- **"Using FieldGroup for forms instead of raw divs"** — checked our own repo
+  directly against this: we DO vendor `field.tsx` (`Field`/`FieldGroup`/`FieldLabel`/
+  `FieldDescription`/`FieldError`/`FieldSet`/`FieldLegend`), but our own gallery page's
+  form example bypassed it entirely with raw `<div>` wrappers around `Label`+`Input` —
+  exactly the flagged mistake. Worse: **nothing in `forms/01-rhf-zod.md` documented
+  `Field`/`FieldGroup` at all**, meaning every future form built in this repo would
+  likely repeat the same mistake, not just this one example. **Fixed**: added a
+  "Mandatory Field Composition" section to `forms/01-rhf-zod.md` (confirmed against
+  ui.shadcn.com's current docs — `data-invalid` wiring from RHF's `formState.errors`,
+  mirrored as `aria-invalid`, `FieldError` conditionally rendered, `FieldGroup` for
+  stacking, `FieldSet`+`FieldLegend` for semantic grouping), and rebuilt
+  `ComponentsGalleryPage.tsx`'s form example to actually use it. Validated with a real
+  test that only passes if `FieldLabel`'s `htmlFor` genuinely associates with the
+  input's `id` (`screen.getByLabelText`) — not just that it renders without crashing.
+- **"Manual `space-y-*` classes instead of `gap`"** — swept the whole repo for this;
+  confirmed zero occurrences anywhere, already clean.
+
+**Worth revisiting later**: that official skill (and several community forks of it)
+exist as installable Claude Code skills — if the workflow ever moves to Claude Code
+specifically (vs. this chat interface), installing the official one directly could be
+a stronger, always-current backstop than our own hand-maintained rule docs for the
+shadcn-API-correctness slice specifically. Not actionable in this environment right
+now, but a real option worth remembering.
+
+## 14. Working agreements / process notes
 
 - User wants to **hold all pushes until explicitly requested** — make local commits
   freely, but don't push to any remote without being asked first, so they can review
