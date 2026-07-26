@@ -36,4 +36,13 @@ describe("ComponentsGalleryPage", () => {
       .closest("section");
     expect(historySection).not.toBeNull();
   });
+
+  it("associates FieldLabel with its input via htmlFor (Field composition works)", () => {
+    render(<ComponentsGalleryPage />);
+    // getByLabelText only succeeds if FieldLabel's htmlFor genuinely matches the
+    // input's id - this proves the Field/FieldLabel composition is wired
+    // correctly, not just that it renders without crashing.
+    expect(screen.getByLabelText("Name")).toBeInTheDocument();
+    expect(screen.getByLabelText("Message")).toBeInTheDocument();
+  });
 });

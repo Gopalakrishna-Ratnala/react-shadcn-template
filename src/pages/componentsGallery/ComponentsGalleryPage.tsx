@@ -8,8 +8,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Field,
+  FieldDescription,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ThemeToggle } from "@/components/shared";
 
@@ -195,7 +200,7 @@ export function ComponentsGalleryPage() {
         <GallerySection
           id="forms"
           title="Form Inputs"
-          description="Input, Label, and Textarea primitives inside a Card."
+          description="Field/FieldGroup/FieldLabel composition (the correct shadcn/ui pattern) wrapping Input and Textarea."
         >
           <Card>
             <CardHeader>
@@ -205,19 +210,22 @@ export function ComponentsGalleryPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className={styles.formGrid}>
-                <div className={styles.formField}>
-                  <Label htmlFor="gallery-name">Name</Label>
+              <FieldGroup>
+                <Field>
+                  <FieldLabel htmlFor="gallery-name">Name</FieldLabel>
                   <Input id="gallery-name" placeholder="Jane Doe" />
-                </div>
-                <div className={styles.formField}>
-                  <Label htmlFor="gallery-message">Message</Label>
+                  <FieldDescription>
+                    Shown alongside your message.
+                  </FieldDescription>
+                </Field>
+                <Field>
+                  <FieldLabel htmlFor="gallery-message">Message</FieldLabel>
                   <Textarea
                     id="gallery-message"
                     placeholder="Type something..."
                   />
-                </div>
-              </div>
+                </Field>
+              </FieldGroup>
             </CardContent>
           </Card>
         </GallerySection>

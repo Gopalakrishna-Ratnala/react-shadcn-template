@@ -22,6 +22,4 @@ export const componentsGalleryPageStyles = {
     "text-[length:var(--text-base)] leading-[var(--leading-base)]",
   typographyHelper:
     "text-[length:var(--text-sm)] leading-[var(--leading-sm)] text-muted-foreground",
-  formGrid: "grid max-w-sm grid-cols-1 gap-4",
-  formField: "flex flex-col gap-2",
 };
