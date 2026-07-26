@@ -412,10 +412,50 @@ settled first.
     unrelated file → no output) — all confirmed correct.
   - `styling/README.md` documents this as **always-active** for every project using
     this template (unlike the theme-toggle feature, which stays ask-the-user/optional).
-- **Next up:** E (showcase page rebuild) is the natural follow-on now that theming is
-  real — a rebuilt component gallery could reasonably include a "theme history" view
-  reading `THEME-LOG.json` directly, matching what this was designed for. Also still
-  open: `forms/` decision, `testing/`/`core/` doc audits, state-management decision, F.
+- **Item E (component showcase page rebuild) — DONE.**
+  - Rebuilt from scratch at `src/pages/componentsGallery/`, per the Section 3
+    commit-history framing — same *purpose* as the research branch's
+    `ComponentsGalleryPage`, not extended from it. Built against the finalized tier
+    system (C) and theme-versioning setup (D), both of which didn't exist when the
+    research version was made.
+  - Two real prerequisites built along the way that had never actually existed: an
+    `ErrorBoundary` (`src/components/shared/errorBoundary/`) — `core/10-error-handling.md`
+    always required one at the app root, but it was never actually built anywhere —
+    and real routing (`ROUTES` constants, `src/config/routes.tsx`, and `App.tsx`
+    rewired from the bootstrap placeholder to the real root component:
+    `ErrorBoundary` + `BrowserRouter` + `AppRoutes`, exactly matching
+    `core/12-routing.md`'s documented pattern).
+  - Real gotcha caught and fixed: `React.lazy()` requires a **default** export, but
+    every page/component in this project uses named exports for consistency. Rather
+    than introducing an inconsistent default export just for this one page, the lazy
+    import is adapted with `.then(m => ({ default: m.ComponentsGalleryPage }))`.
+  - Scoped to 6 sections deliberately, not an exhaustive pass over every shadcn
+    primitive: Foundations (all 27 semantic color tokens as live swatches),
+    Typography, Buttons & Badges, Form Inputs, Feedback, and — the genuinely new
+    capability beyond the research branch's version — **Theme History**, reading
+    `THEME-LOG.json` directly and rendering every candidate with a status badge.
+  - Structure follows the item C tier system exactly: the page itself (5-file
+    contract) plus a `components/` subfolder for page-scoped helpers (`ColorSwatch`,
+    `GallerySection`, `ThemeHistoryPanel` — the last one accepts `entries` as a prop
+    rather than importing the JSON itself, for testability).
+  - Verified every shadcn primitive's exact export name and prop/variant signature by
+    reading the actual vendored source before using it (`Button`, `Badge`, `Card`,
+    `Alert`, `Input`, `Label`, `Textarea`) — not guessed.
+  - Caught a real rule violation during self-review before committing: several
+    multi-token `classNames` were initially written inline in the JSX — moved to
+    `.styles.ts` as named consts, exactly what `check-no-inline-classnames.sh` exists
+    to catch.
+  - 18 tests total across all new files, all passing. Validated beyond typecheck: a
+    real `npm run build` confirms `ComponentsGalleryPage` compiles into its own
+    separate lazy-loaded chunk (proving the named-export adaptation actually works),
+    and a real `vite preview` + `curl` against both `/` and `/components-gallery`
+    confirmed both serve correctly (200, correct script tag, SPA fallback working).
+- **Next up:** `forms/` decision (RHF+Zod vs RHF+Yup — package.json only has zod),
+  `testing/`/`core/` doc audits, the state-management decision (Zustand vs Redux
+  Toolkit — neither installed), F (`.github/copilot-instructions.md`'s remaining stale
+  rule-file numbering, lowest priority). Also still open from item D: bridging
+  typography/radius/shadow tokens into Tailwind's theme layer properly (flagged in
+  `src/index.css` as needing its own verified pass).
 
 ## 7. Working agreements / process notes
 
