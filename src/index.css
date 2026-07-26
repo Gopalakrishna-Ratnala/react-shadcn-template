@@ -17,16 +17,8 @@
    across the whole app, because they reference the token vars at
    runtime, not a compiled value.
 
-   NOT YET BRIDGED: theme.css also defines typography (--text-*,
-   --leading-*), radius (--radius, --radius-sm/-lg/-full), shadow, icon,
-   and motion tokens. Several of those names collide with Tailwind v4's
-   own reserved theme namespace (e.g. --radius-sm, --text-xs), and
-   bridging them incorrectly risks a genuine circular CSS variable
-   reference rather than a silent style bug. Wiring those correctly
-   needs its own careful pass (verified against real Tailwind v4
-   compiled output), not something to guess at alongside color wiring.
-   Until then, consume those tokens directly via var(), e.g.
-   className="rounded-[var(--radius)]", not via a bare `rounded` utility.
+   Typography, radius, and shadow tokens are handled separately, below -
+   see the TYPOGRAPHY / RADIUS / SHADOW OVERRIDES block after this one.
    ============================================================ */
 @theme inline {
   --color-background: var(--background);
@@ -74,6 +66,98 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+}
+
+/* ============================================================
+   TYPOGRAPHY / RADIUS / SHADOW OVERRIDES
+   Tailwind v4 ships its OWN built-in default values for text-*, rounded-*,
+   and shadow-* utilities. Bridging only the color tokens above (via
+   @theme inline) does NOT change this - those utility classes already
+   exist today, but silently use Tailwind's stock hardcoded values, not
+   this project's theme tokens. Editing theme.css's --text-sm or
+   --radius-lg would have had zero visible effect anywhere those classes
+   are used, without this block.
+
+   These are NOT bridged via @theme inline like the colors above, because
+   several of our token names (--text-xs, --radius-sm, etc.) are the exact
+   same names Tailwind's own theme layer reserves for its own default
+   scale - bridging them there would be a genuine circular CSS variable
+   reference, not just a style bug. Confirmed against shadcn's own current
+   theming docs, which avoid this by never declaring --radius-sm etc. as
+   standalone :root properties at all (only deriving them inside
+   @theme inline from a single differently-named base) - our
+   theme-template.css intentionally keeps --radius-sm/-lg as independent,
+   designer-overridable values in :root (see its own comments), which is
+   why that approach doesn't apply here without renaming tokens theme.css
+   explicitly says never to rename.
+
+   Instead: plain, unlayered CSS rules with !important, directly
+   overriding the specific utility classes this project's token scale
+   actually defines. This technique is confirmed from tweakcn's own
+   production source (public/live-preview.js) solving the identical
+   problem the same way.
+
+   Only override the exact class names below - this project's scale is
+   xs/sm/base/lg/xl/2xl/3xl/4xl for text, sm/base(rounded)/lg/full for
+   radius, and sm/md/lg for shadow. Don't use rounded-md/rounded-xl/
+   rounded-2xl/rounded-3xl or other Tailwind default steps outside this
+   list - they aren't part of this project's design system and would
+   silently fall back to Tailwind's unthemed stock values.
+   ============================================================ */
+.text-xs {
+  font-size: var(--text-xs) !important;
+  line-height: var(--leading-xs) !important;
+}
+.text-sm {
+  font-size: var(--text-sm) !important;
+  line-height: var(--leading-sm) !important;
+}
+.text-base {
+  font-size: var(--text-base) !important;
+  line-height: var(--leading-base) !important;
+}
+.text-lg {
+  font-size: var(--text-lg) !important;
+  line-height: var(--leading-lg) !important;
+}
+.text-xl {
+  font-size: var(--text-xl) !important;
+  line-height: var(--leading-xl) !important;
+}
+.text-2xl {
+  font-size: var(--text-2xl) !important;
+  line-height: var(--leading-2xl) !important;
+}
+.text-3xl {
+  font-size: var(--text-3xl) !important;
+  line-height: var(--leading-3xl) !important;
+}
+.text-4xl {
+  font-size: var(--text-4xl) !important;
+  line-height: var(--leading-4xl) !important;
+}
+
+.rounded-sm {
+  border-radius: var(--radius-sm) !important;
+}
+.rounded {
+  border-radius: var(--radius) !important;
+}
+.rounded-lg {
+  border-radius: var(--radius-lg) !important;
+}
+.rounded-full {
+  border-radius: var(--radius-full) !important;
+}
+
+.shadow-sm {
+  box-shadow: var(--shadow-sm) !important;
+}
+.shadow-md {
+  box-shadow: var(--shadow-md) !important;
+}
+.shadow-lg {
+  box-shadow: var(--shadow-lg) !important;
 }
 
 *,
