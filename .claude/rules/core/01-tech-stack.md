@@ -14,7 +14,7 @@ Fill in your chosen library for each slot, then delete the strategy files you ar
 - **Forms**: [e.g. React Hook Form + Zod] — see `forms/`
 - **Testing**: Vitest + React Testing Library — installed and configured (see `testing/`)
 - **Storybook**: v8.x with a11y addon *(optional — see `features/01-storybook.md`)*
-- **Icons**: [e.g. `public/assets/icons/` (SVG sprites) or `lucide-react`] — see setup choices in `CLAUDE.md`
+- **Icons**: `lucide-react` — already installed, fixed for this template
 
 ---
 

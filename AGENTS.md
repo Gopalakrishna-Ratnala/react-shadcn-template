@@ -35,7 +35,7 @@ If anything is unclear:
 | Decision | Options |
 | --- | --- |
 | Styling library | shadcn/ui + Tailwind CSS v4 (`@tailwindcss/vite` — not PostCSS) — fixed for this template, not a choice |
-| Icon source | `public/assets/icons/` (SVG sprites) or `lucide-react` library |
+| Icon source | `lucide-react` — fixed for this template, already installed |
 | State management | Zustand or Redux Toolkit |
 | Forms & validation | React Hook Form + Yup or React Hook Form + Zod |
 | Data fetching | Fetch-based `apiClient` + json-server (local mock backend) — fixed for this template, not a choice |
