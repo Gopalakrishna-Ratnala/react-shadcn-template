@@ -142,3 +142,35 @@ using `Spinner` + `data-icon` + `disabled`:
   Search
 </Button>
 ```
+
+## Whole-Card Click Targets
+
+`Card` is a plain `<div>`-backed component with no Base UI `render` prop to turn
+it into a real `<button>`, and putting an `onClick` directly on a `Card` (or any
+div/span) is exactly what `check-no-div-span.sh`/`core/08-accessibility.md`
+forbid — a bare clickable container has no keyboard/screen-reader affordance.
+
+Use the **stretched-link/stretched-overlay pattern** instead: a real `Button`
+(or `Link`) as the last child of the `Card`, visually invisible but covering the
+whole card via absolute positioning, carrying a real `aria-label` describing the
+destination/action:
+
+```tsx
+<Card className="relative">
+  <CardHeader>
+    <CardTitle>{member.name}</CardTitle>
+    <CardDescription>{member.role}</CardDescription>
+  </CardHeader>
+  <Button
+    variant="link"
+    className="absolute inset-0 h-full w-full"
+    aria-label={`View ${member.name}'s profile`}
+    onClick={() => openMemberDetail(member.id)}
+  />
+</Card>
+```
+
+This keeps the card itself as plain content (no click handler on a div), gives
+keyboard users a real, focusable, labeled control, and still makes the entire
+visual card clickable — the standard accessible technique for this exact case,
+not something to reinvent per feature.
