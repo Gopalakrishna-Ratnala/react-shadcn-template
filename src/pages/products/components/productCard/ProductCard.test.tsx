@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import userEvent from "@testing-library/user-event";
+import { describe, expect, it, vi } from "vitest";
 
 import { ProductCard } from "./ProductCard";
 
@@ -30,5 +31,35 @@ describe("ProductCard", () => {
   it("shows an 'Out of stock' badge when the product is not in stock", () => {
     render(<ProductCard product={{ ...PRODUCT, inStock: false }} />);
     expect(screen.getByText("Out of stock")).toBeInTheDocument();
+  });
+
+  it("renders no action buttons when no callbacks are provided", () => {
+    render(<ProductCard product={PRODUCT} />);
+    expect(
+      screen.queryByRole("button", { name: "Edit" }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: "Delete" }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("calls onEdit with the product when Edit is clicked", async () => {
+    const user = userEvent.setup();
+    const onEdit = vi.fn();
+    render(<ProductCard product={PRODUCT} onEdit={onEdit} />);
+
+    await user.click(screen.getByRole("button", { name: "Edit" }));
+
+    expect(onEdit).toHaveBeenCalledWith(PRODUCT);
+  });
+
+  it("calls onDelete with the product when Delete is clicked", async () => {
+    const user = userEvent.setup();
+    const onDelete = vi.fn();
+    render(<ProductCard product={PRODUCT} onDelete={onDelete} />);
+
+    await user.click(screen.getByRole("button", { name: "Delete" }));
+
+    expect(onDelete).toHaveBeenCalledWith(PRODUCT);
   });
 });

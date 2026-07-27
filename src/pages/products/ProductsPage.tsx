@@ -1,4 +1,4 @@
-import type { ChangeEvent, ReactElement } from "react";
+import { useState, type ChangeEvent, type ReactElement } from "react";
 
 import { Form, useLoaderData, useNavigation } from "react-router";
 
@@ -11,16 +11,31 @@ import {
 } from "@/components/ui/empty";
 import { Input } from "@/components/ui/input";
 import { useProductFiltersStore } from "@/store";
+import type { Product } from "@/types/product.types";
 
-import { ProductCard } from "./components";
+import {
+  DeleteProductDialog,
+  ProductCard,
+  ProductFormDialog,
+} from "./components";
 import { productsLoader } from "./ProductsPage.loader";
 import { productsPageStyles as styles } from "./ProductsPage.styles";
+
+interface FormDialogState {
+  mode: "create" | "edit";
+  product?: Product;
+}
 
 export const ProductsPage = (): ReactElement => {
   const { products, searchTerm } = useLoaderData<typeof productsLoader>();
   const navigation = useNavigation();
   const storeSearchTerm = useProductFiltersStore((state) => state.searchTerm);
   const setSearchTerm = useProductFiltersStore((state) => state.setSearchTerm);
+
+  const [formDialog, setFormDialog] = useState<FormDialogState | null>(null);
+  const [productToDelete, setProductToDelete] = useState<Product | null>(
+    null,
+  );
 
   // Reflects the router's own pending state for this navigation - no
   // component-level AsyncState<T> needed, since the loader is route-tied
@@ -35,7 +50,12 @@ export const ProductsPage = (): ReactElement => {
 
   return (
     <section className={styles.wrapper}>
-      <h1>Products</h1>
+      <header className={styles.toolbar}>
+        <h1>Products</h1>
+        <Button onClick={() => setFormDialog({ mode: "create" })}>
+          Add product
+        </Button>
+      </header>
 
       <Form method="get" role="search" className={styles.searchForm}>
         <Input
@@ -67,11 +87,34 @@ export const ProductsPage = (): ReactElement => {
         <ul className={styles.grid}>
           {products.map((product) => (
             <li key={product.id}>
-              <ProductCard product={product} />
+              <ProductCard
+                product={product}
+                onEdit={(target) =>
+                  setFormDialog({ mode: "edit", product: target })
+                }
+                onDelete={setProductToDelete}
+              />
             </li>
           ))}
         </ul>
       )}
+
+      <ProductFormDialog
+        open={formDialog !== null}
+        onOpenChange={(open) => {
+          if (!open) setFormDialog(null);
+        }}
+        mode={formDialog?.mode ?? "create"}
+        product={formDialog?.product}
+      />
+
+      <DeleteProductDialog
+        open={productToDelete !== null}
+        onOpenChange={(open) => {
+          if (!open) setProductToDelete(null);
+        }}
+        product={productToDelete}
+      />
     </section>
   );
 };

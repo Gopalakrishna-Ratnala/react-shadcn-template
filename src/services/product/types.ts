@@ -5,3 +5,10 @@ export interface ProductDto {
   category: string;
   in_stock: boolean;
 }
+
+export interface ProductInput {
+  name: string;
+  category: string;
+  price: number;
+  inStock: boolean;
+}

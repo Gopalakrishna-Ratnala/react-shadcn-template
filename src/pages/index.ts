@@ -1,2 +1,2 @@
-export { ProductsPage, productsLoader } from "./products";
-export type { ProductsLoaderData } from "./products";
+export { ProductsPage, productsAction, productsLoader } from "./products";
+export type { ProductsActionData, ProductsLoaderData } from "./products";

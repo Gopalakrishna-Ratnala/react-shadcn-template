@@ -25,8 +25,13 @@ const routes: RouteObject[] = [
   {
     path: ROUTES.PRODUCTS,
     lazy: async () => {
-      const { ProductsPage, productsLoader } = await import("@/pages/products");
-      return { Component: ProductsPage, loader: productsLoader };
+      const { ProductsPage, productsLoader, productsAction } =
+        await import("@/pages/products");
+      return {
+        Component: ProductsPage,
+        loader: productsLoader,
+        action: productsAction,
+      };
     },
     HydrateFallback,
     ErrorBoundary: RouteErrorFallback,

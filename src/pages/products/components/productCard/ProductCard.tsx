@@ -1,10 +1,12 @@
 import type { ReactElement } from "react";
 
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -19,7 +21,11 @@ const formatPrice = (priceInCents: number): string =>
     currency: "USD",
   });
 
-export const ProductCard = ({ product }: ProductCardProps): ReactElement => {
+export const ProductCard = ({
+  product,
+  onEdit,
+  onDelete,
+}: ProductCardProps): ReactElement => {
   return (
     <Card>
       <CardHeader className={styles.header}>
@@ -34,6 +40,24 @@ export const ProductCard = ({ product }: ProductCardProps): ReactElement => {
       <CardContent>
         <p className={styles.price}>{formatPrice(product.priceInCents)}</p>
       </CardContent>
+      {(onEdit ?? onDelete) && (
+        <CardFooter className={styles.footer}>
+          {onEdit && (
+            <Button variant="outline" size="sm" onClick={() => onEdit(product)}>
+              Edit
+            </Button>
+          )}
+          {onDelete && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onDelete(product)}
+            >
+              Delete
+            </Button>
+          )}
+        </CardFooter>
+      )}
     </Card>
   );
 };

@@ -1,4 +1,9 @@
 export { apiClient, ApiError } from "./apiClient";
-export { getProducts } from "./product";
-export type { ProductDto } from "./product";
+export {
+  createProduct,
+  deleteProduct,
+  getProducts,
+  updateProduct,
+} from "./product";
+export type { ProductDto, ProductInput } from "./product";
 export { mapProductDtoToProduct } from "./mappers/productMapper";

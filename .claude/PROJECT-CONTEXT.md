@@ -1575,6 +1575,84 @@ messages' self-reported validation:
   keeping — these 4 fixes are refinements on a sound foundation, not signs the
   approach was wrong.**
 
+**Phase 3 — done (2026-07-28).** Full CRUD on the same Products catalog
+reference feature: add/edit/delete, closing out assignment 1's full spec
+(`run-feature-test/SKILL.md`) rather than leaving it read-only. Built in a
+separate session, in parallel with the independent review above — rebased
+onto the review's fixes before pushing, and separately audited (and fixed) the
+same `<div>`/`<span>` issue in this phase's own new code
+(`ProductsPage.tsx`'s toolbar row → `<header>`, `DeleteProductDialog.tsx`'s
+inline emphasis `<span>` → `<strong>`), since that rule wasn't something this
+session had internalized from the start — it was only caught by the other
+session's line-by-line review, and would have recurred here otherwise.
+
+- **Service layer**: `createProduct`/`updateProduct`/`deleteProduct` added to
+  `productService.ts` (POST/PATCH/DELETE via `apiClient`), each with its own
+  test mocking `apiClient`. `ProductInput` type added for the dollars-based
+  form shape (`toDto()` maps it to the DTO — no cents conversion needed here,
+  since `unit_price` in the DTO is already dollars; only the *domain model's*
+  `priceInCents` is cents, which stays mapper-only).
+- **`ProductsPage.action.ts`**: a single route `action` dispatching on
+  `request.method` (POST/PATCH/DELETE) — the concrete resolution of plan item
+  3's "need to work out exactly how this fits" note. Returns
+  `{ ok, error? }` rather than throwing for known API failures, so a failed
+  mutation shows an inline toast without triggering the route's
+  `ErrorBoundary` (that's reserved for the loader/genuinely-broken-route case).
+  Full test coverage: all three methods plus the error and unsupported-method
+  paths, called directly with real `Request`/`FormData`.
+- **The RHF+Zod ↔ router decision, worked out for real** (not just prose):
+  `ProductFormDialog` uses `useForm` + `zodResolver` for client-side
+  validation exactly as `forms/01-rhf-zod.md` requires (including that rule
+  doc's own `z.coerce.number()` input/output split — which, notably, already
+  used a `ProductsPage.schema.ts` example before this feature existed).
+  On a *valid* submit, the RHF `onSubmit` callback builds `FormData` and calls
+  `fetcher.submit(..., { method, action: ROUTES.PRODUCTS })` — a non-navigating
+  `useFetcher`, not a direct service call and not `useSubmit` (which would
+  navigate away from the list). RHF still fully owns client validation; the
+  router only sees a submission once RHF has already approved it.
+- **`ProductFormDialog`** (create/edit, same form) and **`DeleteProductDialog`**
+  (confirmation, matching assignment 1's "delete button with confirmation")
+  added under `pages/products/components/`, each with full test coverage via
+  `createMemoryRouter` + a real (non-mocked) `action` function passed directly
+  into the test's router, asserting the actual `FormData`/HTTP method that
+  reaches it — not just that a mock got called.
+- **`ProductCard`** extended with optional `onEdit`/`onDelete` callback props
+  (a `CardFooter` renders only when provided) — kept optional rather than
+  required, since other future usages of this card may be read-only.
+- **Dialog open/target state kept as local `useState` in `ProductsPage`**, not
+  Zustand — concretely applying the state-management boundary from plan item 6
+  ("Zustand reserved for genuinely global state"): which dialog is open and
+  which product it targets is ephemeral, single-interaction UI state, not
+  global app state, unlike the search term (which persists across the
+  interaction and could reasonably be read elsewhere).
+- **Router wiring**: `/products`'s `lazy()` now also resolves `action:
+  productsAction` alongside `Component`/`loader` — confirmed via `npm run
+  build` that all three still code-split into the same `products-*.js` chunk.
+- **Real end-to-end proof, not just mocked tests**: ran actual `POST`/`PATCH`/
+  `DELETE` requests against a live `json-server` instance (on a scratch copy
+  of `db.json`, so the repo's seed data stayed untouched) and confirmed each
+  one matches what the service/action assume.
+- Validated per the Phase 10 discipline: `tsc -b` clean (including one real
+  fix along the way — `DialogClose`'s `asChild` doesn't exist on this
+  codebase's Base-UI-backed primitive; the correct composition is `render={<
+  Button />}`, which the existing `DialogFooter`'s `showCloseButton` already
+  used internally, so this wasn't a guess), lint back to the same 15-error
+  baseline (some import-order errors surfaced across the new files and were
+  fixed via `eslint --fix` before final validation), `vitest run` 17 files /
+  61 tests passing (up from 14/38), `npm run build` succeeds.
+- Rebased onto the independent review's commits before pushing (the review's
+  fixes landed on the remote while this phase was in progress in a separate
+  session) — resolved conflicts by keeping the review's `section`/`ul`/`li`/
+  `hgroup`/`useLoaderData<typeof productsLoader>()` fixes and layering this
+  phase's mutation UI (toolbar button, edit/delete callbacks, both dialogs) on
+  top, plus fixing this phase's own 2 new `<div>`/`<span>` instances the same
+  way. Re-ran the full validation suite again after the rebase.
+- **Next up: Phase 4** (per-route error handling — Products already has a
+  working `RouteErrorFallback` from Phase 2, but the broader rule-doc rewrite
+  for `core/10-error-handling.md` per plan item 4/8 is still open), or Phase 5
+  (auth/`ProtectedRoute` redirect pattern), whichever the user wants tackled
+  next.
+
 ### Process note on how this gets picked up
 
 User asked whether this chat session has a length limit and needs a fresh chat to
