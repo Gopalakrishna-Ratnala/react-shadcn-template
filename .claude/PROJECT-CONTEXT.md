@@ -1347,7 +1347,113 @@ out, so no code change was needed there.
 
 Validated: 18/18 tests, `tsc -b` clean (docs only, unaffected as expected).
 
-## 25. Working agreements / process notes
+## 25. DECISION: migrate to React Router data mode — full plan, not yet started (2026-07-27)
+
+**This is the current top-priority item for the next session.** User made a deliberate,
+explicit call: this repo is a global template other teams will build real, growing
+projects on top of — it needs the more capable, more scalable routing/data-fetching
+foundation from day one, not something retrofit later once real projects already
+depend on the simpler pattern (declarative mode, what we currently have).
+
+### The decision itself
+
+Move from **declarative mode** (`BrowserRouter` + JSX `Routes`/`Route`, all data
+fetching via component-level `useEffect`/hooks — what we have today, confirmed to
+match this mode exactly in Section 24) to **data mode**
+(`createBrowserRouter`/`RouterProvider`, route-level `loader`/`action` functions).
+Framework mode (Vite plugin, optional SSR) was considered and explicitly rejected for
+now — it requires committing to a server runtime and SSR, which contradicts this
+template's current local-only, no-deployment-decided scope. Data mode is the
+"sweet spot": it fixes real, confirmed weaknesses in what we built (see below) without
+that much bigger leap.
+
+### Why data mode specifically, technically confirmed (not assumed)
+
+Verified directly via React Router's own current docs/tutorials before deciding:
+- **Loaders start fetching when the route matches, before the component renders** —
+  eliminates the render-then-fetch waterfall inherent to our current
+  `useEffect`-in-a-hook pattern.
+- **Actions auto-revalidate** — "once completed, React Router automatically
+  revalidates the UI data without you having to handle that process manually." This
+  directly replaces the manual `await create(...); await load();` re-fetch pattern
+  used in the item-1 dry-run's `useProducts` hook (Section 19).
+- **`useFetcher()` handles fetch cancellation, concurrent-fetch coordination,
+  revalidation, redirects, and optimistic UI, all built-in** — none of which our
+  hand-rolled `apiClient` + `AsyncState<T>` pattern has today.
+- Confirmed this is still a client-only SPA (no Vite plugin, no SSR) — same
+  deployment model as today, just a better data layer.
+
+### The full 10-phase plan (agreed with user, nothing implemented yet)
+
+1. **Router itself**: `createBrowserRouter([...])` + `<RouterProvider>` replaces
+   `<BrowserRouter>` + JSX `Routes`/`Route`. `App.tsx` simplifies (no longer manually
+   wraps `BrowserRouter`). Route-level `lazy: () => import(...)` replaces the current
+   `React.lazy(...).then()` adapter — genuinely simpler, since data-mode's route-level
+   `lazy` doesn't have `React.lazy`'s default-export requirement that forced that
+   adapter in the first place. No new dependency needed —
+   `createBrowserRouter`/`RouterProvider` already ship in the installed `react-router`
+   package.
+2. **Data fetching (the biggest shift)**: fetching moves from component hooks into
+   route-level `loader` functions. Components read data via `useLoaderData()` /
+   `useRouteLoaderData()` (parent route's data from a child route). The
+   `apiClient` → service → mapper chain stays exactly as-is — only the *caller*
+   changes (a loader instead of a custom hook). `AsyncState<T>`'s role narrows to
+   non-route-tied fetches only (e.g. a modal's on-demand fetch) — the router itself
+   tracks route-tied pending state via `useNavigation()`.
+3. **Mutations**: route-level `action` functions replace "call the service, then
+   manually re-fetch." Need to work out exactly how RHF+Zod fits — RHF still owns
+   client-side validation, but on valid submit call `useSubmit()`
+   (or `useFetcher()` for a non-navigating submit) instead of calling the service
+   directly from the component. This is a real design decision to get right, not
+   guess at, when the work actually starts.
+4. **Error handling**: data mode's per-route `errorElement`/`ErrorBoundary` catches
+   loader/action errors at the nearest route, complementing (not replacing) the
+   existing app-level `ErrorBoundary`.
+5. **Auth / `ProtectedRoute`**: idiomatic data-mode pattern is a loader doing
+   `throw redirect(ROUTES.LOGIN)` before render — no flash of protected content while
+   a component-level check runs, unlike the current `<Navigate>` approach.
+   `core/12-routing.md`'s `ProtectedRoute` pattern needs reworking to match.
+6. **State management boundary (Zustand)**: route-tied server data lives in loader
+   data (`useLoaderData`), never duplicated into a Zustand store. Zustand stays
+   reserved for genuinely global client state (theme, session flags, UI state) —
+   simplifies the state-management story, doesn't complicate it.
+7. **Testing conventions**: need a documented pattern for testing loaders/actions
+   directly (call with a fake `Request`/params, mock `apiClient`), plus
+   `createMemoryRouter` for integration-style component tests needing real routing
+   context. `testing/01-vitest-rtl.md` is currently silent on this entirely.
+8. **Rule docs needing updates**: `core/12-routing.md` (the most central rewrite —
+   router setup + `ProtectedRoute`), `core/07-react-hooks.md` (the `useUser` example
+   becomes a loader example), `core/10-error-handling.md` (`AsyncState<T>` scoped
+   down, per-route error boundary guidance added), `data-fetching/02-api-services.md`
+   / `03-data-layer.md` (service layer unchanged, but "who calls it" story changes),
+   `forms/01-rhf-zod.md` (the submit-flow decision worked in),
+   `testing/01-vitest-rtl.md` (new loader/action testing section),
+   `state-management/01-zustand.md` (the boundary clarification added).
+9. **Prove it on real code**: convert the one real route (`/components-gallery`) to
+   the new format first — low-risk proof, since it has no real data-fetching yet.
+   Then actually build a small real loader-backed feature — **this should fold in the
+   still-pending "reference feature" decision from Section 8/16** (build it once, in
+   data mode, rather than building it now in the old pattern and migrating it later).
+10. **Full validation at each phase, not just at the end** — typecheck, lint, test,
+    build after every phase, same discipline as everything else this project.
+
+### Process note on how this gets picked up
+
+User asked whether this chat session has a length limit and needs a fresh chat to
+continue this work — confirmed yes (this conversation has already been compacted
+once). Recommended starting the actual migration in a **new chat**, with this
+section serving as the complete, self-contained briefing — read this file first in
+any new session before starting Phase 1. Confirmed the actual migration work itself
+does *not* require Claude Code specifically — everything done this whole project
+(file edits, git commits/pushes, running builds/tests) has been through this same
+chat interface's own tool access, not Claude Code. Claude Code only matters again
+later, for genuinely re-running the `run-feature-test` skill against the migrated
+result the same way reports 1–6 tested the current architecture.
+
+**Status: plan agreed, nothing implemented yet. Start with Phase 1 in the next
+session.**
+
+## 26. Working agreements / process notes
 
 - User wants to **hold all pushes until explicitly requested** — make local commits
   freely, but don't push to any remote without being asked first, so they can review
