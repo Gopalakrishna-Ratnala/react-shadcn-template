@@ -53,6 +53,45 @@ mkdir -p ~/dev && cd ~/dev
 node --version   # note this down — you'll need Node >=22.22.1 (see package.json's engines field)
 ```
 
+**Set up your local permissions override, once per machine** — this repo's
+committed `.claude/settings.json` deliberately has no broad permission allow-list
+(so real projects built from this template stay conservative by default). Without
+it, Claude Code will prompt you to approve almost every individual command during
+the skill's autonomous steps — which is friction the skill is specifically meant
+to avoid, separate from the one intentional handoff in Step 2 below. Create
+`.claude/settings.local.json` (personal, automatically gitignored — never
+committed) with:
+
+```json
+{
+  "permissions": {
+    "allow": [
+      "Read",
+      "Write",
+      "Edit",
+      "Bash(git:*)",
+      "Bash(npm:*)",
+      "Bash(npx:*)",
+      "Bash(node:*)",
+      "Bash(rm -rf /tmp/feature-test-*)",
+      "Bash(date:*)",
+      "Bash(sleep:*)"
+    ],
+    "deny": [
+      "Bash(rm -rf /*)",
+      "Bash(curl:*)",
+      "Bash(wget:*)"
+    ]
+  }
+}
+```
+
+This does this machine's user only — it never gets committed or affects anyone
+else, and it doesn't change what's shipped to real client projects built from this
+template. If you still get prompted for something not covered above, note the
+exact command it asked about and add a matching rule — the goal is genuine
+end-to-end autonomy for everything except the one deliberate handoff below.
+
 ## Step 1 — Run the skill
 
 **For Round 1** (breadth), in a Claude Code session, say:

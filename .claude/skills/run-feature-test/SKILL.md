@@ -23,6 +23,16 @@ and start a second session.
 
 ## General rule for both phases: never ask, pick and document
 
+**Before running this skill for the first time on a given machine**, make sure
+`.claude/settings.local.json` exists with a permission allow-list covering
+`git`/`npm`/`npx`/`node` and file `Read`/`Write`/`Edit` — see
+`FEATURE-TEST-PLAN.md`'s Step 0 for the exact content. Without it, Claude Code
+will prompt for approval on nearly every individual command, which is a
+**different problem from, and should not be confused with**, the one deliberate
+human handoff this skill requires (below) — that handoff is structural (a real
+Claude Code platform limitation), not a permissions gap, and isn't something any
+settings file can remove.
+
 **Never pause to ask the human anything mid-phase.** If something is ambiguous, pick
 the more conservative/standard choice, note it in the "Assumptions made" section
 later, and keep going. The only acceptable early stop is a hard, unrecoverable error —
