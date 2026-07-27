@@ -24,11 +24,11 @@ export const RouteErrorFallback = ({
   const error = useRouteError();
 
   return (
-    <div className={styles.wrapper}>
+    <section className={styles.wrapper}>
       <Alert variant="destructive">
         <AlertTitle>{title}</AlertTitle>
         <AlertDescription>{getErrorMessage(error)}</AlertDescription>
       </Alert>
-    </div>
+    </section>
   );
 };

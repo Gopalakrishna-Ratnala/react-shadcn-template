@@ -4,6 +4,7 @@ import { createMemoryRouter, RouterProvider } from "react-router";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { RouteErrorFallback } from "@/components/blocks";
+import { HydrateFallback } from "@/config/routeFallback";
 import { getProducts } from "@/services/product";
 import { useProductFiltersStore } from "@/store";
 
@@ -40,6 +41,7 @@ const renderProductsPage = (initialEntry = "/products") => {
         loader: productsLoader,
         Component: ProductsPage,
         ErrorBoundary: RouteErrorFallback,
+        HydrateFallback,
       },
     ],
     { initialEntries: [initialEntry] },

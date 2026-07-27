@@ -23,10 +23,10 @@ export const ProductCard = ({ product }: ProductCardProps): ReactElement => {
   return (
     <Card>
       <CardHeader className={styles.header}>
-        <div>
+        <hgroup>
           <CardTitle>{product.name}</CardTitle>
           <CardDescription>{product.category}</CardDescription>
-        </div>
+        </hgroup>
         <Badge variant={product.inStock ? "default" : "outline"}>
           {product.inStock ? "In stock" : "Out of stock"}
         </Badge>

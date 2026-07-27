@@ -6,6 +6,8 @@ import {
 } from "react-router";
 import { describe, expect, it } from "vitest";
 
+import { HydrateFallback } from "@/config/routeFallback";
+
 import { RouteErrorFallback } from "./RouteErrorFallback";
 
 const renderWithError = (loader: RouteObject["loader"]) => {
@@ -16,6 +18,7 @@ const renderWithError = (loader: RouteObject["loader"]) => {
         loader,
         Component: () => null,
         ErrorBoundary: RouteErrorFallback,
+        HydrateFallback,
       },
     ],
     { initialEntries: ["/"] },

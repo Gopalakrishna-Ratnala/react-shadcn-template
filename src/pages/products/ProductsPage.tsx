@@ -13,13 +13,11 @@ import { Input } from "@/components/ui/input";
 import { useProductFiltersStore } from "@/store";
 
 import { ProductCard } from "./components";
+import { productsLoader } from "./ProductsPage.loader";
 import { productsPageStyles as styles } from "./ProductsPage.styles";
 
-import type { ProductsLoaderData } from "./ProductsPage.loader";
-
 export const ProductsPage = (): ReactElement => {
-  const { products, searchTerm } =
-    useLoaderData() as unknown as ProductsLoaderData;
+  const { products, searchTerm } = useLoaderData<typeof productsLoader>();
   const navigation = useNavigation();
   const storeSearchTerm = useProductFiltersStore((state) => state.searchTerm);
   const setSearchTerm = useProductFiltersStore((state) => state.setSearchTerm);
@@ -36,7 +34,7 @@ export const ProductsPage = (): ReactElement => {
   };
 
   return (
-    <div className={styles.wrapper}>
+    <section className={styles.wrapper}>
       <h1>Products</h1>
 
       <Form method="get" role="search" className={styles.searchForm}>
@@ -66,12 +64,14 @@ export const ProductsPage = (): ReactElement => {
           </EmptyHeader>
         </Empty>
       ) : (
-        <div className={styles.grid}>
+        <ul className={styles.grid}>
           {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <li key={product.id}>
+              <ProductCard product={product} />
+            </li>
           ))}
-        </div>
+        </ul>
       )}
-    </div>
+    </section>
   );
 };
