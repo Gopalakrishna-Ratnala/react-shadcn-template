@@ -61,12 +61,17 @@ if [[ ! -f "$INDEX_FILE" ]]; then
   exit 0
 fi
 
-# Check that the file's name (without extension) is exported from index.ts
+# Check that the file's name (without its final extension) is exported from index.ts.
+# Only strip the final .ts/.tsx extension - do NOT also strip a second "extension"
+# like .types/.constants/.mapper, since those are meaningful parts of the module
+# name, not a double file-type suffix. (.test./.stories./.styles./.schema. files
+# are already filtered out above, so there's no legitimate double-extension case
+# left here that would need a second strip - a second strip only mangles real
+# names like "common.types.ts" -> "common" instead of the correct "common.types".)
 MODULE_NAME="${BASENAME%.*}"
-MODULE_NAME="${MODULE_NAME%.*}"  # strip second extension for .test.ts etc (already filtered above)
 
-if ! grep -qE "export.+['\"]\./${MODULE_NAME}['\"]|export.+from.*${MODULE_NAME}" "$INDEX_FILE"; then
-  MSG="$FILE_PATH is not exported from $INDEX_FILE. Add a re-export for '$MODULE_NAME' to $INDEX_FILE, e.g.: export { $MODULE_NAME } from './$MODULE_NAME'; Source: 03-coding-principles.md"
+if ! grep -qE "export.+['\"]\./${MODULE_NAME}['\"]|export.+from.*${MODULE_NAME}" <(tr '\n' ' ' < "$INDEX_FILE"); then
+  MSG="$FILE_PATH is not exported from $INDEX_FILE. Add a re-export to $INDEX_FILE for the actual named export(s) this file defines, from './$MODULE_NAME' — e.g. export { MyThing } from './$MODULE_NAME'; or, for a types-only file, export type { MyType } from './$MODULE_NAME';. Source: 03-coding-principles.md"
   jq -n --arg msg "$MSG" '{hookSpecificOutput: {hookEventName: "PostToolUse", additionalContext: $msg}}'
 fi
 
