@@ -45,7 +45,7 @@ This repository is a **clean project template**. It ships with a minimal placeho
 | Styling library | shadcn/ui + Tailwind CSS v4 (`@tailwindcss/vite` — not PostCSS) — fixed for this template, not a choice |
 | Icon source | `lucide-react` — fixed for this template, already installed |
 | State management | Zustand — fixed for this template, not a choice |
-| Forms & validation | React Hook Form + Yup or React Hook Form + Zod |
+| Forms & validation | React Hook Form + Zod — fixed for this template, not a choice |
 | Data fetching | Fetch-based `apiClient` + json-server (local mock backend) — fixed for this template, not a choice |
 | Testing framework | Vitest + React Testing Library or Jest + React Testing Library |
 
@@ -105,10 +105,9 @@ Rules are split into three categories:
 
 ## Strategy Rules — Conditionally Loaded (scoped by `paths`)
 
-The `forms/` folder below still contains mutually exclusive files (RHF+Zod vs
-RHF+Yup). **Keep only the file matching your chosen library; delete the rest.**
-Styling, state management, and data fetching are all fixed for this template, not
-choices — see each section below.
+Every strategy category below is now fixed for this template — styling, forms,
+state management, and data fetching. None are per-project choices anymore; each
+section states what's used and why.
 
 ### Styling (`.claude/rules/styling/`) — fixed, not a choice
 
@@ -122,12 +121,11 @@ Optional:
 | --- | --- | --- | --- |
 | `styling/shadcn/02-theming.md` | Dark/light theme toggle via `next-themes` | Project needs theme switching | `src/**/*.tsx`, `src/**/*.ts` |
 
-### Forms (`.claude/rules/forms/`) — pick one
+### Forms (`.claude/rules/forms/`) — fixed, not a choice
 
 | File | Strategy | Loaded when editing |
 | --- | --- | --- |
-| `forms/01-rhf-zod.md` | React Hook Form + Zod | `src/**/*.tsx`, `src/hooks/**/*.ts` |
-| `forms/02-rhf-yup.md` | React Hook Form + Yup | `src/**/*.tsx`, `src/hooks/**/*.ts` |
+| `forms/01-rhf-zod.md` | React Hook Form + Zod, `Field`/`FieldGroup` composition, `InputGroup`/`ToggleGroup` | `src/**/*.tsx`, `src/hooks/**/*.ts` |
 
 ### State Management (`.claude/rules/state-management/`) — fixed, not a choice
 
@@ -214,8 +212,7 @@ The `check-no-div-span.sh` hook enforces the **Forbidden** tier automatically. A
 - **Zustand**: no direct state mutation, domain-focused stores (`state-management/01-zustand.md`)
 - **Redux Toolkit**: no direct mutation, typed hooks only, async logic in thunks (`state-management/02-redux-toolkit.md`)
 - **apiClient**: no raw `fetch` in UI components, typed responses, mapper usage (`data-fetching/01-fetch-client.md`)
-- **Forms (Zod)**: Zod schema, RHF resolver, Controller integration (`forms/01-rhf-zod.md`)
-- **Forms (Yup)**: Yup schema, yupResolver, Controller integration (`forms/02-rhf-yup.md`)
+- **Forms**: Zod schema, RHF resolver, Controller integration, `Field`/`FieldGroup` composition (`forms/01-rhf-zod.md`)
 - **Testing**: all required test cases, 100% coverage, ThemeProvider in render (`testing/01-vitest-rtl.md`)
 - **Accessibility**: aria-labels, keyboard navigation, semantic elements (`core/08-accessibility.md`)
 - **Responsive**: mobile-first breakpoint handling required for all projects — use breakpoint prefixes (`sm:`, `md:`, `lg:`, `xl:`) in `.styles.ts` and `dark:` classes for dark mode (`styling/shadcn/01-tailwind-shadcn-styling.md`)
@@ -226,7 +223,7 @@ The `check-no-div-span.sh` hook enforces the **Forbidden** tier automatically. A
 - **No Tailwind palette classes** *(shadcn/Tailwind only)*: use shadcn/ui semantic tokens (`bg-primary`, `text-muted-foreground`, etc.) never `bg-blue-500` (`styling/shadcn/01-tailwind-shadcn-styling.md`)
 - **Barrel exports**: every new file in hooks/, components/, types/, constants/, services/, store/ must be re-exported from sibling `index.ts` (`core/03-coding-principles.md`)
 - **`ApiResponse<T>` envelope**: all services must wrap results in `ApiResponse<T>`; hooks unwrap `.data` before storing (`data-fetching/01-fetch-client.md`, full pattern in `data-fetching/03-data-layer.md`)
-- **Schema placement**: form validation schemas (Zod or Yup) live in `ComponentName.schema.ts`, never inside `.tsx` or hooks (`forms/01-rhf-zod.md`, `forms/02-rhf-yup.md`)
+- **Schema placement**: form validation schemas (Zod) live in `ComponentName.schema.ts`, never inside `.tsx` or hooks (`forms/01-rhf-zod.md`)
 - **Storybook** *(if enabled)*: `.storybook/main.ts` and `preview.ts` must follow the contract in `features/01-storybook.md`; components use the 6-file contract; if disabled, use 5-file contract and omit `.stories.tsx` everywhere
 - **Error handling**: `ErrorBoundary` at root + page level, `AsyncState<T>` for async state, `unknown` in catch blocks (`core/10-error-handling.md`)
 - **Performance**: no default `React.memo`/`useMemo`/`useCallback`, stable list keys, lazy pages, virtualize >50-item lists (`core/11-performance.md`)

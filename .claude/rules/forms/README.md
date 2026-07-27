@@ -1,26 +1,13 @@
-# Forms Strategy — Choose One
+# Forms Strategy — React Hook Form + Zod (fixed, not a choice)
 
-**Enable only the file that matches your chosen validation library.**
+This project uses **React Hook Form + Zod** for all form validation. This is fixed
+for this template — there is no Yup option. `zod`, `react-hook-form`, and
+`@hookform/resolvers` are already installed.
 
-| Strategy | File to keep | File to delete |
-| --- | --- | --- |
-| **React Hook Form + Zod** | `01-rhf-zod.md` | — |
-| **React Hook Form + Yup** | `02-rhf-yup.md` | `01-rhf-zod.md` |
+## Rules
 
-## How to Switch
-
-1. Delete the file for the strategy you are NOT using.
-2. In `CLAUDE.md`, update the Forms row in the conditionally-loaded rules table.
-3. Update the validation dependency in `package.json` (`zod` vs `yup` + `@hookform/resolvers/yup`).
-
-## Strategy Summaries
-
-### React Hook Form + Zod (default)
-- Schema defined with `z.object()`
-- Types inferred via `z.infer<typeof schema>`
-- Resolver wired via `zodResolver`
-
-### React Hook Form + Yup
-- Schema defined with `yup.object()`
-- Types inferred via `yup.InferType<typeof schema>`
-- Resolver wired via `yupResolver`
+- `01-rhf-zod.md` — schema defined with `z.object()`, types inferred via
+  `z.infer<typeof schema>`, resolver wired via `zodResolver`. Also documents the
+  mandatory `Field`/`FieldGroup`/`FieldLabel`/`FieldError` composition (confirmed
+  against the official shadcn-ui/ui skill) and the `InputGroup`/`ToggleGroup`
+  patterns for icon-adorned inputs and multi-option choices.

@@ -37,7 +37,7 @@ If anything is unclear:
 | Styling library | shadcn/ui + Tailwind CSS v4 (`@tailwindcss/vite` — not PostCSS) — fixed for this template, not a choice |
 | Icon source | `lucide-react` — fixed for this template, already installed |
 | State management | Zustand — fixed for this template, not a choice |
-| Forms & validation | React Hook Form + Yup or React Hook Form + Zod |
+| Forms & validation | React Hook Form + Zod — fixed for this template, not a choice |
 | Data fetching | Fetch-based `apiClient` + json-server (local mock backend) — fixed for this template, not a choice |
 | Testing framework | Vitest + React Testing Library or Jest + React Testing Library |
 
@@ -59,7 +59,7 @@ After collecting answers:
 | UI Library | shadcn/ui + Tailwind CSS v4 (`@tailwindcss/vite` — NOT PostCSS) |
 | State | Zustand |
 | HTTP | Fetch-based `apiClient` + json-server (local mock) |
-| Forms | React Hook Form + Yup |
+| Forms | React Hook Form + Zod |
 | Router | React Router DOM v7 |
 | Testing | Vitest + React Testing Library |
 | Storybook | v8 with `@storybook/addon-a11y` |
@@ -81,7 +81,7 @@ After collecting answers:
 - **NEVER** skip required files for a component or page
 - **NEVER** create a new file in `hooks/`, `components/`, `types/`, `constants/`, `services/`, or `store/` without adding a re-export to the sibling `index.ts` *(hook-enforced — warning)*
 - **NEVER** return a raw domain model from a service — wrap in `ApiResponse<T>`
-- **NEVER** place a Yup schema inside a `.tsx` file or a hook — use a co-located `ComponentName.schema.ts`
+- **NEVER** place a Zod schema inside a `.tsx` file or a hook — use a co-located `ComponentName.schema.ts`
 - **NEVER** duplicate existing utilities, hooks, store patterns, service clients, constants, or types
 - **NEVER** call APIs directly inside UI components
 - **NEVER** place business logic inside presentational elements
