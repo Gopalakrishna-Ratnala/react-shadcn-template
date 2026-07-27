@@ -87,6 +87,51 @@ export function LoginPage() {
 }
 ```
 
+## Numeric/coerced fields (`z.coerce.*`) need a different `useForm` signature
+
+A schema with a coerced field (any `z.coerce.number()`, `z.coerce.date()`, etc. —
+common for numeric inputs, since raw `<input>` values are strings) has a **different
+type before and after validation runs**: the pre-coercion (input) shape and the
+post-coercion (output) shape aren't the same. `useForm<T>`'s single-generic form only
+works when input and output are identical — with a coerced field, it produces a real
+type error between the resolver and `handleSubmit`.
+
+```ts
+// ProductsPage.schema.ts
+import { z } from "zod";
+
+export const productFormSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  price: z.coerce.number().positive("Price must be greater than 0"),
+});
+
+// Split input (pre-coercion) from output (post-coercion) - useForm's generic
+// needs the input shape; the submit handler needs the output shape.
+export type ProductFormInput = z.input<typeof productFormSchema>;
+export type ProductFormValues = z.output<typeof productFormSchema>;
+```
+
+```tsx
+// ProductsPage.tsx
+import {
+  productFormSchema,
+  type ProductFormInput,
+  type ProductFormValues,
+} from "./ProductsPage.schema";
+
+export function ProductsPage() {
+  // Third generic (TTransformedValues) tells RHF the post-coercion shape, so
+  // handleSubmit's callback receives correctly-typed values, not the raw input type.
+  const form = useForm<ProductFormInput, unknown, ProductFormValues>({
+    resolver: zodResolver(productFormSchema),
+  });
+
+  const onSubmit = (values: ProductFormValues) => {
+    // values.price is genuinely `number` here, not `unknown`
+  };
+}
+```
+
 ## Forbidden Patterns
 
 - Do not define Zod schemas inline in `.tsx` files or hooks
