@@ -1,15 +1,18 @@
+import type { ReactElement } from "react";
+
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 import { colorSwatchStyles } from "./ColorSwatch.styles";
+
 import type { ColorSwatchProps } from "./types";
 
-export function ColorSwatch({
+export const ColorSwatch = ({
   label,
   token,
   bgClassName,
   textClassName,
-}: ColorSwatchProps) {
+}: ColorSwatchProps): ReactElement => {
   return (
     <figure className={colorSwatchStyles.wrapper}>
       <Card
@@ -23,4 +26,4 @@ export function ColorSwatch({
       </figcaption>
     </figure>
   );
-}
+};

@@ -87,14 +87,23 @@ async function request<T>(
 }
 
 export const apiClient = {
-  get: <T>(path: string, options?: RequestOptions) =>
+  get: <T>(path: string, options?: RequestOptions): Promise<T> =>
     request<T>("GET", path, undefined, options),
-  post: <T>(path: string, body?: unknown, options?: RequestOptions) =>
-    request<T>("POST", path, body, options),
-  patch: <T>(path: string, body?: unknown, options?: RequestOptions) =>
-    request<T>("PATCH", path, body, options),
-  put: <T>(path: string, body?: unknown, options?: RequestOptions) =>
-    request<T>("PUT", path, body, options),
-  del: <T>(path: string, options?: RequestOptions) =>
+  post: <T>(
+    path: string,
+    body?: unknown,
+    options?: RequestOptions,
+  ): Promise<T> => request<T>("POST", path, body, options),
+  patch: <T>(
+    path: string,
+    body?: unknown,
+    options?: RequestOptions,
+  ): Promise<T> => request<T>("PATCH", path, body, options),
+  put: <T>(
+    path: string,
+    body?: unknown,
+    options?: RequestOptions,
+  ): Promise<T> => request<T>("PUT", path, body, options),
+  del: <T>(path: string, options?: RequestOptions): Promise<T> =>
     request<T>("DELETE", path, undefined, options),
 };

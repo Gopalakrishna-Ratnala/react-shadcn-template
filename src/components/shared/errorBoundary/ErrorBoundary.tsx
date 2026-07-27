@@ -1,6 +1,8 @@
 import { Component } from "react";
+import type { ReactNode } from "react";
 
 import { errorBoundaryStyles } from "./ErrorBoundary.styles";
+
 import type { ErrorBoundaryProps, ErrorBoundaryState } from "./types";
 
 export class ErrorBoundary extends Component<
@@ -15,7 +17,7 @@ export class ErrorBoundary extends Component<
     return { hasError: true, message };
   }
 
-  render() {
+  render(): ReactNode {
     if (this.state.hasError) {
       return (
         this.props.fallback ?? (

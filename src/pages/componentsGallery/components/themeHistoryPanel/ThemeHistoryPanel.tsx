@@ -1,3 +1,5 @@
+import type { ReactElement } from "react";
+
 import { Palette } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
@@ -11,6 +13,7 @@ import {
 } from "@/components/ui/empty";
 
 import { themeHistoryPanelStyles } from "./ThemeHistoryPanel.styles";
+
 import type { ThemeCandidateStatus, ThemeHistoryPanelProps } from "./types";
 
 const STATUS_VARIANT: Record<
@@ -22,7 +25,9 @@ const STATUS_VARIANT: Record<
   rejected: "destructive",
 };
 
-export function ThemeHistoryPanel({ entries }: ThemeHistoryPanelProps) {
+export const ThemeHistoryPanel = ({
+  entries,
+}: ThemeHistoryPanelProps): ReactElement => {
   if (entries.length === 0) {
     return (
       <Empty>
@@ -62,4 +67,4 @@ export function ThemeHistoryPanel({ entries }: ThemeHistoryPanelProps) {
       ))}
     </ul>
   );
-}
+};

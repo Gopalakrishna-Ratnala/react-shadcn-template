@@ -1,3 +1,6 @@
+import type { ReactElement } from "react";
+
+import { ThemeToggle } from "@/components/shared";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -16,17 +19,16 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { ThemeToggle } from "@/components/shared";
-
 import themeLog from "@/styles/themes/history/THEME-LOG.json";
 
-import { componentsGalleryPageStyles as styles } from "./ComponentsGalleryPage.styles";
 import {
   ColorSwatch,
   GallerySection,
   ThemeHistoryPanel,
   type ThemeLogEntry,
 } from "./components";
+import { componentsGalleryPageStyles as styles } from "./ComponentsGalleryPage.styles";
+
 import type { GalleryNavItem } from "./types";
 
 const NAV_ITEMS: GalleryNavItem[] = [
@@ -111,7 +113,7 @@ const COLOR_TOKENS: {
   },
 ];
 
-export function ComponentsGalleryPage() {
+export const ComponentsGalleryPage = (): ReactElement => {
   return (
     <div className={styles.page}>
       <nav className={styles.nav} aria-label="Components gallery sections">
@@ -259,4 +261,4 @@ export function ComponentsGalleryPage() {
       </main>
     </div>
   );
-}
+};

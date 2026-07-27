@@ -1,4 +1,6 @@
 import { lazy, Suspense } from "react";
+import type { ReactElement } from "react";
+
 import { Routes, Route } from "react-router";
 
 import { ROUTES } from "@/constants";
@@ -12,11 +14,11 @@ const ComponentsGalleryPage = lazy(() =>
   })),
 );
 
-function PageLoader() {
+const PageLoader = () => {
   return <p role="status">Loading…</p>;
-}
+};
 
-export function AppRoutes() {
+export const AppRoutes = (): ReactElement => {
   return (
     <Routes>
       <Route
@@ -29,4 +31,4 @@ export function AppRoutes() {
       />
     </Routes>
   );
-}
+};

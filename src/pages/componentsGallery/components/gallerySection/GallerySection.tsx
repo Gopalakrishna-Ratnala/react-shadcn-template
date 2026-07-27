@@ -1,12 +1,15 @@
+import type { ReactElement } from "react";
+
 import { gallerySectionStyles } from "./GallerySection.styles";
+
 import type { GallerySectionProps } from "./types";
 
-export function GallerySection({
+export const GallerySection = ({
   id,
   title,
   description,
   children,
-}: GallerySectionProps) {
+}: GallerySectionProps): ReactElement => {
   return (
     <section
       id={id}
@@ -24,4 +27,4 @@ export function GallerySection({
       <div className={gallerySectionStyles.content}>{children}</div>
     </section>
   );
-}
+};

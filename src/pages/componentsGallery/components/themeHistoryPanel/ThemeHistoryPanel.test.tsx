@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import { ThemeHistoryPanel } from "./ThemeHistoryPanel";
+
 import type { ThemeLogEntry } from "./types";
 
 const entries: ThemeLogEntry[] = [

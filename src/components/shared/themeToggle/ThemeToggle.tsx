@@ -1,3 +1,5 @@
+import type { ReactElement } from "react";
+
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 
@@ -5,7 +7,7 @@ import { Button } from "@/components/ui/button";
 
 import { themeToggleStyles } from "./ThemeToggle.styles";
 
-export function ThemeToggle() {
+export const ThemeToggle = (): ReactElement => {
   const { resolvedTheme, setTheme } = useTheme();
 
   return (
@@ -20,4 +22,4 @@ export function ThemeToggle() {
       <Moon className={themeToggleStyles.iconDark} />
     </Button>
   );
-}
+};
