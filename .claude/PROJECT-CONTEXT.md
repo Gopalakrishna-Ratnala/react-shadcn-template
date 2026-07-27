@@ -977,7 +977,7 @@ not memorized output.
 
 Validated: 18/18 tests, `tsc -b` clean (docs-only change, unaffected as expected).
 
-## 20. Working agreements / process notes
+## 19. Working agreements / process notes
 
 - User wants to **hold all pushes until explicitly requested** — make local commits
   freely, but don't push to any remote without being asked first, so they can review
