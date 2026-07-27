@@ -457,11 +457,11 @@ settled first.
   typography/radius/shadow tokens into Tailwind's theme layer properly (flagged in
   `src/index.css` as needing its own verified pass).
 
-## 7. Final validation methodology (future — not yet, we're not at that stage)
+## 7. Final validation methodology (recorded 2026-07-26, now BUILT — see Section 18)
 
-User has a proven methodology from prior experience, to be used **once the boilerplate
-itself is otherwise in the shape we want** — not now, we're still in build-out phase.
-Recorded here so it survives a fresh session:
+User has a proven methodology from prior experience. Recorded here originally as a
+future plan; **now actually built into this repo** — see Section 19 for the full
+build record. Original notes kept below for context.
 
 **"run feature test N" — a Claude Code skill:**
 - Invoked as `run feature test N`, where `N` indexes into a pre-written table of
@@ -871,7 +871,75 @@ open items across the whole project: `testing/`/`core/` doc audits (never had a
 build, contrast-checking on theme candidates, the `npm audit` triage, and item F
 (`.github/copilot-instructions.md`'s remaining stale rule-file numbering).
 
-## 18. Working agreements / process notes
+## 18. `run-feature-test` skill built (2026-07-26)
+
+User decided against building one reference feature by hand — instead, brought
+their own proven methodology from a related, separate project (an Angular
+boilerplate-generator, shared directly as `boilerplate-generator.zip`) that
+already has real, multi-tester validation history. Ported and adapted it here.
+
+**Source material read in full before adapting, not just described from memory**:
+the actual `SKILL.md`, `FEATURE-TEST-PLAN.md`, `test-reports/TEMPLATE.md`, and two
+real filled-out reports (a normal tester report and a "central-brain final
+confirmation" report) from the source repo — used to calibrate the level of detail
+expected (full file contents pasted verbatim, not summarized; honest self-reporting
+of limitations, e.g. one report explicitly noted its own review wasn't run through
+real Claude Code hook enforcement and said so rather than implying false
+equivalence with the tester reports that were).
+
+**Key structural adaptation required**: the source tool is a *generator* with
+variant flags (auth/data-layer/state/styling/etc.) — each tester built against a
+differently-*configured generated project*. This repo is a single, fixed
+boilerplate (shadcn/Base UI, Zustand, RHF+Zod, fetch+json-server — every "pick one"
+decision already closed out per Sections 10/16/17) — there's no bundle axis to
+vary. Redesigned the six assignments around different **feature-building tasks**
+instead, chosen so that collectively they exercise every rule file and hook in
+`.claude/`:
+1. Products catalog (data fetching, `Field`/`FieldGroup`, component tiers, testing)
+2. Team directory (Zustand, `Dialog`+title rule, `ToggleGroup`, `Avatar`)
+3. Settings page (`Tabs`, `InputGroup`, `Skeleton`, `Separator`, dark/light theming)
+4. Theme candidate creation (the full theme-versioning workflow — no equivalent in
+   the source skill, unique to this repo)
+5. Activity feed (toasts, `Badge`, `Alert`, button loading-state composition, `Empty`)
+6. Minimal baseline (control case)
+
+**Kept unchanged from the source**, since these are real Claude Code platform
+facts or hard-won practical lessons, not Angular-specific: the 2-phase split
+(hooks only load from a session's actual *startup* working directory — a
+confirmed platform limitation, applies to any repo, not just Angular ones),
+"never ask, pick and document," the two specific friction points to avoid
+(compound `cd && ... > file` commands triggering Claude Code's approval prompt;
+`timeout` being absent on macOS by default — cloud-synced folders like iCloud
+Drive causing real hangs), timestamped report filenames, and retry-with-jitter
+pushes.
+
+**Simplified relative to the source**: Phase A needs no bundle flags or
+version-substitution logic at all, since this isn't a generator — just a plain
+`git clone` + `npm install`.
+
+**Files created**:
+- `.claude/skills/run-feature-test/SKILL.md` — the skill itself
+- `FEATURE-TEST-PLAN.md` — coordinator doc for teammates
+- `test-reports/TEMPLATE.md` — report template, with a compliance checklist
+  rewritten entirely around this repo's actual rules (component tiers, the full
+  composition-patterns list, `apiClient`/`ApiResponse<T>`, Zustand no-mutation,
+  theme-versioning naming/log/promotion) in place of the source's Angular-specific
+  checks (`ng lint`, Signal Forms, CDK widgets, etc.)
+
+**Scope note, explicitly confirmed with the user**: teammates will run this fully
+autonomously per-assignment via their own Claude sessions (added as repo
+contributors) — including writing and pushing their own report, matching the
+source skill's self-contained design. Report review/validation and the actual
+fixes happen afterward, in a separate session working through the pasted code
+against the real rule files directly — not baked into the skill itself. **The
+stated end goal, plainly**: run all six, fix everything genuinely flagged the
+same rigorous way every other change in this project has been validated, and only
+then is this boilerplate actually ready for real project use.
+
+**Not yet done**: no reports exist yet — this is infrastructure only, waiting on
+teammates to actually run it.
+
+## 19. Working agreements / process notes
 
 - User wants to **hold all pushes until explicitly requested** — make local commits
   freely, but don't push to any remote without being asked first, so they can review
