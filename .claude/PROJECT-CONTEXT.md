@@ -939,7 +939,45 @@ then is this boilerplate actually ready for real project use.
 **Not yet done**: no reports exist yet — this is infrastructure only, waiting on
 teammates to actually run it.
 
-## 19. Working agreements / process notes
+### Round 2 added: theme versioning repeatability (2026-07-26)
+
+User asked directly whether varying the feature per session (what the original
+6-assignment design does) or repeating the *same* feature across sessions was the
+better validation approach. Honest answer given: they test different things —
+different features finds *where* gaps are across the whole system (breadth);
+the same feature repeated tells you whether a result is *trustworthy* or just one
+lucky/unlucky run (reliability). Neither alone is sufficient, and the original
+design only did the former.
+
+User then stated they're particularly focused on the theme-versioning workflow
+specifically — it's what a designer will use constantly, every design round, for
+the entire lifetime of every real project, unlike the other 5 assignments (each
+touched once and moved on). A single Round 1 pass on assignment 4 can't tell us
+whether that workflow holds up under the repeated real use it'll actually face.
+
+**Added Round 2**: the same theme-candidate-creation task (3 candidates, logged,
+one promoted) deliberately repeated across at least 5 separate sessions/testers,
+with fresh made-up color palettes each time (explicit instruction: never reuse a
+previous run's palette) — so what's being tested is the *workflow's* reliability,
+not memorized output.
+
+- `SKILL.md`: new `run feature test 4-repeat` / "run the theming repeatability
+  test" invocation, reusing the same Phase A/B/C mechanics with three differences —
+  the repeated task itself (with the "don't reuse previous palettes" instruction
+  and an extra "workflow steps followed, in order" output section for later
+  comparison), report naming
+  (`tester-4-repeat-<run-number>-<timestamp>.md`, auto-incrementing), and an
+  explicit note that comparing accumulated repeats against each other happens
+  separately, once at least 5 have come in — not part of the skill's own scope.
+- `FEATURE-TEST-PLAN.md`: explains both rounds to teammates, updated invocation
+  instructions, updated closing section covering the comparative review step
+  specific to Round 2.
+- `test-reports/TEMPLATE.md`: added the "workflow steps followed" section,
+  explicitly scoped to repeat runs only.
+
+Validated: 18/18 tests, `tsc -b` clean (docs-only change, unaffected as expected).
+
+## 20. Working agreements / process notes
 
 - User wants to **hold all pushes until explicitly requested** — make local commits
   freely, but don't push to any remote without being asked first, so they can review
