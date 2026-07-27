@@ -74,6 +74,13 @@ useEffect(() => {
 
 ### Correct: Hook coordinating store + service with error handling
 
+**Use this shape only when the state is genuinely needed by more than one
+page/component** (e.g. the current user's session, used across many pages) —
+per `state-management/01-zustand.md`, Zustand is explicitly NOT for local,
+one-component/one-page-only state. If this hook's state is only ever consumed
+by a single page, use the local-state variant below instead, even though the
+overall shape (service → mapper → `AsyncState`) is identical either way.
+
 ```typescript
 import { useCallback } from "react";
 
@@ -103,6 +110,43 @@ export const useUser = (): UseUserResult => {
       setState({ status: "error", message });
     }
   }, [setState]);
+
+  return { state, fetchUser };
+};
+```
+
+### Correct: the same shape, but with page-local state (the more common case)
+
+Most data-fetching hooks (a single page's list, a single page's detail view) only
+ever have one consumer — this is the default to reach for unless you already know
+the state needs to be shared:
+
+```typescript
+import { useCallback, useState } from "react";
+
+import { getUser } from "@/services/user/userService";
+import { mapUserDtoToUser } from "@/services/mappers/userMapper";
+import type { AsyncState } from "@/types/common.types";
+import type { UserModel } from "@/types/user.types";
+
+interface UseUserResult {
+  state: AsyncState<UserModel>;
+  fetchUser: (id: string) => Promise<void>;
+}
+
+export const useUser = (): UseUserResult => {
+  const [state, setState] = useState<AsyncState<UserModel>>({ status: "idle" });
+
+  const fetchUser = useCallback(async (id: string): Promise<void> => {
+    setState({ status: "loading" });
+    try {
+      const response = await getUser(id);
+      setState({ status: "success", data: mapUserDtoToUser(response.data) });
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Something went wrong";
+      setState({ status: "error", message });
+    }
+  }, []);
 
   return { state, fetchUser };
 };

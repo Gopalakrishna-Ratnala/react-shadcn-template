@@ -14,11 +14,13 @@ if ! command -v jq >/dev/null 2>&1; then
   exit 2
 fi
 # Enforces: Missing any file = incomplete component (02-project-structure.md)
-# After writing to a component directory, checks all 6 required files exist.
+# After writing to a component directory, checks all 5 required files exist.
+# Storybook is fixed OFF for this template (see features/README.md) - no
+# .stories.tsx is required or checked.
 # Applies to: src/components/layout/** and src/components/shared/**
 # Skips:      src/components/ui/** (vendored shadcn primitives — no contract required)
 # Required:   ComponentName.tsx, ComponentName.styles.ts, types.ts,
-#             ComponentName.stories.tsx, ComponentName.test.tsx, index.ts
+#             ComponentName.test.tsx, index.ts
 
 INPUT=$(cat)
 FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty')
@@ -57,9 +59,9 @@ fi
 FOLDER_NAME=$(basename "$COMP_DIR")
 COMP_NAME="$(echo "${FOLDER_NAME:0:1}" | tr '[:lower:]' '[:upper:]')${FOLDER_NAME:1}"
 
-# Check required files
+# Check required files (5-file contract - no Storybook in this template)
 MISSING=""
-for REQUIRED_FILE in "${COMP_NAME}.tsx" "${COMP_NAME}.styles.ts" "types.ts" "${COMP_NAME}.stories.tsx" "${COMP_NAME}.test.tsx" "index.ts"; do
+for REQUIRED_FILE in "${COMP_NAME}.tsx" "${COMP_NAME}.styles.ts" "types.ts" "${COMP_NAME}.test.tsx" "index.ts"; do
   if [[ ! -f "$COMP_DIR/$REQUIRED_FILE" ]]; then
     WRITING_FILE=$(basename "$FILE_PATH")
     if [[ "$WRITING_FILE" != "$REQUIRED_FILE" ]]; then
@@ -69,10 +71,12 @@ for REQUIRED_FILE in "${COMP_NAME}.tsx" "${COMP_NAME}.styles.ts" "types.ts" "${C
 done
 
 if [[ -n "$MISSING" ]]; then
-  echo "WARNING: Component '$FOLDER_NAME' is missing required files:" >&2
-  echo -e "$MISSING" >&2
-  echo "Required: ${COMP_NAME}.tsx, ${COMP_NAME}.styles.ts, types.ts, ${COMP_NAME}.stories.tsx, ${COMP_NAME}.test.tsx, index.ts" >&2
-  echo "Source: 02-project-structure.md" >&2
+  MISSING_TRIMMED=$(echo -e "$MISSING")
+  MSG="Component '$FOLDER_NAME' is missing required files:
+$MISSING_TRIMMED
+Required: ${COMP_NAME}.tsx, ${COMP_NAME}.styles.ts, types.ts, ${COMP_NAME}.test.tsx, index.ts
+Source: 02-project-structure.md"
+  jq -n --arg msg "$MSG" '{hookSpecificOutput: {hookEventName: "PostToolUse", additionalContext: $msg}}'
 fi
 
 exit 0
