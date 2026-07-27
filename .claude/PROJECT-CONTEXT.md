@@ -1470,6 +1470,75 @@ container per the process note below.
 - **Next up: Phase 2** (move data fetching into route `loader`s). Phases 3–10
   remain exactly as planned below, untouched.
 
+**Phase 2 — done (2026-07-27).** No route in the repo actually fetched data yet
+(only the static `/components-gallery`), so there was nothing to literally
+"migrate" — per plan item 9, this phase's real work was building the first
+loader-backed feature to prove the pattern on. Used the **Products catalog**
+domain from the Round-1 feature-test assignment table (`.claude/skills/
+run-feature-test/SKILL.md`, assignment 1) as the reference feature, matching
+its existing DTO/domain shape. User explicitly chose (asked directly, see
+conversation) to also wire the search filter through Zustand rather than
+local-only state, closing the open question from Section 8.
+
+- **`db.json`**: added a `products` resource (6 seeded items, snake_case DTO
+  fields: `product_name`, `unit_price`, `category`, `in_stock` — deliberately
+  different casing/shape from the domain model, so the mapper does real work,
+  not a pass-through).
+- **Data layer, full stack, no shortcuts**: `src/types/common.types.ts`
+  (`ApiResponse<T>`), `src/types/product.types.ts` (`Product` domain model,
+  camelCase, `priceInCents`), `src/services/product/` (DTO type + `getProducts`
+  service, optional `?q=` search param), `src/services/mappers/productMapper.ts`
+  (DTO → domain, including a unit-price → cents rounding step). Every layer has
+  its own test file mocking one level down (service test mocks `apiClient`,
+  mapper test is pure-function, no mocking needed).
+- **`src/pages/products/ProductsPage.loader.ts`**: reads `?q=` off the route's
+  `Request` URL, calls the service, maps to domain models, returns
+  `{ products, searchTerm }`. This is the actual point of Phase 2 — fetching
+  now starts the moment the route matches, not after the component renders.
+- **`src/store/productFilters/`**: a Zustand store holding only the transient
+  search-input text (`searchTerm`) — deliberately *not* the fetched products
+  themselves, which live in loader data via `useLoaderData()`. This is the
+  concrete instance of plan item 6's rule (route-tied server data never
+  duplicated into a store) rather than just prose.
+- **`src/pages/products/ProductsPage.tsx`**: `<Form method="get">` search input
+  (keyed on the committed `searchTerm` so it resyncs after each successful
+  search, rather than fighting Base UI's uncontrolled-input warning),
+  `useNavigation()` for a pending indicator instead of a component-level
+  `AsyncState<T>`, `Empty` state, and a feature-scoped `ProductCard`
+  (`pages/products/components/productCard/`, per the promotion rule — not
+  reusable elsewhere yet).
+- **`src/components/blocks/routeErrorFallback/`**: a generic `RouteErrorFallback`
+  (`useRouteError()` + `isRouteErrorResponse()`), wired as `/products`'s
+  `ErrorBoundary`. This is a working instance of plan item 4's per-route error
+  handling, though the broader rule-doc rewrite for error handling stays
+  Phase 4's job — this one component isn't meant to be the final word on that
+  phase, just what this route needed to be genuinely usable.
+- **Router wiring** (`src/config/routes.tsx`): `/products` uses `lazy()` to
+  resolve *both* `Component` and `loader` together (confirmed this works and
+  code-splits both into one chunk — `dist/assets/products-*.js` — via a real
+  `npm run build`), plus the new `HydrateFallback`/`RouteErrorFallback`.
+- **Testing conventions actually used** (ahead of Phase 7's formal doc update):
+  loader tested directly with a real `Request` + mocked service
+  (`ProductsPage.loader.test.ts`); page tested with `createMemoryRouter` +
+  `RouterProvider`, mocking the service at the network boundary, including a
+  real user-event search round-trip that re-invokes the loader
+  (`ProductsPage.test.tsx`).
+- **Real end-to-end proof, not just mocked tests**: started an actual
+  `json-server` instance against the seeded `db.json` and `curl`'d both
+  `GET /products` and `GET /products?q=lamp` directly — confirmed json-server's
+  real full-text search matches what the service assumes, not just what the
+  mocks assume.
+- Validated per the Phase 10 discipline: `tsc -b` clean, lint back to the same
+  15-error baseline (all pre-existing, unrelated shadcn/ui files — some import-
+  order errors surfaced in the new files along the way and were fixed via
+  `eslint --fix` before final validation), `vitest run` 14 files / 38 tests
+  passing (up from the 7/18 Phase 1 baseline), `npm run build` succeeds.
+- Not yet committed to git as of writing this — see Working Agreements
+  (Section 26). **Next up: Phase 3** (route-level `action` functions for
+  mutations — this reference feature is currently read-only; add/edit/delete
+  for the Products catalog, folding in the RHF+Zod submit-flow decision from
+  plan item 3, is the natural next real code to build it on).
+
 ### Process note on how this gets picked up
 
 User asked whether this chat session has a length limit and needs a fresh chat to

@@ -2,5 +2,49 @@
   "example": [
     { "id": 1, "name": "Example item one" },
     { "id": 2, "name": "Example item two" }
+  ],
+  "products": [
+    {
+      "id": 1,
+      "product_name": "Oak Desk Lamp",
+      "unit_price": 42.5,
+      "category": "Lighting",
+      "in_stock": true
+    },
+    {
+      "id": 2,
+      "product_name": "Ergonomic Office Chair",
+      "unit_price": 189.99,
+      "category": "Furniture",
+      "in_stock": true
+    },
+    {
+      "id": 3,
+      "product_name": "Wireless Keyboard",
+      "unit_price": 59.0,
+      "category": "Electronics",
+      "in_stock": false
+    },
+    {
+      "id": 4,
+      "product_name": "Standing Desk Converter",
+      "unit_price": 129.0,
+      "category": "Furniture",
+      "in_stock": true
+    },
+    {
+      "id": 5,
+      "product_name": "USB-C Docking Station",
+      "unit_price": 89.5,
+      "category": "Electronics",
+      "in_stock": true
+    },
+    {
+      "id": 6,
+      "product_name": "Task Chair Lumbar Cushion",
+      "unit_price": 24.99,
+      "category": "Furniture",
+      "in_stock": false
+    }
   ]
 }
