@@ -1,6 +1,6 @@
 ---
 name: run-feature-test
-description: Run one tester's assigned feature-building test for react-shadcn-template - clones the repo fresh, then hands off clear instructions for testing the guardrails in a properly-scoped second session (required by a real Claude Code platform limitation), then writes and pushes the report. Takes a tester number (1-6) as input. Use when someone says "run feature test N" or "run as tester N" for this repo's parallel testing exercise.
+description: Run one tester's assigned feature-building test for react-shadcn-template - clones the repo fresh, then hands off clear instructions for testing the guardrails in a properly-scoped second session (required by a real Claude Code platform limitation), then writes and pushes the report. Takes a tester number (1-6) for the breadth round, or "4-repeat" for the theme-versioning repeatability round. Use when someone says "run feature test N", "run as tester N", or "run the theming repeatability test" for this repo's parallel testing exercise.
 trigger: /run-feature-test
 ---
 
@@ -40,11 +40,30 @@ even then, don't ask a question, just report what happened.
 
 ## PHASE A — in this session (wherever it's invoked from)
 
-### Step 1 — Get the tester number
+### Step 1 — Get the tester number, and which round
 
-The human invoking this will give you a number 1–6. If genuinely no number was given,
-default to the lowest-numbered assignment whose report file doesn't already exist in
-`test-reports/` — don't ask which one to use.
+There are **two rounds**, testing two different things:
+
+- **Round 1 (breadth)**: assignments 1–6, one run each — finds *where* gaps are
+  across every subsystem, at least once each.
+- **Round 2 (repeatability)**: assignment 4 (theme candidate creation) repeated
+  multiple times across separate sessions — finds whether the theme-versioning
+  workflow is *reliable*, not just whether it can pass once. This subsystem gets
+  its own repeated round specifically because it's the one a designer will use
+  constantly, every design round, for the entire lifetime of every real project —
+  a single pass tells you almost nothing about whether it holds up under that kind
+  of repeated real use.
+
+If invoked as `run feature test N` (a plain number 1–6), run **Round 1** for that
+assignment — proceed to Step 2 as normal.
+
+If invoked as `run feature test 4-repeat` (or "run the theming repeatability
+test," "run theme versioning repeat test"), run **Round 2** — skip to
+"Round 2 — Theme Versioning Repeatability," below, instead of Step 2.
+
+If genuinely no number/mode was given, default to the lowest-numbered Round 1
+assignment whose report file doesn't already exist in `test-reports/` — don't ask
+which one to use.
 
 ### Step 2 — Look up your assignment (inlined here, not read from another file)
 
@@ -184,3 +203,51 @@ separately, after reports are collected.
 
 Assignment number, pass/fail on lint/typecheck/test/build, whether the report pushed
 successfully. Then stop.
+
+---
+
+## Round 2 — Theme Versioning Repeatability
+
+This round reuses the exact same Phase A / Phase B / Phase C mechanics above, with
+three specific differences. Everything not called out here (the 2-phase split,
+"never ask, pick and document," the clone/install steps, the report-writing and
+retry-push steps) works exactly the same way.
+
+### Difference 1 — the feature task itself
+
+Always the same underlying workflow (this is the point — repeating the same task is
+what tests reliability, not variety):
+
+> Given 3 designer-supplied brand color sets (make up 3 plausible, distinct
+> palettes — **do not reuse palettes from any previous run**, invent genuinely new
+> ones each time), create 3 theme candidates following this repo's documented
+> naming convention, log all 3 in `THEME-LOG.json`, then promote one. Follow
+> `.claude/rules/styling/shadcn/03-theme-versioning.md` exactly.
+>
+> Then output the same structured summary format as any other assignment (files
+> changed, full file contents, hook behavior observed, anything a hook should have
+> caught but didn't, rule gaps, verification results, assumptions made) — plus one
+> extra section: **"Workflow steps followed, in order"** — a plain numbered list of
+> exactly what you did (e.g. "1. Created file X. 2. Added log entry with status
+> candidate. 3. ..."), so this can be compared line-by-line against other runs of
+> this same task later.
+
+### Difference 2 — report naming
+
+Use `test-reports/tester-4-repeat-<run-number>-<unix-timestamp>.md`, where
+`<run-number>` is 1, 2, 3, etc. — the next unused number for this repeat series
+(check `test-reports/` for existing `tester-4-repeat-*` files and increment from
+the highest one found; don't ask, just pick the next number).
+
+### Difference 3 — how many repeats, and what happens after
+
+Run this at least 5 times across separate sessions/testers before any comparison is
+meaningful — a single repeat can't tell you anything about consistency. Each
+individual run still gets written and pushed as its own report immediately, exactly
+like any Round 1 assignment — don't wait for all 5 before pushing the first one.
+
+Comparing the accumulated repeat reports against each other (not just reviewing
+each one individually) happens separately, once enough have come in — that
+comparison is what actually answers "is this workflow reliable," and isn't part of
+this skill's own scope.
+

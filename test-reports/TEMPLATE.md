@@ -131,6 +131,13 @@ inconsistent with docs).
 | `npm run test` | |
 | `npm run build` | |
 
+## Workflow steps followed, in order (Round 2 / theme-versioning repeatability runs only)
+
+If this report is a `tester-4-repeat-*` run, list exactly what was done, as a plain
+numbered list (e.g. "1. Created file X. 2. Added log entry with status candidate.
+3. ..."), so this can be compared line-by-line against other repeat runs. Leave this
+section out entirely for Round 1 assignments (1–6, non-repeat).
+
 ## Assumptions made
 
 If this ran via the `run-feature-test` skill (autonomous, no questions asked), list

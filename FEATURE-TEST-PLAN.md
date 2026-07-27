@@ -14,15 +14,28 @@
 1. **One person = one assignment = one Claude Code session**, working independently.
    Nobody edits the repo's own rules/hooks while testing — only after reports are
    collected and reviewed does anything actually get fixed.
-2. Everyone builds a **different feature task** (see the assignment table in
-   `.claude/skills/run-feature-test/SKILL.md`) — together, the six assignments
-   exercise every rule file and every hook in `.claude/`.
+2. There are **two rounds**, testing two different things:
+   - **Round 1 (breadth)**: everyone builds a **different feature task** (see the
+     assignment table in `.claude/skills/run-feature-test/SKILL.md`) — together, the
+     six assignments exercise every rule file and every hook in `.claude/`, at least
+     once each. This finds *where* the gaps are.
+   - **Round 2 (repeatability)**: the theme-versioning workflow specifically gets
+     repeated multiple times, by multiple different testers, doing the *same*
+     underlying task each time (create 3 candidates, log them, promote one). This
+     finds whether that workflow is *reliable*, not just whether it can pass once —
+     which matters more for theming than any other subsystem, since a designer will
+     use it constantly, every design round, for the entire lifetime of every real
+     project built on this template. A single pass can't tell you that; several
+     independent repeats can.
 3. Each tester writes their findings into **their own report file** and pushes it to
    this repo — since everyone's report is a uniquely-named new file, not a shared
    one, concurrent pushes from multiple people should never actually conflict.
 4. Reports get reviewed and validated afterward (in a separate session, working
    through the actual pasted code against the real rule files — not just trusting
    each report's self-assessment), and real fixes get made based on what's found.
+   Round 2's reports additionally get compared *against each other*, not just
+   reviewed individually — that comparison is what actually answers whether the
+   theming workflow holds up under repeated use.
 
 ---
 
@@ -42,7 +55,7 @@ node --version   # note this down — you'll need Node >=22.22.1 (see package.js
 
 ## Step 1 — Run the skill
 
-In a Claude Code session, say:
+**For Round 1** (breadth), in a Claude Code session, say:
 
 ```
 run feature test <your assigned number>
@@ -50,6 +63,18 @@ run feature test <your assigned number>
 
 (or `run as tester <N>`). If you weren't given a number, just pick the lowest one
 whose report doesn't already exist in `test-reports/`.
+
+**For Round 2** (theming repeatability), say instead:
+
+```
+run the theming repeatability test
+```
+
+You don't need an assigned number for this — just run it, and the skill picks the
+next unused repeat number for you. If you're asked to help with this round, running
+it more than once yourself (as separate sessions) is genuinely useful — reliability
+is exactly what's being tested, so more independent repeats is better, not
+redundant.
 
 The skill will clone the repo fresh, then hand you instructions to open a **second**
 terminal/session — this is required by a real Claude Code platform limitation (hooks
@@ -77,6 +102,15 @@ Every report gets reviewed against the actual pasted code — not just each repo
 own self-assessment — the same way every other change in this repo has been
 validated (see `.claude/PROJECT-CONTEXT.md` for that whole history). Real issues get
 fixed: rule doc gaps get closed, hook false positives/negatives get corrected, and
-anything a hook should have caught but didn't gets addressed directly. The goal
-stated plainly: **run all six, fix everything genuinely flagged, and only then is
-this boilerplate actually ready for real project use.**
+anything a hook should have caught but didn't gets addressed directly.
+
+**Round 2's reports get one extra step**: once at least 5 have come in, they're
+compared *against each other*, not just reviewed individually — checking whether the
+naming convention, log entries, hook behavior, and promotion outcome stayed
+consistent across every independent run, or whether some ran into problems others
+didn't. That comparison is what actually answers whether the theming workflow is
+reliable, not just whether it can pass once.
+
+The goal stated plainly: **run everything, fix everything genuinely flagged, and
+only then is this boilerplate actually ready for real project use — particularly
+for the design-system/theming workflow the designer will depend on constantly.**
