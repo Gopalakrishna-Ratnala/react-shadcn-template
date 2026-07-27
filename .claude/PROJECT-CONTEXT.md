@@ -1063,7 +1063,143 @@ should verify this actually suppresses prompts in their real environment and
 report back the exact command if anything still prompts, so the specific rule can
 be refined based on real observed behavior, not just documentation.
 
-## 21. Working agreements / process notes
+## 21. Real teammate test reports reviewed and fixed (2026-07-27)
+
+Once teammates started running the real skill (added as repo contributors), four
+real reports came in — reviewed each by reading the full report, then verifying
+every non-trivial claim directly against the actual code/hooks before fixing
+anything (never trusted a report's self-assessment alone). Pulling latest via a
+fresh clone + `git reset --hard` each time a new report landed, since the working
+repo has no direct git remote access to the fork.
+
+### Report 2 — `tester-2-team-directory-1785146634.md` (assignment 2, Zustand/Dialog/ToggleGroup/Avatar)
+
+- **`ColorSwatch.tsx` (built by this session itself, during item E) genuinely
+  violated our own no-div-span rule** — 3 divs, 2 spans, shipped in committed
+  code. Confirmed directly, then fixed using `<figure>`/`<figcaption>` (zero
+  behavioral change) + the vendored `Card` (matching this project's own rule's
+  documented example), with `ring-0`/`p-0` overrides to preserve the original
+  visual design. Validated against the real hook directly, not just visual
+  inspection. A genuinely humbling finding — even with everything built this
+  session, a real violation sat in shipped code undetected until a real
+  third-party review caught it.
+- **Two real `check-barrel-exports.sh` bugs**: (1) the module-name derivation
+  stripped a second "extension" meant for `.test.ts`-style files (already
+  filtered earlier), which mangled any genuinely-dotted filename like
+  `common.types.ts` into a wrong suggestion (`./common` instead of
+  `./common.types`); (2) a more serious false positive — grep matches
+  line-by-line by default, so Prettier's own multi-line `export type { A, B, C }
+  from "./types"` formatting (wrapped across several lines when there's more than
+  one or two names) was invisible to the single-line regex, causing a genuinely-
+  exported types-only file to be flagged as missing, permanently, on every such
+  file. Both reproduced with the tester's exact real content before fixing (fixed
+  the suffix-strip; flattened newlines before matching for the multi-line case).
+  Also fixed the warning message itself, which generated invalid-TypeScript-syntax
+  example code (`export { common.types }` — a dot isn't a valid identifier) for
+  exactly the case being fixed.
+- Still open from this report (lower priority, not yet acted on): no documented
+  pattern for accessible whole-card click targets; the HTML element allow-list
+  being incomplete/ambiguous (`<hgroup>`, `<dl>`, etc.); two unverified claims
+  (stale "ask user at setup" language, a "ThemeProvider in render" testing-rule
+  contradiction) that still need direct verification.
+
+### Report 3 — `tester-3-settings-page-1785145935.md` (assignment 3, Tabs/InputGroup/Skeleton/Separator)
+
+- **The most consequential finding of the entire testing effort**: six hooks
+  (`check-no-any.sh`, `check-no-inline-style.sh`, `check-no-hardcoded-colors.sh`,
+  `check-no-raw-dimensions.sh`, `check-no-inline-classnames.sh`,
+  `check-no-div-span.sh`) all shared the identical flaw — they only extracted
+  content if the tool name was exactly `"Write"` or `"Edit"`, silently exiting 0
+  (zero check, zero warning) for any other tool, most importantly `MultiEdit` — a
+  real, commonly-used Claude Code tool for batching several edits to one file.
+  This had been true since these hooks were first written, before this whole
+  engagement started, and was never caught by any of this session's own many
+  rounds of hook testing (every prior test used Write/Edit shapes, never
+  MultiEdit). Reproduced directly (a MultiEdit-shaped payload with a verbatim
+  `<span>` violation produced zero output, exit 0) before fixing. Fixed all six by
+  making content-extraction shape-based (`content`/`new_string`/`edits[].new_string`,
+  whichever is present) instead of name-based — more robust, and future-proof
+  against any other content-writing tool with one of these known shapes.
+  Rigorously re-tested: all six correctly block on Write, Edit, and MultiEdit
+  (including a violation buried in the *second* of two edits), and all six still
+  correctly produce zero output on clean input across all three shapes.
+
+### Report 4 — `tester-4-theme-candidate-creation-1785151110.md` (assignment 4, theme-versioning workflow)
+
+- **The second most consequential finding**: every hook that parses tool-call
+  JSON does so via `jq` (11 of 12 hook files) — and this tester's machine had no
+  `jq` installed at all. Without a guard, `jq: command not found` produces an
+  empty variable, which every hook's own early-exit logic then silently treats as
+  "nothing to check" — exit 0, completely invisible to the agent. This meant the
+  *entire* guardrail system was a no-op for this tester's whole session, with
+  nothing distinguishing it from "the code genuinely passed every check." `jq`
+  had never been documented anywhere in this repo as a required dependency.
+  Reproduced directly (built a minimal `PATH` excluding `jq`, ran a real hook
+  against a genuine violation, confirmed the exact silent failure). Fixed by
+  adding a `jq`-presence guard to all 12 hook files — if missing, each now fails
+  loudly and blocks (clear stderr message, a hand-constructed — since `jq` itself
+  is unavailable — but valid JSON block via the normal warning format, exit 2)
+  instead of silently passing. Also added `jq` to `README.md`'s prerequisites for
+  the first time. Regression-tested that normal operation (jq present) is
+  completely unaffected.
+- The actual theme-versioning workflow itself (the report's primary subject) held
+  up well otherwise — all 3 candidates correctly named/logged, rejected ones left
+  intact in `history/`, promotion done correctly. Only minor, reasonable
+  doc-ambiguity notes (whether a same-session create+promote should still perform
+  an intermediate "candidate"-only write) — a judgment call the rule doesn't
+  fully settle either way, not a bug.
+
+### Report 5 — `tester-5-activity-feed-1785154708.md` (assignment 5, toasts/Badge/Alert/button-loading-state)
+
+- Reassuring data point: this tester's session ran with a genuine, separate
+  Phase B Claude Code session (the skill's intended 2-phase split actually
+  followed this time) — and `check-no-div-span.sh` fired correctly, live, 3
+  times, confirming the earlier MultiEdit/jq fixes work in real, non-simulated
+  use, not just in this session's own direct reproductions.
+- **A real contradiction between `core/07-react-hooks.md` and
+  `state-management/01-zustand.md`**: the hooks doc's only example
+  (`useUser`) unconditionally routes through Zustand with no caveat, while the
+  Zustand doc explicitly says not to use it for local, one-component-only state.
+  Since core/07's example is the only one shown, an agent following it literally
+  for any single-page data-fetching hook (the common case — three of five real
+  assignments needed exactly this shape) would reach for Zustand even when
+  genuinely unnecessary. Fixed by keeping the Zustand example (clarified it's for
+  genuinely-shared state only) and adding an equally-prominent second example
+  showing the local-state variant (identical service/mapper/`AsyncState` shape,
+  plain `useState` instead) as the more common default.
+- **`check-component-files.sh` had two compounding bugs**: it hardcoded the
+  6-file (Storybook-on) contract as required, unconditionally, even though
+  Storybook was never installed — and its warning used the same stderr+`exit 0`
+  discard pattern fixed in three other hooks much earlier this session (item B),
+  meaning the warning never reached Claude anyway, on top of being wrong logic.
+  This hook had never actually been touched/tested until now — another
+  pre-existing baseline hook this session's own many rounds of validation never
+  happened to exercise. Fixed both: 5-file contract, correct JSON-on-stdout
+  format.
+- **Formally resolved Storybook as fixed OFF for this template** — now confirmed
+  by three independent findings (this session's very first audit, tester 2, and
+  tester 5, all landing on the same observation: never installed, every real
+  component consistently used 5-file). Same treatment as every other "pick one"
+  decision resolved this session. Removed `features/01-storybook.md`; fixed every
+  remaining conditional/stale reference across 9 more files found via a full repo
+  sweep (`CLAUDE.md`, `AGENTS.md` — including an entire stale section referencing
+  a `core/16-storybook.md` that never existed under that name — `core/01-tech-stack.md`,
+  `core/02-project-structure.md`, `core/05-architecture.md`,
+  `core/09-anti-patterns-checklist.md`, `core/10-error-handling.md`,
+  `features/04-animated-components.md`, both `styling/shadcn/` files).
+- **Also surfaced, not yet acted on**: `npm install` succeeds on a Node version
+  that violates `package.json`'s own `engines` field (only warns, doesn't hard
+  fail until `test`/`build` are actually invoked much later) — suggested fix is
+  `engine-strict=true` in `.npmrc`, not yet added. The div/span ban has no good
+  fallback for plain, non-emphasized inline text (`<em>`/`<strong>`/`<small>`/
+  `<mark>` all carry real semantic meaning, and there's no shadcn/Base UI "Text"
+  primitive) — a real, narrow gap, not yet resolved.
+
+Full validation after every fix in this whole batch: repo suite consistently
+18/18 tests, `tsc -b` clean, lint unchanged (same 15 pre-existing vendored-file
+errors), build succeeds.
+
+## 22. Working agreements / process notes
 
 - User wants to **hold all pushes until explicitly requested** — make local commits
   freely, but don't push to any remote without being asked first, so they can review
