@@ -1304,7 +1304,50 @@ a syntax/style refactor, zero behavioral change), `tsc -b` clean, lint clean
 (same 15 pre-existing vendored-file errors only), build succeeds
 (`ComponentsGalleryPage` still correctly code-splits via `React.lazy`).
 
-## 24. Working agreements / process notes
+## 24. React Router routing-rule gaps found via remix-run/agent-skills (2026-07-27)
+
+User observed generated code wasn't following standard routing patterns and
+specifically pointed at `remix-run/react-router`'s `.agents/skills` folder — the
+React Router team's own official agent skills, one per usage mode (framework
+mode: full Vite-plugin/SSR; data mode: `createBrowserRouter`/`RouterProvider`
+with loaders/actions, no Vite plugin; declarative mode: `BrowserRouter`/JSX
+`Routes`/`Route`, no data loading). Confirmed our actual code (`BrowserRouter` +
+JSX `Routes`/`Route`, no loaders/actions) matches **declarative mode** exactly,
+then fetched that skill's real content to compare against directly, not guessed.
+
+Found two real, concrete gaps:
+
+1. **Stale version reference** — `core/12-routing.md` said "React Router v7";
+   our actual installed `package.json` has `react-router@^8.2.0`. Swept the
+   whole repo for the same staleness and found three more: the same file's own
+   frontmatter description, `core/README.md`'s summary table, `CLAUDE.md`'s
+   summary table, and `AGENTS.md`'s Active Tech Stack table — which
+   additionally still said "React Router DOM v7," the pre-unification package
+   name (no separate `-dom` package since v7). All fixed to v8 with the
+   correct package name.
+2. **The much bigger gap** — `core/12-routing.md` documented *only* the router
+   setup and the auth-guard layout-route pattern; it never once mentioned
+   `Link`, `NavLink`, `useParams`, `useSearchParams`, `useNavigate`, or
+   `useLocation` — the most commonly-needed APIs in any real multi-page app,
+   completely undocumented. Added dedicated sections for each, confirmed
+   against the official declarative-mode skill's actual content: `Link`/
+   `NavLink` with the `isActive` render-prop pattern for active-route styling
+   (never track this manually with `useLocation`), `useParams`/
+   `useSearchParams` for reading route data, `useNavigate`/`useLocation` for
+   programmatic navigation, and a shared-layout-route pattern (`Outlet`-wrapped
+   persistent nav/header for sibling pages) distinct from the existing
+   auth-guard layout route, which was the only layout-route use case
+   previously documented.
+
+Checked our own actual code against the new "never raw `<a>` for in-app
+navigation" rule: `ComponentsGalleryPage`'s nav uses plain anchor tags, but
+those are same-page anchor jumps to sections (`href="#section-id"`), not route
+navigation — a legitimate, different use case the new rule explicitly carves
+out, so no code change was needed there.
+
+Validated: 18/18 tests, `tsc -b` clean (docs only, unaffected as expected).
+
+## 25. Working agreements / process notes
 
 - User wants to **hold all pushes until explicitly requested** — make local commits
   freely, but don't push to any remote without being asked first, so they can review
