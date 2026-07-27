@@ -840,11 +840,38 @@ regardless of what a later prompt might imply.
 Validated: 18/18 tests, `tsc -b` clean, lint unchanged, format clean, build
 succeeds.
 
-**Still open**: `forms/` decision (RHF+Zod vs RHF+Yup — Zod already installed,
-same "just needs the docs formally closed out" situation as HTTP client/icons/
-state management all were before their respective fixes).
+**Still open**: ~~`forms/` decision~~ **DONE — see Section 17.**
 
-## 17. Working agreements / process notes
+## 17. Forms decision — React Hook Form + Zod, fixed (2026-07-26)
+
+Same treatment as the other "pick one, dangling placeholder" fixes this
+session (HTTP client, icons, state management): `zod`, `react-hook-form`, and
+`@hookform/resolvers` were already installed, `forms/README.md` already labeled
+RHF+Zod "(default)" — just never formally closed out.
+
+- Removed `forms/02-rhf-yup.md`. Rewrote `forms/README.md` as a fixed decision.
+- Fixed the "pick one" placeholders in `CLAUDE.md` (decision table, strategy
+  table + header, execution-flow checklist, schema placement line) and
+  `AGENTS.md` (decision table, plus a stale "Active Tech Stack" line that
+  incorrectly claimed Yup — contradicted by `package.json` all along, the same
+  kind of staleness found and fixed for HTTP client/router earlier in this
+  project). `core/01-tech-stack.md` placeholder fixed too.
+- Fixed two more stale Yup references found via a full repo sweep: `AGENTS.md`'s
+  "NEVER place a Yup schema" checklist line (→ Zod), and `core/14-security.md`'s
+  code comment ("Zod shown; Yup equivalent is fine" → just Zod).
+
+Validated: 18/18 tests, `tsc -b` clean, lint unchanged, format clean, build
+succeeds.
+
+**Every "pick one" placeholder from the original open-problems list (Section 5)
+is now resolved**: styling (shadcn-only), HTTP client (fetch + json-server),
+icons (lucide-react), state management (Zustand), forms (RHF+Zod). Remaining
+open items across the whole project: `testing/`/`core/` doc audits (never had a
+"verify against current docs" pass the way shadcn did), the reference feature
+build, contrast-checking on theme candidates, the `npm audit` triage, and item F
+(`.github/copilot-instructions.md`'s remaining stale rule-file numbering).
+
+## 18. Working agreements / process notes
 
 - User wants to **hold all pushes until explicitly requested** — make local commits
   freely, but don't push to any remote without being asked first, so they can review
