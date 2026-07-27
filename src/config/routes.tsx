@@ -1,34 +1,25 @@
-import { lazy, Suspense } from "react";
-import type { ReactElement } from "react";
-
-import { Routes, Route } from "react-router";
+import { createBrowserRouter } from "react-router";
 
 import { ROUTES } from "@/constants";
 
-// React.lazy requires a default export; every page component in this project uses a
-// named export for consistency (auto-import friendliness, no default-export ambiguity),
-// so each lazy import is adapted with .then() rather than switching to default exports.
-const ComponentsGalleryPage = lazy(() =>
-  import("@/pages/componentsGallery/ComponentsGalleryPage").then((m) => ({
-    default: m.ComponentsGalleryPage,
-  })),
-);
+import { HydrateFallback } from "./routeFallback";
 
-const PageLoader = () => {
-  return <p role="status">Loading…</p>;
-};
+import type { RouteObject } from "react-router";
 
-export const AppRoutes = (): ReactElement => {
-  return (
-    <Routes>
-      <Route
-        path={ROUTES.COMPONENTS_GALLERY}
-        element={
-          <Suspense fallback={<PageLoader />}>
-            <ComponentsGalleryPage />
-          </Suspense>
-        }
-      />
-    </Routes>
-  );
-};
+// Route-level `lazy` replaces the previous `React.lazy(...).then()` adapter.
+// Unlike `React.lazy`, data-mode's `lazy` doesn't require a default export, so
+// each page's named export can be returned directly as `Component` — no
+// adapter needed.
+const routes: RouteObject[] = [
+  {
+    path: ROUTES.COMPONENTS_GALLERY,
+    lazy: async () => {
+      const { ComponentsGalleryPage } =
+        await import("@/pages/componentsGallery/ComponentsGalleryPage");
+      return { Component: ComponentsGalleryPage };
+    },
+    HydrateFallback,
+  },
+];
+
+export const router = createBrowserRouter(routes);

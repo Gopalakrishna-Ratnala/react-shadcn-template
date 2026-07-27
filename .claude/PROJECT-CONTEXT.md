@@ -1437,6 +1437,39 @@ Verified directly via React Router's own current docs/tutorials before deciding:
 10. **Full validation at each phase, not just at the end** — typecheck, lint, test,
     build after every phase, same discipline as everything else this project.
 
+### Progress log
+
+**Phase 1 — done (2026-07-27).** Repo cloned fresh into a new session's
+container per the process note below.
+- `src/config/routes.tsx`: `Routes`/`Route` JSX replaced with a `RouteObject[]`
+  array passed to `createBrowserRouter`; exports `router` instead of the old
+  `AppRoutes` component. The one real route (`/components-gallery`) now uses
+  route-level `lazy: async () => {...}` returning `{ Component }` — the
+  `React.lazy(...).then()` default-export adapter is gone, since data-mode's
+  `lazy` accepts a named export directly.
+- The route's `HydrateFallback` (shown only on first-load while `lazy()` is
+  still resolving, per React Router's own docs — skipped on client-side nav)
+  was pulled into its own file, `src/config/routeFallback.tsx`, because
+  keeping it inline in `routes.tsx` tripped `react-refresh/only-export-components`
+  (that file exports the non-component `router`, so it can't also export/contain
+  a component to stay a valid fast-refresh boundary).
+- `src/App.tsx`: `<BrowserRouter><AppRoutes /><Toaster /></BrowserRouter>` →
+  `<RouterProvider router={router} /><Toaster />` as siblings inside
+  `ThemeProvider` (Toaster/ThemeProvider/app-level `ErrorBoundary` are
+  route-agnostic globals, not part of the router tree, so they sit alongside
+  `RouterProvider` rather than inside it).
+- Validated per the Phase 10 discipline: `tsc -b` clean, `npm run lint` back to
+  the pre-existing baseline of 15 errors (all in unrelated shadcn/ui generated
+  files — confirmed by running lint *before* this change to get that exact
+  baseline first), `vitest run` 7 files / 18 tests passing (unchanged from
+  baseline), `npm run build` succeeds and the `/components-gallery` route
+  still code-splits into its own chunk (confirms route-level `lazy` preserves
+  the code-splitting the old `React.lazy` adapter provided).
+- Not yet committed to git as of writing this — see Working Agreements
+  (Section 26) on holding pushes; local commit is fine and expected next.
+- **Next up: Phase 2** (move data fetching into route `loader`s). Phases 3–10
+  remain exactly as planned below, untouched.
+
 ### Process note on how this gets picked up
 
 User asked whether this chat session has a length limit and needs a fresh chat to
