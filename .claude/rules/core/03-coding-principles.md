@@ -98,10 +98,30 @@ Use these when no UI library primitive satisfies the semantic need. They must be
 
 | Category | Elements |
 | --- | --- |
-| Structural | `<main>`, `<section>`, `<article>`, `<aside>`, `<header>`, `<footer>`, `<nav>` |
-| Lists | `<ul>`, `<ol>`, `<li>` |
-| Typography | `<h1>`–`<h6>`, `<p>`, `<em>`, `<strong>`, `<small>`, `<mark>`, `<time>`, `<abbr>`, `<code>`, `<kbd>` |
+| Structural | `<main>`, `<section>`, `<article>`, `<aside>`, `<header>`, `<footer>`, `<nav>`, `<hgroup>` |
+| Lists | `<ul>`, `<ol>`, `<li>`, `<dl>`, `<dt>`, `<dd>` |
+| Typography | `<h1>`–`<h6>`, `<p>`, `<em>`, `<strong>`, `<small>`, `<mark>`, `<time>`, `<abbr>`, `<code>`, `<kbd>`, `<blockquote>`, `<address>` |
 | Media | `<figure>`, `<figcaption>`, `<img>` |
+| Forms & interactive | `<form>` (required for React Hook Form's `onSubmit` — no primitive replaces this), `<label>` (prefer the vendored `Label` when styling is needed; raw `<label>` is fine for a plain, unstyled association), `<a>` (prefer `react-router`'s `Link`/`NavLink` for in-app navigation; raw `<a>` for external links), `<button>` (prefer the vendored `Button`; raw `<button>` only for a fully unstyled reset inside a custom composite control) |
+| Tabular data | `<table>`, `<thead>`, `<tbody>`, `<tfoot>`, `<tr>`, `<th>`, `<td>`, `<caption>` — prefer the vendored `Table`/`TableHeader`/`TableBody`/etc. when available; use the raw elements only if no primitive fits the exact structure needed |
+
+### Plain inline text needing only a className, no semantic role
+
+None of the semantic inline elements above always fit — `<em>`/`<strong>`/`<mark>`
+all carry real meaning (stress emphasis, strong importance, highlighting) that
+would be inaccurate to apply to text that's neither of those things (e.g. an
+activity feed's plain action description, styled a muted color but not
+"emphasized"). Reach for `<p>` with an inline display utility instead of a bare
+`<span>` — it renders identically to an inline text run, without needing any
+exception to the div/span ban, since `<p>` is already an allowed element above:
+
+```tsx
+// WRONG — no good semantic fit, but span is still forbidden regardless
+<span className="text-muted-foreground">deployed the payments service</span>
+
+// CORRECT — <p> styled to render inline, already an allowed element
+<p className="inline text-muted-foreground">deployed the payments service</p>
+```
 
 ### Examples
 
