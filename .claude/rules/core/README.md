@@ -15,7 +15,7 @@ These rules apply to **every task** regardless of which optional strategies are 
 | `09-anti-patterns-checklist.md` | Auto-reject patterns, refactor rules, final validation checklist |
 | `10-error-handling.md` | ErrorBoundary placement, AsyncState\<T\> pattern, service-layer error handling |
 | `11-performance.md` | Memoization rules, lazy loading, list keys, virtualization, bundle size |
-| `12-routing.md` | React Router v7, ProtectedRoute, ROUTES constants, lazy loading |
+| `12-routing.md` | React Router v8, ProtectedRoute, ROUTES constants, lazy loading, navigation hooks |
 | `13-environment.md` | Environment variables, VITE_ prefix, typed config module, secrets policy |
 | `14-security.md` | XSS prevention, token storage, input sanitization, secrets policy |
 

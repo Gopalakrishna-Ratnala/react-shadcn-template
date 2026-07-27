@@ -58,7 +58,7 @@ see `CLAUDE.md`'s "Step 2 — Optional features" and `.claude/rules/features/REA
 | State | Zustand |
 | HTTP | Fetch-based `apiClient` + json-server (local mock) |
 | Forms | React Hook Form + Zod |
-| Router | React Router DOM v7 |
+| Router | React Router v8 (`react-router` — no separate `-dom` package since v7) |
 | Testing | Vitest + React Testing Library |
 | Storybook | Fixed OFF for this template |
 | Icons | ask user — `public/assets/icons/` (SVG sprites) or `lucide-react` |

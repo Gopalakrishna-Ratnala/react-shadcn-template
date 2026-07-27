@@ -101,7 +101,7 @@ Rules are split into three categories:
 | `core/09-anti-patterns-checklist.md` | Auto-reject patterns, refactor rules, final validation checklist |
 | `core/10-error-handling.md` | ErrorBoundary placement, AsyncState\<T\> pattern, service-layer error handling |
 | `core/11-performance.md` | Memoization rules, lazy loading, list keys, virtualization, bundle size |
-| `core/12-routing.md` | React Router v7, ProtectedRoute, ROUTES constants, lazy loading pages |
+| `core/12-routing.md` | React Router v8, ProtectedRoute, ROUTES constants, lazy loading pages, Link/NavLink, useParams/useSearchParams |
 | `core/13-environment.md` | Environment variables, VITE_ prefix, typed config module, secrets policy |
 | `core/14-security.md` | XSS prevention, token storage, input sanitization, secrets policy |
 
