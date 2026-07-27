@@ -47,6 +47,16 @@ or base URL.
 Requires **Node.js >= 22.22.1** (see `package.json`'s `engines` field — this is
 the actual strictest requirement among this project's own dependencies).
 
+**Also requires `jq`** to be installed and on `PATH` — every hook in
+`.claude/hooks/` depends on it to parse Claude Code's tool-call JSON. Without
+it, the hooks fail to run at all (found via a real test run on a machine
+without `jq` — every hook now fails loudly and blocks if `jq` is missing,
+rather than silently no-opping, but it's much simpler to just have it
+installed):
+- macOS: `brew install jq`
+- Debian/Ubuntu: `apt-get install jq`
+- Windows: `choco install jq` or `scoop install jq`
+
 ## Available scripts
 
 | Script | What it does |

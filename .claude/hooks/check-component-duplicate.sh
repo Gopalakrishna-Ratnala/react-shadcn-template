@@ -1,4 +1,18 @@
 #!/bin/bash
+
+# Guard: every check below depends on jq to parse the tool-call JSON from
+# stdin. Without jq, each jq call below would fail, producing an empty
+# variable, which every hook's early-exit logic then silently treats as
+# "nothing to check" - exit 0, zero indication anything was skipped. Found
+# via a real teammate test-report run (jq missing on their machine caused
+# every jq-dependent hook, i.e. nearly all of them, to silently no-op for
+# the entire session). Fail loudly and block instead, so this is impossible
+# to miss.
+if ! command -v jq >/dev/null 2>&1; then
+  echo "BLOCKED: jq is required for the hooks in this repo to function and was not found on PATH. Install it (macOS: brew install jq | Debian/Ubuntu: apt-get install jq | Windows: choco install jq or scoop install jq), then restart your Claude Code session. Source: README.md" >&2
+  printf '%s\n' '{"hookSpecificOutput":{"hookEventName":"PostToolUse","additionalContext":"BLOCKED: jq is required for the hooks in this repo to function and was not found on PATH. Install it and restart your session. Source: README.md"}}'
+  exit 2
+fi
 # Enforces: Never create a new reusable component if one already exists (04-execution-flow.md)
 # When a new component folder is created under layout/, shared/, blocks/, or a page's
 # feature-scoped components/ folder, warns and lists existing sibling component folder
