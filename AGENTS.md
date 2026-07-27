@@ -28,25 +28,23 @@ If anything is unclear:
 
 ---
 
-## Project Setup — Required User Prompts
+## Project Setup Reference
 
-**When starting a new project from this template, ask the user for every choice below before writing any code.** Do not assume defaults.
+Every row below is fixed for this template — nothing to ask the user about or
+choose between for any of these:
 
-| Decision | Options |
+| Decision | What's fixed |
 | --- | --- |
-| Styling library | shadcn/ui + Tailwind CSS v4 (`@tailwindcss/vite` — not PostCSS) — fixed for this template, not a choice |
-| Icon source | `lucide-react` — fixed for this template, already installed |
-| State management | Zustand — fixed for this template, not a choice |
-| Forms & validation | React Hook Form + Zod — fixed for this template, not a choice |
-| Data fetching | Fetch-based `apiClient` + json-server (local mock backend) — fixed for this template, not a choice |
-| Testing framework | Vitest + React Testing Library or Jest + React Testing Library |
+| Styling library | shadcn/ui + Tailwind CSS v4 (`@tailwindcss/vite` — not PostCSS) |
+| Icon source | `lucide-react` — already installed |
+| State management | Zustand |
+| Forms & validation | React Hook Form + Zod |
+| Data fetching | Fetch-based `apiClient` + json-server (local mock backend) |
+| Testing framework | Vitest + React Testing Library — already installed and configured |
 
-After collecting answers:
-
-1. Delete the strategy files you are **not** using from each `.claude/rules/` subfolder
-2. Update `core/01-tech-stack.md` with the chosen libraries
-3. Update the **Active Tech Stack** table below to reflect confirmed choices
-4. Install chosen dependencies before writing any feature code
+For the genuinely optional, still-ask-the-user features (Storybook is fixed OFF;
+toast notifications, i18n, animation wrappers remain a real per-project choice),
+see `CLAUDE.md`'s "Step 2 — Optional features" and `.claude/rules/features/README.md`.
 
 ---
 

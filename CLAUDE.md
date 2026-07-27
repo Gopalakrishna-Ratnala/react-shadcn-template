@@ -34,22 +34,23 @@ This repository is a **clean project template**. It ships with a minimal placeho
 
 ---
 
-## Project Setup — Required User Prompts
+## Project Setup Reference
 
-**When starting a new project from this template, ask the user for every choice below before writing any code.** Do not assume defaults.
+### Step 1 — Fixed technology decisions (nothing to ask about)
 
-### Step 1 — Mandatory choices (pick one per row)
+Every row below is fixed for this template — there is no choice to make or ask
+the user about for any of these:
 
-| Decision | Options |
+| Decision | What's fixed |
 | --- | --- |
-| Styling library | shadcn/ui + Tailwind CSS v4 (`@tailwindcss/vite` — not PostCSS) — fixed for this template, not a choice |
-| Icon source | `lucide-react` — fixed for this template, already installed |
-| State management | Zustand — fixed for this template, not a choice |
-| Forms & validation | React Hook Form + Zod — fixed for this template, not a choice |
-| Data fetching | Fetch-based `apiClient` + json-server (local mock backend) — fixed for this template, not a choice |
-| Testing framework | Vitest + React Testing Library or Jest + React Testing Library |
+| Styling library | shadcn/ui + Tailwind CSS v4 (`@tailwindcss/vite` — not PostCSS) |
+| Icon source | `lucide-react` — already installed |
+| State management | Zustand |
+| Forms & validation | React Hook Form + Zod |
+| Data fetching | Fetch-based `apiClient` + json-server (local mock backend) |
+| Testing framework | Vitest + React Testing Library — already installed and configured |
 
-### Step 2 — Optional features (ask yes/no for each)
+### Step 2 — Optional features (ask the user yes/no for each, before writing any code)
 
 **Storybook is fixed OFF for this template** (confirmed via two independent real
 feature-test runs, both landing on the 5-file contract — see
@@ -212,10 +213,9 @@ The `check-no-div-span.sh` hook enforces the **Forbidden** tier automatically. A
 - **Separation of concerns** — Components vs Pages vs Store vs Services vs Hooks (`core/05-architecture.md`)
 - **Reuse existing building blocks** before creating new ones (`core/04-execution-flow.md`)
 - **Zustand**: no direct state mutation, domain-focused stores (`state-management/01-zustand.md`)
-- **Redux Toolkit**: no direct mutation, typed hooks only, async logic in thunks (`state-management/02-redux-toolkit.md`)
 - **apiClient**: no raw `fetch` in UI components, typed responses, mapper usage (`data-fetching/01-fetch-client.md`)
 - **Forms**: Zod schema, RHF resolver, Controller integration, `Field`/`FieldGroup` composition (`forms/01-rhf-zod.md`)
-- **Testing**: all required test cases, 100% coverage, ThemeProvider in render (`testing/01-vitest-rtl.md`)
+- **Testing**: all required test cases, 100% coverage; wrap in `ThemeProvider` only when the component under test actually calls `useTheme()` (directly or via a child) — e.g. `ThemeToggle`; not a blanket requirement for every test (`testing/01-vitest-rtl.md`)
 - **Accessibility**: aria-labels, keyboard navigation, semantic elements (`core/08-accessibility.md`)
 - **Responsive**: mobile-first breakpoint handling required for all projects — use breakpoint prefixes (`sm:`, `md:`, `lg:`, `xl:`) in `.styles.ts` and `dark:` classes for dark mode (`styling/shadcn/01-tailwind-shadcn-styling.md`)
 - **Naming intent**: business-purpose names, not generic labels (`core/02-project-structure.md`)
