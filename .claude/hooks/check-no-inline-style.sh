@@ -3,7 +3,6 @@
 # Only checks .tsx production files (not tests/stories).
 
 INPUT=$(cat)
-TOOL_NAME=$(echo "$INPUT" | jq -r '.tool_name // empty')
 FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty')
 
 # Only check .tsx files
@@ -16,11 +15,22 @@ if [[ "$FILE_PATH" == *.test.* || "$FILE_PATH" == *.stories.* || "$FILE_PATH" ==
   exit 0
 fi
 
-if [[ "$TOOL_NAME" == "Write" ]]; then
-  CONTENT=$(echo "$INPUT" | jq -r '.tool_input.content // empty')
-elif [[ "$TOOL_NAME" == "Edit" ]]; then
-  CONTENT=$(echo "$INPUT" | jq -r '.tool_input.new_string // empty')
-else
+# Extract content by inspecting the actual JSON shape, not by matching an exact
+# tool name. The previous version only handled TOOL_NAME == "Write" or "Edit",
+# which silently let every other content-writing tool (MultiEdit's `edits` array
+# being the most common) bypass this hook entirely with no check and no warning -
+# a real, confirmed gap (found via a real teammate's test-report run, then
+# reproduced directly). This checks for known content-bearing fields directly:
+# `content` (Write-shaped), `new_string` (Edit-shaped), or `edits[].new_string`
+# (MultiEdit-shaped) - whichever is present, regardless of what the tool is named.
+CONTENT=$(echo "$INPUT" | jq -r '
+  if .tool_input.content != null then .tool_input.content
+  elif .tool_input.new_string != null then .tool_input.new_string
+  elif .tool_input.edits != null then [.tool_input.edits[].new_string] | join("\n")
+  else empty
+  end
+')
+if [[ -z "$CONTENT" ]]; then
   exit 0
 fi
 
