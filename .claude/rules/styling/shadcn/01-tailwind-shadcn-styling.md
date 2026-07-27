@@ -124,7 +124,6 @@ src/
         AuthForm.tsx            # Component — no raw Tailwind strings
         AuthForm.styles.ts      # Co-located Tailwind class definitions for this component
         types.ts
-        AuthForm.stories.tsx    # only when Storybook is enabled
         AuthForm.test.tsx
         index.ts
   pages/

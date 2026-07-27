@@ -23,9 +23,9 @@ description: Architecture — separation of concerns, directory intent for compo
 | Directory         | Purpose                                              | Rules                                                                                 |
 | ----------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------- |
 | `src/components/ui/` | Vendored UI library primitives (shadcn/ui) — never modified | Installed by CLI only. No custom stories or tests required. |
-| `src/components/layout/` | Structural wrappers that appear on every/most pages | No business data. 6-file contract with Storybook, 5-file without. |
-| `src/components/shared/` | All custom app components — single-page or multi-page | Pages compose from here. 6-file contract with Storybook, 5-file without. |
-| `src/components/animated/` | Reusable animation wrappers *(optional — only if animation feature is enabled)* | No business logic. 6-file contract with Storybook, 5-file without. See `features/04-animated-components.md`. |
+| `src/components/layout/` | Structural wrappers that appear on every/most pages | No business data. 5-file contract (fixed, no Storybook). |
+| `src/components/shared/` | All custom app components — single-page or multi-page | Pages compose from here. 5-file contract (fixed, no Storybook). |
+| `src/components/animated/` | Reusable animation wrappers *(optional — only if animation feature is enabled)* | No business logic. 5-file contract (fixed, no Storybook). See `features/04-animated-components.md`. |
 | `src/services/`   | HTTP clients, API methods                            | No JSX, no UI logic                                                                   |
 | `src/store/`      | State management stores                              | No JSX, no direct API wiring in components                                            |
 | `src/hooks/`      | Reusable hooks                                       | Compose store, services, router, forms                                                |

@@ -28,7 +28,6 @@ project-root/
 │   │   │   │   ├── Navbar.tsx           # Component (PascalCase)
 │   │   │   │   ├── Navbar.styles.ts     # Component styles
 │   │   │   │   ├── types.ts             # Component-specific types
-│   │   │   │   ├── Navbar.stories.tsx   # Storybook stories (only when Storybook is enabled)
 │   │   │   │   ├── Navbar.test.tsx      # Tests
 │   │   │   │   └── index.ts             # Barrel export
 │   │   │
@@ -37,7 +36,6 @@ project-root/
 │   │   │   │   ├── ProductCard.tsx      # Component (PascalCase)
 │   │   │   │   ├── ProductCard.styles.ts
 │   │   │   │   ├── types.ts
-│   │   │   │   ├── ProductCard.stories.tsx  # only when Storybook is enabled
 │   │   │   │   ├── ProductCard.test.tsx
 │   │   │   │   └── index.ts
 │   │   │
@@ -47,7 +45,6 @@ project-root/
 │   │   │   │   ├── StatCard.tsx         # Component (PascalCase)
 │   │   │   │   ├── StatCard.styles.ts
 │   │   │   │   ├── types.ts
-│   │   │   │   ├── StatCard.stories.tsx     # only when Storybook is enabled
 │   │   │   │   ├── StatCard.test.tsx
 │   │   │   │   └── index.ts
 │   │   │
@@ -56,7 +53,6 @@ project-root/
 │   │       │   ├── FadeIn.tsx
 │   │       │   ├── FadeIn.styles.ts
 │   │       │   ├── types.ts
-│   │       │   ├── FadeIn.stories.tsx   # only when Storybook is enabled
 │   │       │   ├── FadeIn.test.tsx
 │   │       │   └── index.ts
 │   │       └── index.ts                 # Barrel export for all animated components
@@ -197,22 +193,9 @@ just to avoid the promotion decision.
 
 `ui/` components are vendored — no stories or tests required.
 `layout/`, `shared/`, `blocks/`, `animated/`, and feature-scoped (`pages/{page}/components/`)
-components all follow the same file contract, which depends on whether Storybook is
-enabled (see `features/01-storybook.md`).
-
-### With Storybook enabled — 6-file contract
-
-```text
-component-name/
-├── ComponentName.tsx
-├── ComponentName.styles.ts
-├── types.ts
-├── ComponentName.stories.tsx   ← required when Storybook is enabled
-├── ComponentName.test.tsx
-└── index.ts
-```
-
-### Without Storybook — 5-file contract
+components all follow the same **5-file contract** — Storybook is fixed OFF for
+this template (confirmed via real feature-test runs, see `features/README.md`),
+so no `.stories.tsx` is ever required.
 
 ```text
 component-name/
@@ -223,7 +206,7 @@ component-name/
 └── index.ts
 ```
 
-**Exception — logic-only components** (e.g. `ProtectedRoute`) have no visual UI and use a **4-file contract** regardless of Storybook: `ComponentName.tsx`, `types.ts`, `ComponentName.test.tsx`, `index.ts` — no `.styles.ts`, no `.stories.tsx`.
+**Exception — logic-only components** (e.g. `ProtectedRoute`) have no visual UI and use a **4-file contract**: `ComponentName.tsx`, `types.ts`, `ComponentName.test.tsx`, `index.ts` — no `.styles.ts`.
 
 **Missing any required file = incomplete component**
 
@@ -263,7 +246,6 @@ hooks/
 
 - Folders: `camelCase`
 - Components: `PascalCase.tsx`
-- Stories: `ComponentName.stories.tsx`
 - Tests: `ComponentName.test.tsx`
 - Types: `types.ts`
 - Styles: `ComponentName.styles.ts` (co-located, named after the component)

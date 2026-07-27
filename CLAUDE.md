@@ -51,9 +51,12 @@ This repository is a **clean project template**. It ships with a minimal placeho
 
 ### Step 2 — Optional features (ask yes/no for each)
 
+**Storybook is fixed OFF for this template** (confirmed via two independent real
+feature-test runs, both landing on the 5-file contract — see
+`features/README.md`) — not a per-project choice anymore.
+
 | Feature | Yes → keep | No → delete |
 | --- | --- | --- |
-| Storybook component docs | `features/01-storybook.md` | Delete the file; skip `.stories.tsx`; omit Storybook scripts from `package.json` |
 | API service + data layer pattern (structured DTOs, mappers, mocks) | `data-fetching/02-api-services.md` + `data-fetching/03-data-layer.md` | Delete both files |
 | Dark/light theme toggle *(shadcn/ui only)* | `styling/shadcn/02-theming.md` | Delete the file |
 | Toast notifications | `features/02-notifications.md` | Delete the file |
@@ -160,7 +163,6 @@ Delete any file whose feature the project does not need. See setup prompts above
 
 | File | Feature | Loaded when editing |
 | --- | --- | --- |
-| `features/01-storybook.md` | Storybook v8 — configuration contract, story file rules, 6-file vs 5-file component contract | `src/**/*.stories.tsx`, `.storybook/**/*.ts` |
 | `features/02-notifications.md` | Toast notifications — hook-only usage, severity variants, async patterns | `src/hooks/**/*.ts`, `src/components/**/*.tsx`, `src/pages/**/*.tsx` |
 | `features/03-internationalization.md` | i18n — runtime locale loading, `loadLocale()`, no bundled strings | `src/**/*.ts`, `src/**/*.tsx` |
 | `features/04-animated-components.md` | Animation wrappers — `src/components/animated/`, component contract, no raw animation in pages | `src/components/**/*.tsx`, `src/pages/**/*.tsx` |
@@ -180,7 +182,7 @@ These hooks run as PreToolUse/PostToolUse checks on Write and Edit operations:
 | `check-no-hardcoded-colors.sh` | No hardcoded hex/rgb/rgba/hsl and no Tailwind palette classes (e.g. `bg-blue-500`) in .styles.ts and .tsx | Yes (exit 2) |
 | `check-no-raw-dimensions.sh` | No raw px strings in styles.ts, no raw numeric dimension props in .tsx | Yes (exit 2) |
 | `check-component-duplicate.sh` | Never create a new reusable component if one already exists — warns and lists existing components in `components/shared/` or `components/layout/` when a new component folder is created (PreToolUse on Write\|Edit) | Warning only |
-| `check-component-files.sh` | Component folder has all required files including `ComponentName.styles.ts` — 6-file (Storybook on), 5-file (Storybook off), 4-file (logic-only) (PostToolUse on Write\|Edit) | Warning only |
+| `check-component-files.sh` | Component folder has all required files including `ComponentName.styles.ts` — 5-file contract (fixed, no Storybook), 4-file (logic-only) (PostToolUse on Write\|Edit) | Warning only |
 | `check-no-inline-classnames.sh` | No multi-token className strings inlined in .tsx — must be extracted to `.styles.ts` (PostToolUse on Write\|Edit) | Warning only |
 | `check-barrel-exports.sh` | New .ts/.tsx files in hooks/, components/, types/, constants/, services/, store/ must be re-exported from sibling index.ts (PostToolUse on Write) | Warning only |
 | `check-tsc.sh` | `tsc --noEmit` after .ts/.tsx writes in src/ (PostToolUse, debounced 30s) | Warning only |
@@ -224,14 +226,14 @@ The `check-no-div-span.sh` hook enforces the **Forbidden** tier automatically. A
 - **Barrel exports**: every new file in hooks/, components/, types/, constants/, services/, store/ must be re-exported from sibling `index.ts` (`core/03-coding-principles.md`)
 - **`ApiResponse<T>` envelope**: all services must wrap results in `ApiResponse<T>`; hooks unwrap `.data` before storing (`data-fetching/01-fetch-client.md`, full pattern in `data-fetching/03-data-layer.md`)
 - **Schema placement**: form validation schemas (Zod) live in `ComponentName.schema.ts`, never inside `.tsx` or hooks (`forms/01-rhf-zod.md`)
-- **Storybook** *(if enabled)*: `.storybook/main.ts` and `preview.ts` must follow the contract in `features/01-storybook.md`; components use the 6-file contract; if disabled, use 5-file contract and omit `.stories.tsx` everywhere
+- **Storybook**: fixed OFF for this template — 5-file component contract everywhere, no `.stories.tsx`, no `.storybook/` config, no Storybook scripts in `package.json`
 - **Error handling**: `ErrorBoundary` at root + page level, `AsyncState<T>` for async state, `unknown` in catch blocks (`core/10-error-handling.md`)
 - **Performance**: no default `React.memo`/`useMemo`/`useCallback`, stable list keys, lazy pages, virtualize >50-item lists (`core/11-performance.md`)
 - **Routing**: all routes in `src/config/routes.tsx`, `ProtectedRoute` with `<Outlet />`, `ROUTES` constants, loading state before redirect (`core/12-routing.md`)
 - **Theming** *(if enabled)*: `ThemeProvider` at app root only, `useTheme()` only for runtime value, never for conditional styles (`styling/shadcn/02-theming.md`)
 - **Notifications** *(if enabled)*: `toast()` only from hooks, never from UI components; use `toast.promise` for async (`features/02-notifications.md`)
 - **i18n** *(if enabled)*: locale files in `public/locales/`, never imported into JS bundle, always loaded via `loadLocale()` (`features/03-internationalization.md`)
-- **Animation wrappers** *(if enabled)*: no raw animation code in pages/components, all wrappers in `src/components/animated/`, 6-file contract applies (`features/04-animated-components.md`)
+- **Animation wrappers** *(if enabled)*: no raw animation code in pages/components, all wrappers in `src/components/animated/`, 5-file contract applies (`features/04-animated-components.md`)
 
 ---
 

@@ -62,7 +62,7 @@ After collecting answers:
 | Forms | React Hook Form + Zod |
 | Router | React Router DOM v7 |
 | Testing | Vitest + React Testing Library |
-| Storybook | v8 with `@storybook/addon-a11y` |
+| Storybook | Fixed OFF for this template |
 | Icons | ask user — `public/assets/icons/` (SVG sprites) or `lucide-react` |
 
 ---
@@ -105,8 +105,8 @@ After collecting answers:
 | Tier | Folder | Rule |
 | --- | --- | --- |
 | Primitives | `components/ui/` | shadcn CLI only — never edit, no stories/tests required |
-| Layout | `components/layout/` | Page-framing wrappers with no business data — 6-file contract required |
-| Shared | `components/shared/` | ALL custom components regardless of how many pages use them — 6-file contract required |
+| Layout | `components/layout/` | Page-framing wrappers with no business data — 5-file contract (fixed, no Storybook) |
+| Shared | `components/shared/` | ALL custom components regardless of how many pages use them — 5-file contract (fixed, no Storybook) |
 
 **Pages NEVER own components.** Every custom component lives in `shared/` or `layout/`.
 
@@ -195,13 +195,11 @@ The calling hook unwraps `.data` before storing in Zustand. Never return the raw
 
 ---
 
-## Storybook Configuration
-
-See `core/16-storybook.md` for the full contract. Summary:
-
-- `.storybook/main.ts` — use `@storybook/react-vite`, include `@storybook/addon-a11y`
-- `.storybook/preview.ts` — import `globals.css`, wrap stories in `MemoryRouter`, apply `ThemeProvider` decorator if used
-- `package.json` scripts: `"storybook": "storybook dev -p 6006"` and `"build-storybook": "storybook build"`
+**Storybook is fixed OFF for this template** — 5-file component contract
+everywhere, no `.storybook/` config, no Storybook scripts in `package.json`. (This
+section previously referenced a `core/16-storybook.md` file that never existed
+under that name in this repo's actual folder structure — a pre-reorg stale
+reference, moot now that Storybook is fixed off entirely.)
 
 ---
 

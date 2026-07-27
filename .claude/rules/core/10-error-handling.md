@@ -82,7 +82,7 @@ export const getUserProfile = async (id: string): Promise<ApiResponse<UserDto>> 
 
 ## ErrorBoundary Component
 
-Place in `src/components/shared/errorBoundary/` following the component file contract (6-file with Storybook, 5-file without):
+Place in `src/components/shared/errorBoundary/` following the component file contract (5-file — Storybook is fixed off for this template):
 
 ```tsx
 // src/components/shared/errorBoundary/ErrorBoundary.tsx

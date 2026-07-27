@@ -54,7 +54,7 @@ return <section className="bg-background dark:bg-card"></section>;
 
 ## Theme Toggle Component
 
-Build `ThemeToggle` in `src/components/shared/themeToggle/` following the component file contract (6-file with Storybook, 5-file without). It calls `setTheme()` only — no other logic:
+Build `ThemeToggle` in `src/components/shared/themeToggle/` following the component file contract (5-file — Storybook is fixed off for this template). It calls `setTheme()` only — no other logic:
 
 ```tsx
 // src/components/shared/themeToggle/ThemeToggle.tsx

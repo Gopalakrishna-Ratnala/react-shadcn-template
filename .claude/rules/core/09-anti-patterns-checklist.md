@@ -15,7 +15,7 @@ description: Anti-patterns checklist, refactor rules, and final validation — a
 - business logic in style files
 - UI state mixed into service modules
 - hardcoded theme values
-- missing tests, or missing stories when Storybook is enabled
+- missing tests
 - missing `types.ts` or `index.ts`
 - using `<div>` or `<span>` anywhere in JSX — both are forbidden; replace with a UI library primitive or a semantic HTML element
 - using local form state alongside a form library for the same field
@@ -62,7 +62,7 @@ During refactoring:
 - [ ] semantic HTML used intentionally — structural/typography/list/media elements chosen for meaning, not as a layout convenience
 - [ ] accessibility verified
 - [ ] responsive behavior verified (breakpoints; dark mode via `dark:` Tailwind classes)
-- [ ] all new types, services, stores, hooks, components, and tests follow project structure *(+ stories when Storybook is enabled)*
+- [ ] all new types, services, stores, hooks, components, and tests follow project structure
 - [ ] no `console.log`, `console.warn`, or `console.error` left in source files
 - [ ] no commented-out code blocks
 - [ ] no unused imports or variables
