@@ -1199,7 +1199,53 @@ Full validation after every fix in this whole batch: repo suite consistently
 18/18 tests, `tsc -b` clean, lint unchanged (same 15 pre-existing vendored-file
 errors), build succeeds.
 
-## 22. Working agreements / process notes
+## 22. Remaining Section 21 items closed out (2026-07-27)
+
+Every item still open at the end of Section 21 is now resolved:
+
+- **`.npmrc` with `engine-strict=true`** — added, and verified for real: temporarily
+  set `package.json`'s `engines.node` to an impossible version, confirmed
+  `npm install` now genuinely hard-fails (`npm error code EBADENGINE`) instead of
+  only warning, then restored `package.json` and confirmed normal install still
+  works fine.
+- **HTML Element Policy allow-list completeness** (`core/03-coding-principles.md`) —
+  added `<hgroup>`, `<dl>`/`<dt>`/`<dd>`, the table family, `<form>`, `<label>`,
+  `<a>`, `<button>`, `<blockquote>`, `<address>` — noting to prefer the vendored
+  `Table`/`Label`/`Button` primitives where those already exist.
+- **The plain-inline-text gap** — rather than adding a narrow `<span>` exception
+  that `check-no-div-span.sh` can't mechanically distinguish from a lazy wrapper
+  (which would recreate the exact doc-vs-hook mismatch this whole review effort
+  keeps finding), documented `<p className="inline">` instead — renders
+  identically to a `<span>`, already an allowed element, zero hook changes needed.
+- **The stale "ask the user for every choice" framing** in `CLAUDE.md`/`AGENTS.md` —
+  restructured: renamed to reflect reality (fixed decisions, nothing to ask about
+  for Step 1), moved the "ask the user" instruction to Step 2 (the genuinely
+  still-optional features), where it's actually still true. Also caught and fixed
+  along the way: `Testing framework`'s row still listed two options as if
+  undecided, contradicting `core/01-tech-stack.md`'s own already-fixed framing;
+  and a stale `state-management/02-redux-toolkit.md` reference in a checklist
+  line, pointing at a file deleted when Zustand was fixed earlier this session.
+- **The "`ThemeProvider` in render" testing claim** — checked directly, only half
+  right: `ThemeToggle.test.tsx` genuinely *does* wrap in `ThemeProvider`
+  (correctly, since it calls `useTheme()`), contradicting the report's "none of
+  the tests do this" — but `ColorSwatch`/gallery tests correctly don't, since they
+  never call `useTheme()` at all. The real problem was the rule's own terse,
+  unconditional phrasing implying every test needs it. Fixed to state the actual
+  condition instead of a blanket requirement.
+- **The whole-card click target gap** — a tester needed a whole-`Card`-clickable
+  row, correctly avoided putting `onClick` on the `Card` itself (exactly what
+  `check-no-div-span.sh`/`core/08-accessibility.md` forbid — `Card` is a plain
+  div with no Base UI `render` prop to convert it), and used the standard
+  stretched-link/stretched-overlay technique (a real `Button`, `absolute
+  inset-0`, real `aria-label`, last child of the `Card`). Documented this
+  pattern in `styling/shadcn/04-composition-patterns.md` with a working example,
+  so a future session doesn't reinvent it or reach for a forbidden handler.
+
+**Every item from all four real teammate reports (Section 21) is now resolved.**
+Full validation held throughout: 18/18 tests, `tsc -b` clean, lint unchanged,
+build succeeds.
+
+## 23. Working agreements / process notes
 
 - User wants to **hold all pushes until explicitly requested** — make local commits
   freely, but don't push to any remote without being asked first, so they can review
