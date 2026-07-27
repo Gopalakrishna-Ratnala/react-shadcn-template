@@ -1347,7 +1347,7 @@ out, so no code change was needed there.
 
 Validated: 18/18 tests, `tsc -b` clean (docs only, unaffected as expected).
 
-## 25. DECISION: migrate to React Router data mode — full plan, not yet started (2026-07-27)
+## 25. DECISION: migrate to React Router data mode — plan, Phases 1-2 done (2026-07-27)
 
 **This is the current top-priority item for the next session.** User made a deliberate,
 explicit call: this repo is a global template other teams will build real, growing
@@ -1539,6 +1539,42 @@ local-only state, closing the open question from Section 8.
   for the Products catalog, folding in the RHF+Zod submit-flow decision from
   plan item 3, is the natural next real code to build it on).
 
+### Independent review of Phase 1 + 2 (2026-07-27, separate session)
+
+User asked this session to check whether the other session's Phase 1/2 work
+(pushed to GitHub in the meantime) was actually needed/correct — reviewed it with
+the same rigor as every test-report review, not just trusting the commit
+messages' self-reported validation:
+- Re-ran typecheck/lint/test myself from a fresh `npm install` — confirmed
+  genuinely clean/passing (38/38 tests), no new dependencies added.
+- Reading the actual code line by line surfaced **4 real issues**, all fixed:
+  1–3. Three genuine `<div>` violations — `ProductsPage.tsx`'s page wrapper and
+     product grid, `ProductCard.tsx`'s `CardTitle`/`CardDescription` wrapper,
+     `RouteErrorFallback.tsx`'s wrapper — confirmed directly against the real
+     `check-no-div-span.sh` hook, not assumed. Fixed with `section` (page
+     wrapper, error fallback), `ul`/`li` (the product grid — matching
+     `ThemeHistoryPanel`'s established list pattern), and `hgroup`
+     (`CardTitle`+`CardDescription` — exactly what `hgroup` exists for, added
+     to the allowed-element list during the earlier external-guidelines
+     cross-check, Section 23). Confirmed all three clean against the real hook
+     after fixing.
+  4. `useLoaderData()` was double-cast through `unknown` rather than using the
+     hook's own generic parameter. Checked the actual installed `react-router`
+     type declaration directly (`useLoaderData<T = any>(): SerializeFrom<T>`)
+     — confirmed `useLoaderData<typeof productsLoader>()` type-checks
+     correctly, removing the unknown-cast entirely.
+- Also cleaned up a minor test-environment artifact: both test files'
+  `createMemoryRouter` configs were missing a `HydrateFallback` (the real
+  production router has one, correctly) — added it to both, confirmed the
+  previously-appearing stderr warning is gone.
+- Validated end-to-end again after the fixes, not just re-running unit tests:
+  built the app, started a real `json-server` + `vite preview`, confirmed both
+  routes return 200 and the live API correctly filters a real search query.
+- Committed and pushed these fixes on top of the other session's Phase 1/2
+  commits. **Verdict: the other session's work is solid overall and was worth
+  keeping — these 4 fixes are refinements on a sound foundation, not signs the
+  approach was wrong.**
+
 ### Process note on how this gets picked up
 
 User asked whether this chat session has a length limit and needs a fresh chat to
@@ -1552,8 +1588,9 @@ chat interface's own tool access, not Claude Code. Claude Code only matters agai
 later, for genuinely re-running the `run-feature-test` skill against the migrated
 result the same way reports 1–6 tested the current architecture.
 
-**Status: plan agreed, nothing implemented yet. Start with Phase 1 in the next
-session.**
+**Status: Phases 1 and 2 complete and independently reviewed/fixed. Phase 3
+(route-level `action` functions for the Products catalog's add/edit/delete,
+folding in the RHF+Zod submit-flow decision from plan item 3) is next.**
 
 ## 26. Working agreements / process notes
 
