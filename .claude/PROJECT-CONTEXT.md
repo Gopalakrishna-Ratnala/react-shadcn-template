@@ -1027,7 +1027,43 @@ correctly during a real, independently-started second session. That still
 requires an actual teammate running the real skill before Round 1 can be
 considered genuinely validated.
 
-## 20. Working agreements / process notes
+## 20. Permissions guidance for the skill (2026-07-27)
+
+User reported the skill "always asks for permission" — a good catch, and it
+surfaced a real, fixable gap that had nothing to do with anything discussed so
+far. Clarified two genuinely different things were being conflated:
+1. **The one deliberate Phase A/B handoff** (open a new terminal, start a new
+   session, paste Phase B's prompt) — structural, a real Claude Code platform
+   limitation (hooks only load from a session's own startup directory), not
+   removable by any settings configuration. This was always meant to require a
+   human, by design.
+2. **Repeated in-session approval prompts on individual commands** — a real, fixable
+   gap: this repo's *committed* `.claude/settings.json` has zero `permissions`
+   configuration at all (checked directly), so Claude Code defaults to prompting
+   for nearly every tool call.
+
+**Deliberately did not fix this by adding a broad allow-list to the committed
+`settings.json`** — that file ships with every real project built from this
+template, so loosening it there would loosen the default posture for real client
+projects too, not just test runs. Instead, documented `.claude/settings.local.json`
+(Claude Code's own standard personal/gitignored override mechanism, confirmed via
+current official docs and community sources — layers on top of the shared file,
+never committed) as a one-time per-machine setup step in `FEATURE-TEST-PLAN.md`'s
+Step 0, with an allow-list scoped to exactly what the skill needs
+(`git`/`npm`/`npx`/`node`, `Read`/`Write`/`Edit`, a narrowly-scoped `rm -rf` rule
+for the temp test directory only). Cross-referenced the same distinction directly
+in `SKILL.md` too, since testers might invoke the skill without reading the plan
+doc first.
+
+**Honest caveat, since this is real Claude Code runtime behavior this environment
+cannot itself test**: exact Bash permission-rule specifier syntax varies slightly
+across sources found (colon vs space vs direct-attach before the wildcard) — used
+the most explicitly documented, verified-against-official-docs form. Testers
+should verify this actually suppresses prompts in their real environment and
+report back the exact command if anything still prompts, so the specific rule can
+be refined based on real observed behavior, not just documentation.
+
+## 21. Working agreements / process notes
 
 - User wants to **hold all pushes until explicitly requested** — make local commits
   freely, but don't push to any remote without being asked first, so they can review
