@@ -193,12 +193,12 @@ import { Button } from "@/components/ui/button";
 
 import { formContainerStyles, inputStyles, submitButtonStyles } from "./AuthForm.styles";
 
-export function AuthForm() {
+export const AuthForm = (): ReactElement => {
   return (
     <section className={formContainerStyles}>
       <Input className={inputStyles({ state: "default" })} />
       <Button className={submitButtonStyles({ variant: "primary" })}>Sign in</Button>
     </section>
   );
-}
+};
 ```

@@ -44,10 +44,11 @@ description: Core coding principles and non-negotiable rules — always loaded f
 - **ALWAYS** reuse existing utilities, hooks, validations, constants, stores, and shared types before creating new ones
 - **ALWAYS** separate UI, state, service, and mapping concerns
 - **ALWAYS** include blank lines between import groups
-- **ALWAYS** keep import order and grouping compatible with ESLint rules
+- **ALWAYS** keep import order and grouping — mechanically enforced via `import-x/order`, see `core/06-typescript.md`
 - **ALWAYS** ensure accessibility: semantic controls, valid labels, alt text, keyboard support
 - **ALWAYS** type API requests, responses, store state, actions, component props, and mapper outputs
 - **ALWAYS** use a prop for reusable components, and hardcode `data-testid` only in page-level or one-off UI
+- **ALWAYS** define components as named arrow-function `const`s, never `function` declarations, and never a default export — mechanically enforced via `react/function-component-definition` (excludes vendored `src/components/ui/**`) and by never using `export default` anywhere in `src/`
 - **ALWAYS** add a re-export to the nearest `index.ts` whenever you create a new file inside `hooks/`, `components/`, `types/`, `constants/`, `services/`, or `store/` — a module that is not barrel-exported does not officially exist
 
 ---

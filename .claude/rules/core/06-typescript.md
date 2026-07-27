@@ -9,12 +9,18 @@ paths: ["src/**/*.ts", "src/**/*.tsx"]
 
 - **NEVER** use explicit `any`
 - Use `unknown` only when truly necessary, then narrow it
+- **Always explicitly annotate the return type of every exported function, component,
+  and hook** — mechanically enforced via `@typescript-eslint/explicit-module-boundary-types`
+  (`eslint.config.js`, scoped to exclude `src/components/ui/**`). Components typically
+  return `ReactElement` (import as `import type { ReactElement } from "react"`); use
+  `ReactNode` if the function can also return `null`/a fragment/children directly
+  (e.g. a class component's `render()`, or a component with an early-return guard).
 - Always type:
   - props
   - API payloads
   - service return types
   - store state and actions
-  - hook return values where useful
+  - hook return values
 
 - Use discriminated unions for state variants when applicable
 - Prefer `Readonly`, `Record`, and literal unions over vague object shapes
@@ -26,6 +32,8 @@ paths: ["src/**/*.ts", "src/**/*.tsx"]
 - `@typescript-eslint/no-floating-promises` = error
 - `@typescript-eslint/await-thenable` = error
 - `@typescript-eslint/return-await` = error
+- `@typescript-eslint/explicit-module-boundary-types` = error (excludes vendored `src/components/ui/**`)
+- `import-x/order` = error (excludes vendored `src/components/ui/**`)
 
 ## Path Alias
 
@@ -63,6 +71,11 @@ export default defineConfig({
 ```
 
 ## Import Order
+
+**Mechanically enforced** via `eslint-plugin-import-x`'s `import-x/order` rule
+(`eslint.config.js`) — not just documentation. Auto-fixable with `npm run lint --
+--fix` or `npx eslint . --fix`. Scoped to exclude `src/components/ui/**`
+(vendored, never manually edited).
 
 Always group imports in this order, with a blank line between each group:
 
@@ -104,4 +117,37 @@ try {
 
 // Use underscore prefix ONLY for intentionally unused destructured values
 const [_ignored, setValue] = useState(0);
+```
+
+## `satisfies` for Literal Config Objects
+
+Use `satisfies` (not a type annotation) on constant object literals — like
+`ROUTES`, `API_ENDPOINTS`, or a status-to-variant lookup — when you want the
+compiler to check the shape matches an expected type, while keeping the exact,
+narrowed literal types (so `ROUTES.PRODUCTS` is still the literal string
+`"/products"`, not the wider `string`). A plain type annotation (`: Record<string,
+string>`) or `as const` alone can't do both at once.
+
+```ts
+// WRONG — plain annotation widens every value to `string`, losing the literal type
+const ROUTES: Record<string, string> = {
+  COMPONENTS_GALLERY: "/components-gallery",
+};
+// ROUTES.COMPONENTS_GALLERY is typed as `string`, not the literal "/components-gallery"
+
+// WRONG — as const alone gives no shape-checking against an expected type at all
+const ROUTES = {
+  COMPONENTS_GALERY: "/components-gallery", // typo — nothing catches this
+} as const;
+
+// CORRECT — satisfies checks the shape, as const keeps the literal types
+interface RouteMap {
+  COMPONENTS_GALLERY: string;
+}
+
+const ROUTES = {
+  COMPONENTS_GALLERY: "/components-gallery",
+} as const satisfies RouteMap;
+// ROUTES.COMPONENTS_GALLERY is still the literal "/components-gallery",
+// and a missing/misspelled key would be a real type error against RouteMap
 ```

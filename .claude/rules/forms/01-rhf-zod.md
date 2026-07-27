@@ -82,9 +82,9 @@ import { useForm } from "react-hook-form";
 
 import { loginSchema, type LoginFormValues } from "./LoginPage.schema";
 
-export function LoginPage() {
+export const LoginPage = (): ReactElement => {
   const form = useForm<LoginFormValues>({ resolver: zodResolver(loginSchema) });
-}
+};
 ```
 
 ## Numeric/coerced fields (`z.coerce.*`) need a different `useForm` signature
@@ -119,7 +119,7 @@ import {
   type ProductFormValues,
 } from "./ProductsPage.schema";
 
-export function ProductsPage() {
+export const ProductsPage = (): ReactElement => {
   // Third generic (TTransformedValues) tells RHF the post-coercion shape, so
   // handleSubmit's callback receives correctly-typed values, not the raw input type.
   const form = useForm<ProductFormInput, unknown, ProductFormValues>({
@@ -129,7 +129,7 @@ export function ProductsPage() {
   const onSubmit = (values: ProductFormValues) => {
     // values.price is genuinely `number` here, not `unknown`
   };
-}
+};
 ```
 
 ## Forbidden Patterns

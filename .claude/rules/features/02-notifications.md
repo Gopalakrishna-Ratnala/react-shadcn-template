@@ -73,8 +73,8 @@ export const useDeleteItem = () => {
 // src/pages/profile/ProfilePage.tsx — no toast import here
 import { useUpdateProfile } from "@/hooks";
 
-export function ProfilePage() {
+export const ProfilePage = (): ReactElement => {
   const { save } = useUpdateProfile();
   return <ProfileForm onSubmit={save} />;
-}
+};
 ```

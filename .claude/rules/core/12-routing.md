@@ -19,14 +19,14 @@ Always wrap `AppRoutes` with `<BrowserRouter>` in `App.tsx` — never inside a p
 import { BrowserRouter } from "react-router";
 import { AppRoutes } from "@/config/routes";
 
-export function App() {
+export const App = (): ReactElement => {
   return (
     <BrowserRouter>
       {/* other root providers (ThemeProvider, ErrorBoundary, Toaster…) */}
       <AppRoutes />
     </BrowserRouter>
   );
-}
+};
 ```
 
 - Only one `<BrowserRouter>` per app — always at the root
@@ -59,7 +59,7 @@ import { Navigate, Outlet } from "react-router";
 import { useAuthStore } from "@/store/auth";
 import { ROUTES } from "@/constants";
 
-export function ProtectedRoute() {
+export const ProtectedRoute = (): ReactElement => {
   // Adapt selector syntax to your chosen state management library (Zustand shown)
   const user = useAuthStore((state) => state.user);
   const isLoading = useAuthStore((state) => state.isLoading);
@@ -68,7 +68,7 @@ export function ProtectedRoute() {
   if (!user) return <Navigate to={ROUTES.LOGIN} replace />;
 
   return <Outlet />;
-}
+};
 ```
 
 ## Route Config Pattern
@@ -85,7 +85,7 @@ const DashboardPage = lazy(() => import("@/pages/dashboard/DashboardPage"));
 
 const PageLoader = () => <p>Loading…</p>;
 
-export function AppRoutes() {
+export const AppRoutes = (): ReactElement => {
   return (
     <Routes>
       {/* Public routes */}
@@ -103,7 +103,7 @@ export function AppRoutes() {
       </Route>
     </Routes>
   );
-}
+};
 ```
 
 ## ROUTES Constants

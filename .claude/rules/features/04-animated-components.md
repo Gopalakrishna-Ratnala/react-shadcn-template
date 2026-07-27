@@ -65,10 +65,10 @@ export interface FadeInProps {
 import type { FadeInProps } from "./types";
 // import from your chosen animation library
 
-export function FadeIn({ children, delay = 0, duration = 0.3 }: FadeInProps) {
+export const FadeIn = ({ children, delay = 0, duration = 0.3 }: FadeInProps): ReactElement => {
   // wrap children with animation — library-specific implementation here
   return <>{children}</>;
-}
+};
 ```
 
 ```ts

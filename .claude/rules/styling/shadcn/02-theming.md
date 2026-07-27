@@ -19,13 +19,13 @@ Always wrap the app with `ThemeProvider` in `App.tsx` — never inside a page or
 // src/App.tsx
 import { ThemeProvider } from "next-themes";
 
-export function App() {
+export const App = (): ReactElement => {
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
       {/* router and other providers */}
     </ThemeProvider>
   );
-}
+};
 ```
 
 - Always set `attribute="class"` — required for Tailwind's class-based dark mode strategy
@@ -39,10 +39,10 @@ Only import `useTheme()` when the resolved theme value is needed at runtime (e.g
 // ✅ Valid — third-party component needs the resolved theme value
 import { useTheme } from "next-themes";
 
-export function RootToaster() {
+export const RootToaster = (): ReactElement => {
   const { resolvedTheme } = useTheme();
   return <Toaster theme={resolvedTheme as "light" | "dark"} />;
-}
+};
 
 // ❌ Invalid — use dark: Tailwind class instead
 const { resolvedTheme } = useTheme();
@@ -62,7 +62,7 @@ import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { toggleButtonStyles } from "./ThemeToggle.styles";
 
-export function ThemeToggle() {
+export const ThemeToggle = (): ReactElement => {
   const { resolvedTheme, setTheme } = useTheme();
 
   return (
@@ -76,7 +76,7 @@ export function ThemeToggle() {
       {/* Icon from public/assets/icons/ or lucide-react per project icon choice */}
     </Button>
   );
-}
+};
 ```
 
 ## CSS Variable Tokens
