@@ -977,7 +977,57 @@ not memorized output.
 
 Validated: 18/18 tests, `tsc -b` clean (docs-only change, unaffected as expected).
 
-## 19. Working agreements / process notes
+## 19. Self dry-run of assignment 1 before asking the team to spend time on it (2026-07-27)
+
+User asked directly whether the skill had actually been run and cross-checked
+before letting teammates loose on it — a genuinely good instinct. Honest answer
+given: no, not yet, and there's a real limitation on what could be validated this
+way — this session can't literally invoke the skill as Claude Code CLI, and can't
+spin up a second, genuinely independent Claude Code session to test whether hooks
+fire *live* during real use (the entire reason the skill has its 2-phase design).
+
+**What was done instead**: cloned the repo fresh into `/tmp/feature-test-1`
+(exactly per the skill's Phase A), then built the full assignment 1 feature
+(Products catalog) for real — not talked through, actually written, file by file,
+with the same discipline used throughout this whole project (checking real
+vendored source before using any API, never guessing). Ran `lint`/`tsc -b`/`test`/
+`build` for real. Manually verified every relevant hook against the actual files
+produced. Started a real `json-server` instance and confirmed it served the
+seeded data correctly. Wrote up a genuine, complete report
+(`test-reports/tester-1-products-catalog-1785142649.md`) using the real template.
+
+**Two real bugs caught during the build itself**, left in the report rather than
+quietly pre-fixed:
+1. `AlertDialogTrigger` has no `asChild` prop at all (Base UI-backed, confirmed by
+   reading the actual vendored source) — fixed using the correct `render` prop.
+2. A genuine Zod `z.coerce` + React Hook Form type mismatch — `useForm<T>`'s
+   single-generic signature breaks the moment a schema has a coerced field, since
+   the pre- and post-coercion shapes differ. **Fixed for real, and the fix was
+   then also added to `forms/01-rhf-zod.md` itself** (split `z.input`/`z.output`,
+   RHF's third `useForm` generic) — a genuine, previously-undocumented gap; the
+   rule's only example was a plain string-only schema that never surfaces this.
+
+**One more real, standing gap surfaced, not yet fixed**: nothing mechanically
+enforces "use a vendored component instead of custom markup" (the
+`04-composition-patterns.md` rule) — `check-no-inline-classnames.sh` only catches
+multi-token `className` strings, not "this should have been `Alert` instead of a
+raw `<p role="alert">`." Caught here only by manual self-review, same as the
+`ThemeHistoryPanel`/`Empty` finding earlier in this project. No hook exists for
+this class of violation at all currently — worth considering whether one
+reasonably could (likely hard to do generically, since it requires recognizing
+semantic intent, not just a syntactic pattern — flagged for future
+consideration, not solved here).
+
+**Stated honestly, in both the report and here**: this proves the skill's
+*mechanics* work (the task is buildable, the report template holds up in
+practice, the hooks are logically correct against real code) and produced two
+genuine, real fixes. It does **not** and cannot prove the one thing that matters
+most — whether Claude Code's actual live `PostToolUse` hook interception fires
+correctly during a real, independently-started second session. That still
+requires an actual teammate running the real skill before Round 1 can be
+considered genuinely validated.
+
+## 20. Working agreements / process notes
 
 - User wants to **hold all pushes until explicitly requested** — make local commits
   freely, but don't push to any remote without being asked first, so they can review
