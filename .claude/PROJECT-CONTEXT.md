@@ -1245,7 +1245,66 @@ Every item still open at the end of Section 21 is now resolved:
 Full validation held throughout: 18/18 tests, `tsc -b` clean, lint unchanged,
 build succeeds.
 
-## 23. Working agreements / process notes
+## 23. Cross-check against an external React/TS guidelines doc (2026-07-27)
+
+User shared a generic React + TypeScript project guidelines document (not
+specific to this repo) and asked whether our rules follow it. Checked each
+point directly against our actual rules/codebase rather than assume — found 2
+exact matches, 2 deliberate architectural differences (not gaps), and 3 genuine
+gaps plus one convention we'd been following inconsistently by habit without
+ever formalizing or enforcing it.
+
+**Deliberate differences, confirmed not gaps**: their doc specifies Context API
++ TanStack Query for state/server-state; we use Zustand + a custom fetch-based
+`apiClient` — a real, researched architectural decision (Section 16), not an
+oversight. Their doc says "standard inline interfaces" for props; we use a
+separate, co-located `types.ts` file per component — an established, deliberate
+convention throughout this whole project.
+
+**Three genuine gaps, closed**:
+1. **Import ordering was prose-only** — our own rule said "keep import order
+   compatible with ESLint rules," but no such rule actually existed. Installed
+   `eslint-plugin-import-x` (verified via research to be the actively-maintained
+   fork with real ESLint 9 flat-config support before choosing it over the
+   original `eslint-plugin-import`) and configured `import-x/order` to match
+   `core/06-typescript.md`'s already-documented 5-group convention exactly.
+   Scoped to exclude `src/components/ui/**` (vendored, never edited — same
+   pattern used for every custom rule added this session). Verified for real:
+   found and auto-fixed 14 genuine violations in our own code, zero touching
+   vendored files.
+2. **No enforced return-type requirement** on exported functions/hooks — some
+   examples happened to show one, nothing required it universally. Tested
+   `@typescript-eslint/explicit-module-boundary-types` first (found only 14 real
+   violations across the whole codebase, a manageable number, confirming real
+   enforcement was viable) before enabling it for real, same vendored-`ui/`-
+   excluded scope.
+3. **`satisfies` was never mentioned anywhere**, genuinely unused. Added
+   guidance to `core/06-typescript.md` with a concrete, applicable example (a
+   `ROUTES`-style literal config object) showing why a plain type annotation or
+   `as const` alone can't do both shape-checking and literal-type preservation
+   the way `satisfies` + `as const` together can.
+
+**The convention formalized**: "named arrow-function `const`s, never `function`
+declarations, never default exports" — this session had been following this
+inconsistently by habit (every component built used `export function X()`)
+without ever writing it down or enforcing it. Installed `eslint-plugin-react`
+for `react/function-component-definition` (same vendored-`ui/`-excluded scope),
+tested it, found 7 real violations across our own components, all auto-fixed
+correctly. Documented explicitly in `core/03-coding-principles.md`. Also
+converted `App.tsx` from a default export to a named export (the other half of
+this convention) — it was the one remaining default export anywhere in `src/`
+— and updated `main.tsx`'s import to match. Converted every rule doc's own code
+examples still showing the old function-declaration pattern (12 instances
+across 7 files: `core/11-performance.md`, `core/12-routing.md`,
+`forms/01-rhf-zod.md`, both `styling/shadcn/` files, both `features/` files) so
+the docs don't contradict what's now actually enforced.
+
+Full validation after every change: 18/18 tests (unchanged assertions — purely
+a syntax/style refactor, zero behavioral change), `tsc -b` clean, lint clean
+(same 15 pre-existing vendored-file errors only), build succeeds
+(`ComponentsGalleryPage` still correctly code-splits via `React.lazy`).
+
+## 24. Working agreements / process notes
 
 - User wants to **hold all pushes until explicitly requested** — make local commits
   freely, but don't push to any remote without being asked first, so they can review
