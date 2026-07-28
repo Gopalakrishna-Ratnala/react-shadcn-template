@@ -10,7 +10,7 @@ paths: ["src/components/**/*.tsx", "src/pages/**/*.tsx"]
 - Never write raw animation library code directly inside a page or business component — always extract to a reusable wrapper
 - Never duplicate animation presets inline — define them once in the wrapper component and reuse via props
 - Always place reusable animation wrappers in `src/components/animated/` and export them from the folder's `index.ts`
-- Always follow the component file contract — 6-file when Storybook is enabled (`ComponentName.tsx`, `ComponentName.styles.ts`, `types.ts`, `ComponentName.stories.tsx`, `ComponentName.test.tsx`, `index.ts`), or 5-file without Storybook (omit `.stories.tsx`)
+- Always follow the component file contract — 5-file (`ComponentName.tsx`, `ComponentName.styles.ts`, `types.ts`, `ComponentName.test.tsx`, `index.ts`) — Storybook is fixed off for this template
 - Never place business logic inside an animated wrapper — it wraps visual transitions only
 - Create a new animated wrapper only when:
   - The same animation pattern appears in more than one place
@@ -36,14 +36,12 @@ src/components/animated/
 │   ├── FadeIn.tsx
 │   ├── FadeIn.styles.ts
 │   ├── types.ts
-│   ├── FadeIn.stories.tsx   ← only when Storybook is enabled
 │   ├── FadeIn.test.tsx
 │   └── index.ts
 ├── slideUp/
 │   ├── SlideUp.tsx
 │   ├── SlideUp.styles.ts
 │   ├── types.ts
-│   ├── SlideUp.stories.tsx  ← only when Storybook is enabled
 │   ├── SlideUp.test.tsx
 │   └── index.ts
 └── index.ts               # Barrel export for all animated components
@@ -67,10 +65,10 @@ export interface FadeInProps {
 import type { FadeInProps } from "./types";
 // import from your chosen animation library
 
-export function FadeIn({ children, delay = 0, duration = 0.3 }: FadeInProps) {
+export const FadeIn = ({ children, delay = 0, duration = 0.3 }: FadeInProps): ReactElement => {
   // wrap children with animation — library-specific implementation here
   return <>{children}</>;
-}
+};
 ```
 
 ```ts

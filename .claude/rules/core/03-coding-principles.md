@@ -44,10 +44,11 @@ description: Core coding principles and non-negotiable rules — always loaded f
 - **ALWAYS** reuse existing utilities, hooks, validations, constants, stores, and shared types before creating new ones
 - **ALWAYS** separate UI, state, service, and mapping concerns
 - **ALWAYS** include blank lines between import groups
-- **ALWAYS** keep import order and grouping compatible with ESLint rules
+- **ALWAYS** keep import order and grouping — mechanically enforced via `import-x/order`, see `core/06-typescript.md`
 - **ALWAYS** ensure accessibility: semantic controls, valid labels, alt text, keyboard support
 - **ALWAYS** type API requests, responses, store state, actions, component props, and mapper outputs
 - **ALWAYS** use a prop for reusable components, and hardcode `data-testid` only in page-level or one-off UI
+- **ALWAYS** define components as named arrow-function `const`s, never `function` declarations, and never a default export — mechanically enforced via `react/function-component-definition` (excludes vendored `src/components/ui/**`) and by never using `export default` anywhere in `src/`
 - **ALWAYS** add a re-export to the nearest `index.ts` whenever you create a new file inside `hooks/`, `components/`, `types/`, `constants/`, `services/`, or `store/` — a module that is not barrel-exported does not officially exist
 
 ---
@@ -98,10 +99,30 @@ Use these when no UI library primitive satisfies the semantic need. They must be
 
 | Category | Elements |
 | --- | --- |
-| Structural | `<main>`, `<section>`, `<article>`, `<aside>`, `<header>`, `<footer>`, `<nav>` |
-| Lists | `<ul>`, `<ol>`, `<li>` |
-| Typography | `<h1>`–`<h6>`, `<p>`, `<em>`, `<strong>`, `<small>`, `<mark>`, `<time>`, `<abbr>`, `<code>`, `<kbd>` |
+| Structural | `<main>`, `<section>`, `<article>`, `<aside>`, `<header>`, `<footer>`, `<nav>`, `<hgroup>` |
+| Lists | `<ul>`, `<ol>`, `<li>`, `<dl>`, `<dt>`, `<dd>` |
+| Typography | `<h1>`–`<h6>`, `<p>`, `<em>`, `<strong>`, `<small>`, `<mark>`, `<time>`, `<abbr>`, `<code>`, `<kbd>`, `<blockquote>`, `<address>` |
 | Media | `<figure>`, `<figcaption>`, `<img>` |
+| Forms & interactive | `<form>` (required for React Hook Form's `onSubmit` — no primitive replaces this), `<label>` (prefer the vendored `Label` when styling is needed; raw `<label>` is fine for a plain, unstyled association), `<a>` (prefer `react-router`'s `Link`/`NavLink` for in-app navigation; raw `<a>` for external links), `<button>` (prefer the vendored `Button`; raw `<button>` only for a fully unstyled reset inside a custom composite control) |
+| Tabular data | `<table>`, `<thead>`, `<tbody>`, `<tfoot>`, `<tr>`, `<th>`, `<td>`, `<caption>` — prefer the vendored `Table`/`TableHeader`/`TableBody`/etc. when available; use the raw elements only if no primitive fits the exact structure needed |
+
+### Plain inline text needing only a className, no semantic role
+
+None of the semantic inline elements above always fit — `<em>`/`<strong>`/`<mark>`
+all carry real meaning (stress emphasis, strong importance, highlighting) that
+would be inaccurate to apply to text that's neither of those things (e.g. an
+activity feed's plain action description, styled a muted color but not
+"emphasized"). Reach for `<p>` with an inline display utility instead of a bare
+`<span>` — it renders identically to an inline text run, without needing any
+exception to the div/span ban, since `<p>` is already an allowed element above:
+
+```tsx
+// WRONG — no good semantic fit, but span is still forbidden regardless
+<span className="text-muted-foreground">deployed the payments service</span>
+
+// CORRECT — <p> styled to render inline, already an allowed element
+<p className="inline text-muted-foreground">deployed the payments service</p>
+```
 
 ### Examples
 
@@ -109,7 +130,7 @@ Use these when no UI library primitive satisfies the semantic need. They must be
 // WRONG — <div> with no semantic role
 <div className="card">...</div>
 
-// CORRECT — UI library primitive (e.g. shadcn/ui Card, MUI Paper)
+// CORRECT — shadcn/ui primitive
 <Card>...</Card>
 
 // WRONG — <div> used as a page section wrapper
@@ -117,7 +138,7 @@ Use these when no UI library primitive satisfies the semantic need. They must be
   <h1>Title</h1>
 </div>
 
-// CORRECT — semantic HTML when no UI library primitive fits
+// CORRECT — semantic HTML when no shadcn/ui primitive fits
 <section aria-labelledby="section-title">
   <h2 id="section-title">Title</h2>
 </section>
@@ -125,13 +146,13 @@ Use these when no UI library primitive satisfies the semantic need. They must be
 // WRONG — <span> wrapping inline text
 <span className="label">Status</span>
 
-// CORRECT — UI library primitive (e.g. shadcn/ui Badge, MUI Chip) or semantic element
+// CORRECT — shadcn/ui primitive or semantic element
 <Badge>Status</Badge>
 // or, when purely typographic
 <em>Status</em>
 
-// FINE — <p> for prose content when no UI library typography component is appropriate
+// FINE — <p> for prose content when no shadcn/ui typography component is appropriate
 <p>Supporting description text.</p>
-// prefer your UI library's card description component when inside a card context
-// e.g. shadcn/ui: <CardDescription>, MUI: <Typography variant="body2">
+// prefer shadcn/ui's card description component when inside a card context
+// e.g. <CardDescription>
 ```

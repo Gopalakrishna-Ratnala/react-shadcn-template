@@ -1,0 +1,262 @@
+/* ============================================================
+   ACTIVE THEME  —  default (unbranded) starting point
+   ============================================================
+   This is the template's baseline theme, duplicated from
+   theme-template.css unchanged except for --font-sans/--font-display,
+   updated to reference 'Geist Variable' (the font actually loaded via
+   @fontsource-variable/geist in src/index.css) instead of the
+   template's placeholder "Inter" example.
+
+   This file is ALWAYS the one theme the app actually imports (see
+   src/index.css). Designer-supplied theme candidates live in
+   src/styles/themes/history/ until approved — see
+   .claude/rules/styling/shadcn/03-theme-versioning.md for the full
+   candidate -> review -> promote workflow.
+   ============================================================ */
+
+/* ============================================================
+   LIGHT MODE  (default)
+   ============================================================ */
+:root {
+  /* ----------------------------------------------------------
+     1. CORE SURFACES
+     The base canvas of every screen.
+     ---------------------------------------------------------- */
+  --background: #ffffff; /* Page background color */
+  --foreground: #111111; /* Default text color on the page */
+
+  /* ----------------------------------------------------------
+     2. BRAND / ACTION COLORS
+     --primary is THE brand color. Used on: main buttons,
+     active states, links, selected items, progress bars.
+     "-foreground" always means: the text/icon color placed
+     ON TOP of that color. Check contrast!
+     ---------------------------------------------------------- */
+  --primary: #e71e0e; /* Main brand/action color */
+  --primary-foreground: #ffffff; /* Text on top of primary (e.g. button label) */
+
+  --secondary: #f4f4f4; /* Secondary buttons, subtle actions */
+  --secondary-foreground: #111111; /* Text on top of secondary */
+
+  --accent: #f4f4f4; /* Hover backgrounds, highlighted menu items */
+  --accent-foreground: #111111; /* Text on top of accent */
+
+  /* ----------------------------------------------------------
+     3. CONTAINERS
+     Cards, dropdowns, modals — anything that sits "on" the page.
+     ---------------------------------------------------------- */
+  --card: #ffffff; /* Card background */
+  --card-foreground: #111111; /* Text inside cards */
+
+  --popover: #ffffff; /* Dropdowns, tooltips, popovers background */
+  --popover-foreground: #111111; /* Text inside popovers */
+
+  /* ----------------------------------------------------------
+     4. MUTED / QUIET ELEMENTS
+     De-emphasized things: helper text, placeholders,
+     disabled areas, subtle section backgrounds.
+     ---------------------------------------------------------- */
+  --muted: #f5f5f5; /* Quiet background (e.g. table header row) */
+  --muted-foreground: #6b6b6b; /* Secondary/helper text color */
+
+  /* ----------------------------------------------------------
+     5. FEEDBACK / STATUS COLORS
+     ---------------------------------------------------------- */
+  --destructive: #dc2626; /* Errors, delete actions */
+  --destructive-foreground: #ffffff; /* Text on top of destructive */
+
+  --success: #16a34a; /* Success messages, positive badges */
+  --success-foreground: #ffffff; /* Text on top of success */
+
+  --warning: #d97706; /* Warnings, caution badges */
+  --warning-foreground: #ffffff; /* Text on top of warning */
+
+  --info: #2563eb; /* Informational messages */
+  --info-foreground: #ffffff; /* Text on top of info */
+
+  /* ----------------------------------------------------------
+     6. LINES & FOCUS
+     ---------------------------------------------------------- */
+  --border: #e5e5e5; /* Dividers, card borders, table lines */
+  --input: #e5e5e5; /* Input field border color */
+  --ring: #e71e0e; /* Focus outline (keyboard focus). Usually = primary */
+
+  /* ----------------------------------------------------------
+     7. CHARTS / DATA VISUALIZATION
+     Used in order: chart-1 is the first/most important series.
+     Pick colors that are distinguishable next to each other.
+     ---------------------------------------------------------- */
+  --chart-1: #e71e0e;
+  --chart-2: #111111;
+  --chart-3: #9a9a9a;
+  --chart-4: #d4d4d4;
+  --chart-5: #6b6b6b;
+
+  /* ----------------------------------------------------------
+     8. SIDEBAR
+     The app sidebar gets its own palette because it often
+     needs a different (e.g. darker/inverted) treatment
+     than the rest of the page.
+     ---------------------------------------------------------- */
+  --sidebar: #fafafa; /* Sidebar background */
+  --sidebar-foreground: #111111; /* Sidebar text */
+  --sidebar-primary: #e71e0e; /* Active/selected item in sidebar */
+  --sidebar-primary-foreground: #ffffff; /* Text on active sidebar item */
+  --sidebar-accent: #f0f0f0; /* Sidebar item hover background */
+  --sidebar-accent-foreground: #111111; /* Text on hovered sidebar item */
+  --sidebar-border: #e5e5e5; /* Sidebar divider lines */
+  --sidebar-ring: #e71e0e; /* Focus ring inside sidebar */
+
+  /* ----------------------------------------------------------
+     9. TYPOGRAPHY
+     --font-sans    : the main UI font (buttons, body, tables)
+     --font-display : headings / hero text. Can be the same as
+                      sans, or a contrasting display face.
+     --font-mono    : code, numbers, technical data
+     Remember to actually load these fonts in the project.
+     ---------------------------------------------------------- */
+  --font-sans: "Geist Variable", system-ui, sans-serif;
+  --font-display: "Geist Variable", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  /* Type scale — size / line-height for each step.
+     Components use these instead of fixed px values. */
+  --text-xs: 0.75rem;
+  --leading-xs: 1rem; /* Tiny labels, captions */
+  --text-sm: 0.875rem;
+  --leading-sm: 1.25rem; /* Secondary text, table cells */
+  --text-base: 1rem;
+  --leading-base: 1.5rem; /* Body text */
+  --text-lg: 1.125rem;
+  --leading-lg: 1.75rem; /* Emphasized body */
+  --text-xl: 1.25rem;
+  --leading-xl: 1.75rem; /* Card titles */
+  --text-2xl: 1.5rem;
+  --leading-2xl: 2rem; /* Section headings */
+  --text-3xl: 1.875rem;
+  --leading-3xl: 2.25rem; /* Page titles */
+  --text-4xl: 2.5rem;
+  --leading-4xl: 3rem; /* Hero / display */
+
+  /* Weights — which weights this theme uses */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Letter spacing for display/heading text (0 = none) */
+  --tracking-display: -0.02em;
+
+  /* ----------------------------------------------------------
+     10. SHAPE — corner roundness
+     --radius is the base. sm/lg are derived but can be
+     set independently for a custom feel.
+     0px = sharp/editorial. 0.5rem = soft. 9999px = pill.
+     ---------------------------------------------------------- */
+  --radius: 0.375rem; /* Base: inputs, buttons, cards */
+  --radius-sm: calc(var(--radius) - 2px); /* Small: badges, tags */
+  --radius-lg: calc(var(--radius) + 4px); /* Large: modals, big cards */
+  --radius-full: 9999px; /* Pills, avatars */
+
+  /* ----------------------------------------------------------
+     11. ELEVATION — shadows
+     This is a big personality lever. Soft & diffused,
+     hard & offset, colored, or "none" for flat design.
+     ---------------------------------------------------------- */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05); /* Subtle lift: inputs, small cards */
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08); /* Cards, dropdowns */
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.12); /* Modals, popovers */
+  --shadow-focus: 0 0 0 3px color-mix(in srgb, var(--ring) 30%, transparent); /* Focus glow */
+
+  /* ----------------------------------------------------------
+     12. ICONS
+     Controls the look of every icon in the system.
+     ---------------------------------------------------------- */
+  --icon-stroke-width: 1.75; /* 1 = thin/elegant, 2 = bold/sturdy */
+  --icon-size-sm: 1rem;
+  --icon-size-md: 1.25rem;
+  --icon-size-lg: 1.5rem;
+
+  /* ----------------------------------------------------------
+     13. MOTION
+     ---------------------------------------------------------- */
+  --duration-fast: 150ms; /* Hovers, small transitions */
+  --duration-normal: 250ms; /* Dropdowns, accordions */
+  --duration-slow: 400ms; /* Modals, page-level */
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1); /* Default easing curve */
+}
+
+/* ============================================================
+   DARK MODE
+   Fill this in even if the project launches light-only —
+   it costs 10 minutes now and saves a retrofit later.
+   ============================================================ */
+.dark {
+  --background: #0f0f0f;
+  --foreground: #fafafa;
+
+  --primary: #e71e0e;
+  --primary-foreground: #ffffff;
+
+  --secondary: #1e1e1e;
+  --secondary-foreground: #fafafa;
+
+  --accent: #1e1e1e;
+  --accent-foreground: #fafafa;
+
+  --card: #161616;
+  --card-foreground: #fafafa;
+
+  --popover: #161616;
+  --popover-foreground: #fafafa;
+
+  --muted: #1e1e1e;
+  --muted-foreground: #9a9a9a;
+
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --success: #22c55e;
+  --success-foreground: #0f0f0f;
+  --warning: #f59e0b;
+  --warning-foreground: #0f0f0f;
+  --info: #3b82f6;
+  --info-foreground: #ffffff;
+
+  --border: #2a2a2a;
+  --input: #2a2a2a;
+  --ring: #e71e0e;
+
+  --chart-1: #e71e0e;
+  --chart-2: #fafafa;
+  --chart-3: #9a9a9a;
+  --chart-4: #4a4a4a;
+  --chart-5: #6b6b6b;
+
+  --sidebar: #0a0a0a;
+  --sidebar-foreground: #fafafa;
+  --sidebar-primary: #e71e0e;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #1e1e1e;
+  --sidebar-accent-foreground: #fafafa;
+  --sidebar-border: #2a2a2a;
+  --sidebar-ring: #e71e0e;
+
+  /* Shadows are usually stronger/darker in dark mode */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.6);
+  --shadow-focus: 0 0 0 3px color-mix(in srgb, var(--ring) 40%, transparent);
+
+  /* Typography, radius, icons, motion normally stay the same
+     in dark mode — override here only if this theme needs it. */
+}
+
+/* ============================================================
+   PROJECT EXTRAS  (optional)
+   The ONLY place a theme may add new variables.
+   If a new variable is needed by more than one project,
+   propose adding it to this template instead.
+   ============================================================ */
+:root {
+  /* --example-hero-gradient: ... ; */
+}

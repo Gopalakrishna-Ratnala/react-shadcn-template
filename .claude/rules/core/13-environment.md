@@ -43,13 +43,13 @@ export const env = {
 
 ```ts
 // src/services/apiClient.ts — imports from env config, never from import.meta.env directly
-import axios, { type AxiosInstance } from "axios";
 import { env } from "@/config/env";
 
-export const apiClient: AxiosInstance = axios.create({
-  baseURL: env.apiBaseUrl,
+// apiClient uses native fetch, not a library instance — see data-fetching/01-fetch-client.md
+// for the full implementation. The key point here: env.apiBaseUrl is read once, from the
+// typed config module, never inline as import.meta.env.VITE_API_BASE_URL.
+const response = await fetch(`${env.apiBaseUrl}/products`, {
   headers: { "Content-Type": "application/json" },
-  timeout: 10000,
 });
 ```
 
@@ -74,7 +74,7 @@ import { env } from "@/config/env";
 const data = await fetch(`${env.apiBaseUrl}/users`);
 
 // WRONG — hardcoded base URL
-const apiClient = axios.create({ baseURL: "https://api.example.com" });
+const response = await fetch("https://api.example.com/products");
 
 // WRONG — variable missing without check (silently undefined)
 const url = import.meta.env.VITE_API_BASE_URL; // could be undefined at runtime

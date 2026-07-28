@@ -46,7 +46,7 @@ const ProfilePage   = lazy(() => import("@/pages/profile/ProfilePage"));
 
 const PageLoader = () => <p>Loading…</p>;
 
-export function AppRoutes() {
+export const AppRoutes = (): ReactElement => {
   return (
     <Routes>
       <Route
@@ -67,7 +67,7 @@ export function AppRoutes() {
       />
     </Routes>
   );
-}
+};
 ```
 
 ## Long Lists

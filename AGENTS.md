@@ -28,25 +28,23 @@ If anything is unclear:
 
 ---
 
-## Project Setup — Required User Prompts
+## Project Setup Reference
 
-**When starting a new project from this template, ask the user for every choice below before writing any code.** Do not assume defaults.
+Every row below is fixed for this template — nothing to ask the user about or
+choose between for any of these:
 
-| Decision | Options |
+| Decision | What's fixed |
 | --- | --- |
-| Styling library | MUI (Material UI) or shadcn/ui + Tailwind CSS v4 (`@tailwindcss/vite` — not PostCSS) |
-| Icon source | `public/assets/icons/` (SVG sprites) or `lucide-react` library |
-| State management | Zustand or Redux Toolkit |
-| Forms & validation | React Hook Form + Yup or React Hook Form + Zod |
-| Data fetching | Axios or other (TanStack Query, SWR, native fetch) |
-| Testing framework | Vitest + React Testing Library or Jest + React Testing Library |
+| Styling library | shadcn/ui + Tailwind CSS v4 (`@tailwindcss/vite` — not PostCSS) |
+| Icon source | `lucide-react` — already installed |
+| State management | Zustand |
+| Forms & validation | React Hook Form + Zod |
+| Data fetching | Fetch-based `apiClient` + json-server (local mock backend) |
+| Testing framework | Vitest + React Testing Library — already installed and configured |
 
-After collecting answers:
-
-1. Delete the strategy files you are **not** using from each `.claude/rules/` subfolder
-2. Update `core/01-tech-stack.md` with the chosen libraries
-3. Update the **Active Tech Stack** table below to reflect confirmed choices
-4. Install chosen dependencies before writing any feature code
+For the genuinely optional, still-ask-the-user features (Storybook is fixed OFF;
+toast notifications, i18n, animation wrappers remain a real per-project choice),
+see `CLAUDE.md`'s "Step 2 — Optional features" and `.claude/rules/features/README.md`.
 
 ---
 
@@ -58,11 +56,11 @@ After collecting answers:
 | Language | TypeScript strict mode |
 | UI Library | shadcn/ui + Tailwind CSS v4 (`@tailwindcss/vite` — NOT PostCSS) |
 | State | Zustand |
-| HTTP | Axios (mock) |
-| Forms | React Hook Form + Yup |
-| Router | React Router DOM v7 |
+| HTTP | Fetch-based `apiClient` + json-server (local mock) |
+| Forms | React Hook Form + Zod |
+| Router | React Router v8 (`react-router` — no separate `-dom` package since v7) |
 | Testing | Vitest + React Testing Library |
-| Storybook | v8 with `@storybook/addon-a11y` |
+| Storybook | Fixed OFF for this template |
 | Icons | ask user — `public/assets/icons/` (SVG sprites) or `lucide-react` |
 
 ---
@@ -81,7 +79,7 @@ After collecting answers:
 - **NEVER** skip required files for a component or page
 - **NEVER** create a new file in `hooks/`, `components/`, `types/`, `constants/`, `services/`, or `store/` without adding a re-export to the sibling `index.ts` *(hook-enforced — warning)*
 - **NEVER** return a raw domain model from a service — wrap in `ApiResponse<T>`
-- **NEVER** place a Yup schema inside a `.tsx` file or a hook — use a co-located `ComponentName.schema.ts`
+- **NEVER** place a Zod schema inside a `.tsx` file or a hook — use a co-located `ComponentName.schema.ts`
 - **NEVER** duplicate existing utilities, hooks, store patterns, service clients, constants, or types
 - **NEVER** call APIs directly inside UI components
 - **NEVER** place business logic inside presentational elements
@@ -105,8 +103,8 @@ After collecting answers:
 | Tier | Folder | Rule |
 | --- | --- | --- |
 | Primitives | `components/ui/` | shadcn CLI only — never edit, no stories/tests required |
-| Layout | `components/layout/` | Page-framing wrappers with no business data — 6-file contract required |
-| Shared | `components/shared/` | ALL custom components regardless of how many pages use them — 6-file contract required |
+| Layout | `components/layout/` | Page-framing wrappers with no business data — 5-file contract (fixed, no Storybook) |
+| Shared | `components/shared/` | ALL custom components regardless of how many pages use them — 5-file contract (fixed, no Storybook) |
 
 **Pages NEVER own components.** Every custom component lives in `shared/` or `layout/`.
 
@@ -195,13 +193,11 @@ The calling hook unwraps `.data` before storing in Zustand. Never return the raw
 
 ---
 
-## Storybook Configuration
-
-See `core/16-storybook.md` for the full contract. Summary:
-
-- `.storybook/main.ts` — use `@storybook/react-vite`, include `@storybook/addon-a11y`
-- `.storybook/preview.ts` — import `globals.css`, wrap stories in `MemoryRouter`, apply `ThemeProvider` decorator if used
-- `package.json` scripts: `"storybook": "storybook dev -p 6006"` and `"build-storybook": "storybook build"`
+**Storybook is fixed OFF for this template** — 5-file component contract
+everywhere, no `.storybook/` config, no Storybook scripts in `package.json`. (This
+section previously referenced a `core/16-storybook.md` file that never existed
+under that name in this repo's actual folder structure — a pre-reorg stale
+reference, moot now that Storybook is fixed off entirely.)
 
 ---
 
