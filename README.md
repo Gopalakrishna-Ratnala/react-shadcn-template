@@ -18,8 +18,8 @@ badly-formed component before it ships.
   candidates, compare them via the local dev server, and promote whichever one
   a client approves, with every candidate (approved or rejected) permanently
   recorded — see `.claude/rules/styling/shadcn/03-theme-versioning.md`
-- **A local mock API** via `json-server`, backed by `db.json`, with a
-  fetch-based `apiClient` (no HTTP library dependency)
+- **A local mock API** via `json-server`, backed by `data/mockData/db.json`,
+  with a fetch-based `apiClient` (no HTTP library dependency)
 - **A component tier system** (`ui/` → `layout/` → `blocks/` → `shared/` →
   feature-scoped `pages/*/components/`) with an explicit promotion rule, so a
   one-off component doesn't get force-promoted into a shared folder just
@@ -82,7 +82,7 @@ on staged files before every commit.
   everything else that keeps generated code consistent
 - **`.claude/rules/`** — the individual rule files referenced above, organized
   by topic
-- **`.claude/PROJECT-CONTEXT.md`** — running project history and decisions,
+- **`docs/PROJECT-CONTEXT.md`** — running project history and decisions,
   meant to be read by Claude at the start of any new session working on this
   repo
 - **`VERSIONS.md`** — version history for this template

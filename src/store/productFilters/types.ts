@@ -4,7 +4,6 @@ export interface ProductFiltersState {
 
 export interface ProductFiltersActions {
   setSearchTerm: (searchTerm: string) => void;
-  clearSearchTerm: () => void;
 }
 
 export type ProductFiltersStore = ProductFiltersState & ProductFiltersActions;

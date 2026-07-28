@@ -1,3 +1,4 @@
+import { RouterContextProvider } from "react-router";
 import { describe, expect, it, vi } from "vitest";
 
 import { getProducts } from "@/services/product";
@@ -26,7 +27,7 @@ const makeLoaderArgs = (search = ""): LoaderFunctionArgs => {
     url: new URL(url),
     pattern: "/products",
     params: {},
-    context: {} as never,
+    context: new RouterContextProvider(),
   };
 };
 
@@ -66,5 +67,15 @@ describe("productsLoader", () => {
 
     expect(getProducts).toHaveBeenCalledWith("lamp");
     expect(result).toEqual({ searchTerm: "lamp", products: [] });
+  });
+
+  it("propagates a rejected getProducts call so the router's ErrorBoundary can catch it", async () => {
+    vi.mocked(getProducts).mockRejectedValueOnce(
+      new Error("Service unavailable"),
+    );
+
+    await expect(productsLoader(makeLoaderArgs())).rejects.toThrow(
+      "Service unavailable",
+    );
   });
 });

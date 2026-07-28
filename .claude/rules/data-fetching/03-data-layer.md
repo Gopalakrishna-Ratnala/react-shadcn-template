@@ -1,5 +1,5 @@
 ---
-description: Data layer architecture — db.json → service → mapper → hook → UI flow, DTOs, domain models, ApiResponse<T> end-to-end. Active when using the API service + data layer pattern.
+description: Data layer architecture — data/mockData/db.json → service → mapper → hook → UI flow, DTOs, domain models, ApiResponse<T> end-to-end. Active when using the API service + data layer pattern.
 paths: ["src/services/**/*.ts", "src/hooks/**/*.ts", "src/types/**/*.ts"]
 ---
 
@@ -15,12 +15,12 @@ updating, since both already speak in `ApiResponse<T>` and a stable domain model
 ## Layer Flow
 
 ```
-db.json (via json-server)  →  Service Layer  →  Mapper Layer  →  Hook  →  UI
+data/mockData/db.json (via json-server)  →  Service Layer  →  Mapper Layer  →  Hook  →  UI
 ```
 
 | Layer | Location | Responsibility |
 |---|---|---|
-| **Seed/fixture data** | `db.json` (root) — served live by json-server; `src/services/<domain>/mocks.ts` — typed fixtures for unit tests | `db.json` is the actual runtime data source in dev; `mocks.ts` is test-only, never imported at runtime |
+| **Seed/fixture data** | `data/mockData/db.json` — served live by json-server; `src/services/<domain>/mocks.ts` — typed fixtures for unit tests | `data/mockData/db.json` is the actual runtime data source in dev; `mocks.ts` is test-only, never imported at runtime |
 | **Service** | `src/services/<domain>/` | Calls `apiClient` (real async HTTP against json-server), returns `ApiResponse<T>` |
 | **Mapper** | `src/services/mappers/` | Transforms raw DTO into a stable domain model |
 | **Hook** | `src/hooks/` | Calls service → passes to mapper → returns domain model to UI |
@@ -30,7 +30,7 @@ db.json (via json-server)  →  Service Layer  →  Mapper Layer  →  Hook  →
 runtime data comes from — it's test-only fixture data for unit tests that mock
 `fetch` (see `apiClient.test.ts` for the pattern). The actual data the app sees while
 developing comes from a real network call to json-server, which is itself backed by
-`db.json`. This means loading states, network errors, and timeouts are all genuinely
+`data/mockData/db.json`. This means loading states, network errors, and timeouts are all genuinely
 exercised during development, not just simulated.
 
 ## ApiResponse\<T\> Contract
@@ -56,7 +56,7 @@ src/
 ├── services/
 │   ├── product/
 │   │   ├── productService.ts   # Calls apiClient, returns ApiResponse<ProductDto[]>
-│   │   ├── types.ts            # ProductDto (raw API shape / DTO, matches db.json)
+│   │   ├── types.ts            # ProductDto (raw API shape / DTO, matches data/mockData/db.json)
 │   │   ├── mocks.ts            # Typed fixtures for unit tests only
 │   │   └── index.ts
 │   ├── mappers/
@@ -70,7 +70,7 @@ src/
 
 ## Rules
 
-- Always define `db.json`'s resource shape to match `services/<domain>/types.ts` (DTO types) — the DTO is a contract with the mock backend, not an arbitrary type
+- Always define `data/mockData/db.json`'s resource shape to match `services/<domain>/types.ts` (DTO types) — the DTO is a contract with the mock backend, not an arbitrary type
 - Always store test fixtures as typed constants in `src/services/<domain>/mocks.ts` — used only by that domain's tests, never imported by app code
 - Always define domain model types in `src/types/` — these are what the UI sees
 - Always write a mapper that converts the DTO → domain model in `src/services/mappers/`
@@ -89,7 +89,7 @@ export interface Product {
 ```
 
 ```ts
-// src/services/product/types.ts — raw API shape (DTO), matches db.json's "products" key
+// src/services/product/types.ts — raw API shape (DTO), matches data/mockData/db.json's "products" key
 export interface ProductDto {
   id: number;
   product_name: string;
@@ -98,7 +98,7 @@ export interface ProductDto {
 ```
 
 ```json
-// db.json (excerpt) — this is what json-server actually serves at GET /products
+// data/mockData/db.json (excerpt) — this is what json-server actually serves at GET /products
 {
   "products": [
     { "id": 1, "product_name": "Desk Lamp", "unit_price": 24.99 }

@@ -26,12 +26,12 @@ description: Core coding principles and non-negotiable rules — always loaded f
 
 ## Non-negotiable Rules
 
-> The following are auto-enforced by hooks (see `.claude/hooks/`): no explicit `any`, no `<div>`/`<span>`, no library-specific inline style props, no inline `style`, no hardcoded CSS colors, no Tailwind palette classes (e.g. `bg-blue-500`), no raw dimensions. Hooks block violating writes. The rules below include both hook-enforced and manual-compliance items.
+> The following are auto-enforced by hooks (see `.claude/hooks/`): no explicit `any`, no library-specific inline style props, no inline `style`, no hardcoded CSS colors, no Tailwind palette classes (e.g. `bg-blue-500`), no raw dimensions. Hooks block violating writes. The rules below include both hook-enforced and manual-compliance items.
 
 - **NEVER** use explicit `any` *(hook-enforced)*
 - **NEVER** hardcode colors, spacing, font sizes, shadows, border radius, z-index, widths, heights, max-widths, min-heights, or line-heights — always use design tokens from your chosen UI library's theme system *(hook-enforced)*
 - **NEVER** skip required files
-- **NEVER** use `<div>` or `<span>` in component JSX — they carry no semantic meaning and are always a layout shortcut *(hook-enforced)*
+- **PREFER** a vendored shadcn/ui primitive or a genuinely-fitting semantic HTML element over a plain `<div>`/`<span>` — but a plain `<div>`/`<span>` is a legitimate choice for generic layout/grouping with no semantic role of its own; never reach for a semantic element that doesn't actually apply just to avoid one (see the HTML Element Policy section below)
 - **NEVER** use library-specific inline style props (e.g. `sx`) for production component styling *(hook-enforced)*
 - **NEVER** use inline `style` attribute *(hook-enforced)*
 - **NEVER** duplicate existing utilities, hooks, store patterns, service clients, constants, or types
@@ -86,16 +86,34 @@ export const loginUser = () => apiClient.post(API_ENDPOINTS.LOGIN, data);
 
 ## HTML Element Policy
 
-### Forbidden — always replace
+`<div>` and `<span>` are allowed. On a shadcn/ui + Tailwind stack they are
+themselves the idiomatic building blocks — shadcn's own vendored primitives
+(`card.tsx`, `badge.tsx`, etc.) are styled divs/spans under the hood, and
+there's no library replacement for a plain, semantically-neutral layout
+wrapper (a flex/grid container with no inherent role). A prior version of
+this policy hard-blocked both elements everywhere; in practice that forced
+semantically **wrong** choices whenever nothing genuinely fit (`<em>` used for
+plain non-emphasized text, `<p className="inline">` as a `<span>`
+substitute, `<figure>`/`<figcaption>` forced onto content that wasn't really
+self-contained media) — worse for accessibility than the div/span it was
+meant to prevent, not better.
 
-| Element | Why | What to use instead |
-| --- | --- | --- |
-| `<div>` | No semantic meaning; always a layout shortcut | UI library card/container primitive (`Card`, `Paper`, etc.), or a semantic element: `<section>`, `<article>`, `<main>` |
-| `<span>` | No semantic meaning; always an inline shortcut | UI library badge/chip primitive (`Badge`, `Chip`, etc.), or a semantic element: `<em>`, `<strong>`, `<code>` |
+**Still prefer, in this order, whenever one genuinely fits:**
+1. A vendored shadcn/ui primitive (`Card`, `Badge`, `Alert`, etc.) when the
+   content matches what that primitive represents — see
+   `styling/shadcn/04-composition-patterns.md`'s "Use Components, Not Custom
+   Markup" table.
+2. A semantic HTML element (`<section>`, `<article>`, `<em>`, `<strong>`,
+   etc.) when the content genuinely carries that meaning.
+3. A plain `<div>`/`<span>` for generic layout/grouping with no semantic role
+   of its own — this is a legitimate, idiomatic choice here, not a fallback
+   to feel guilty about.
 
-### Allowed — semantic HTML with no UI library equivalent
+Don't reach for a semantic landmark or emphasis element just to avoid a
+`<div>`/`<span>` — using `<section>` for non-thematic layout, or `<em>` for
+non-emphasized text, dilutes the signal those elements exist to carry.
 
-Use these when no UI library primitive satisfies the semantic need. They must be used **intentionally**, not as a fallback convenience.
+### Common Semantic Elements
 
 | Category | Elements |
 | --- | --- |
@@ -103,56 +121,32 @@ Use these when no UI library primitive satisfies the semantic need. They must be
 | Lists | `<ul>`, `<ol>`, `<li>`, `<dl>`, `<dt>`, `<dd>` |
 | Typography | `<h1>`–`<h6>`, `<p>`, `<em>`, `<strong>`, `<small>`, `<mark>`, `<time>`, `<abbr>`, `<code>`, `<kbd>`, `<blockquote>`, `<address>` |
 | Media | `<figure>`, `<figcaption>`, `<img>` |
-| Forms & interactive | `<form>` (required for React Hook Form's `onSubmit` — no primitive replaces this), `<label>` (prefer the vendored `Label` when styling is needed; raw `<label>` is fine for a plain, unstyled association), `<a>` (prefer `react-router`'s `Link`/`NavLink` for in-app navigation; raw `<a>` for external links), `<button>` (prefer the vendored `Button`; raw `<button>` only for a fully unstyled reset inside a custom composite control) |
-| Tabular data | `<table>`, `<thead>`, `<tbody>`, `<tfoot>`, `<tr>`, `<th>`, `<td>`, `<caption>` — prefer the vendored `Table`/`TableHeader`/`TableBody`/etc. when available; use the raw elements only if no primitive fits the exact structure needed |
-
-### Plain inline text needing only a className, no semantic role
-
-None of the semantic inline elements above always fit — `<em>`/`<strong>`/`<mark>`
-all carry real meaning (stress emphasis, strong importance, highlighting) that
-would be inaccurate to apply to text that's neither of those things (e.g. an
-activity feed's plain action description, styled a muted color but not
-"emphasized"). Reach for `<p>` with an inline display utility instead of a bare
-`<span>` — it renders identically to an inline text run, without needing any
-exception to the div/span ban, since `<p>` is already an allowed element above:
-
-```tsx
-// WRONG — no good semantic fit, but span is still forbidden regardless
-<span className="text-muted-foreground">deployed the payments service</span>
-
-// CORRECT — <p> styled to render inline, already an allowed element
-<p className="inline text-muted-foreground">deployed the payments service</p>
-```
+| Forms & interactive | `<form>` (required for React Hook Form's `onSubmit`), `<label>` (prefer the vendored `Label` when styling is needed), `<a>` (prefer `react-router`'s `Link`/`NavLink` for in-app navigation; raw `<a>` for external links), `<button>` (prefer the vendored `Button`; raw `<button>` only for a fully unstyled reset inside a custom composite control) |
+| Tabular data | `<table>`, `<thead>`, `<tbody>`, `<tfoot>`, `<tr>`, `<th>`, `<td>`, `<caption>` — prefer the vendored `Table`/`TableHeader`/`TableBody`/etc. when available |
 
 ### Examples
 
 ```tsx
-// WRONG — <div> with no semantic role
-<div className="card">...</div>
-
-// CORRECT — shadcn/ui primitive
+// CORRECT — shadcn/ui primitive when the content is genuinely a card
 <Card>...</Card>
 
-// WRONG — <div> used as a page section wrapper
-<div>
-  <h1>Title</h1>
-</div>
-
-// CORRECT — semantic HTML when no shadcn/ui primitive fits
+// CORRECT — semantic HTML when the content is genuinely a page section
 <section aria-labelledby="section-title">
   <h2 id="section-title">Title</h2>
 </section>
 
-// WRONG — <span> wrapping inline text
-<span className="label">Status</span>
+// CORRECT — a plain div is fine for a generic layout wrapper with no role of its own
+<div className="flex flex-col gap-4">
+  <Card>...</Card>
+  <Card>...</Card>
+</div>
 
-// CORRECT — shadcn/ui primitive or semantic element
+// CORRECT — shadcn/ui primitive when the content is genuinely a status pill
 <Badge>Status</Badge>
-// or, when purely typographic
-<em>Status</em>
 
-// FINE — <p> for prose content when no shadcn/ui typography component is appropriate
-<p>Supporting description text.</p>
-// prefer shadcn/ui's card description component when inside a card context
-// e.g. <CardDescription>
+// CORRECT — a plain span is fine for inline text with no semantic role
+<span className="text-muted-foreground">deployed the payments service</span>
+
+// WRONG — <em> misused for text that isn't actually emphasized
+<em className="text-muted-foreground">deployed the payments service</em>
 ```

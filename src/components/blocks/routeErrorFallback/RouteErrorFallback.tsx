@@ -1,8 +1,9 @@
 import type { ReactElement } from "react";
 
-import { isRouteErrorResponse, useRouteError } from "react-router";
+import { isRouteErrorResponse, useNavigate, useRouteError } from "react-router";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 
 import { routeErrorFallbackStyles as styles } from "./RouteErrorFallback.styles";
 
@@ -22,6 +23,7 @@ export const RouteErrorFallback = ({
   title = "This page failed to load",
 }: RouteErrorFallbackProps): ReactElement => {
   const error = useRouteError();
+  const navigate = useNavigate();
 
   return (
     <section className={styles.wrapper}>
@@ -29,6 +31,7 @@ export const RouteErrorFallback = ({
         <AlertTitle>{title}</AlertTitle>
         <AlertDescription>{getErrorMessage(error)}</AlertDescription>
       </Alert>
+      <Button onClick={() => navigate(0)}>Try again</Button>
     </section>
   );
 };

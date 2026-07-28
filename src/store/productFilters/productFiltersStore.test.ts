@@ -17,10 +17,4 @@ describe("useProductFiltersStore", () => {
     useProductFiltersStore.getState().setSearchTerm("desk lamp");
     expect(useProductFiltersStore.getState().searchTerm).toBe("desk lamp");
   });
-
-  it("clearSearchTerm resets searchTerm to an empty string", () => {
-    useProductFiltersStore.getState().setSearchTerm("desk lamp");
-    useProductFiltersStore.getState().clearSearchTerm();
-    expect(useProductFiltersStore.getState().searchTerm).toBe("");
-  });
 });

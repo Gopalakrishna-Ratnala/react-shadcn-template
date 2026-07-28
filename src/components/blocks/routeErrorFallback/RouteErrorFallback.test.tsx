@@ -1,14 +1,22 @@
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import {
   createMemoryRouter,
   RouterProvider,
   type RouteObject,
 } from "react-router";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { HydrateFallback } from "@/config/routeFallback";
 
 import { RouteErrorFallback } from "./RouteErrorFallback";
+
+const mockNavigate = vi.fn();
+
+vi.mock("react-router", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("react-router")>();
+  return { ...actual, useNavigate: () => mockNavigate };
+});
 
 const renderWithError = (loader: RouteObject["loader"]) => {
   const router = createMemoryRouter(
@@ -44,5 +52,18 @@ describe("RouteErrorFallback", () => {
     });
 
     expect(await screen.findByText("Not Found")).toBeInTheDocument();
+  });
+
+  it("triggers a full re-navigation when Try again is clicked", async () => {
+    const user = userEvent.setup();
+
+    renderWithError(() => {
+      throw new Error("boom");
+    });
+
+    await screen.findByText("boom");
+    await user.click(screen.getByRole("button", { name: "Try again" }));
+
+    expect(mockNavigate).toHaveBeenCalledWith(0);
   });
 });

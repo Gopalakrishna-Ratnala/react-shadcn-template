@@ -76,7 +76,7 @@ An array of objects, one per candidate, in creation order:
    temporarily copy the candidate's contents over `theme.css` for local viewing only —
    or, if asked to make it easy to flip between several candidates during one review
    session, ask the user first before adding any preview-switching mechanism (this is a
-   deliberate architectural choice, not a default — see `PROJECT-CONTEXT.md`'s Section 4
+   deliberate architectural choice, not a default — see `docs/PROJECT-CONTEXT.md`'s Section 4
    for the (a)/(b)/(c) discussion already had on this).
 
 ## Comparing candidates
@@ -115,5 +115,5 @@ The moment one candidate is chosen:
   purpose is version history and review workflow, not a runtime multi-theme switcher.
   If a future project genuinely needs multiple themes active simultaneously (not just
   during a review/comparison phase), that's a distinct, larger architectural decision —
-  see `PROJECT-CONTEXT.md` Section 4 for the (a)/(b)/(c) options already discussed, and
+  see `docs/PROJECT-CONTEXT.md` Section 4 for the (a)/(b)/(c) options already discussed, and
   ask the user before building anything like that.

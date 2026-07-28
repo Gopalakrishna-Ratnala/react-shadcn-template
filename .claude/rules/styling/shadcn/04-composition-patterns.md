@@ -147,13 +147,17 @@ using `Spinner` + `data-icon` + `disabled`:
 
 `Card` is a plain `<div>`-backed component with no Base UI `render` prop to turn
 it into a real `<button>`, and putting an `onClick` directly on a `Card` (or any
-div/span) is exactly what `check-no-div-span.sh`/`core/08-accessibility.md`
-forbid — a bare clickable container has no keyboard/screen-reader affordance.
+div/span) gives a bare clickable container with no keyboard/screen-reader
+affordance — this is a real accessibility gap regardless of the HTML Element
+Policy (`core/03-coding-principles.md`), since the problem isn't the `<div>`
+itself, it's the missing focusable/labeled control.
 
 Use the **stretched-link/stretched-overlay pattern** instead: a real `Button`
 (or `Link`) as the last child of the `Card`, visually invisible but covering the
 whole card via absolute positioning, carrying a real `aria-label` describing the
-destination/action:
+destination/action. Use `variant="ghost"` — `variant="link"` applies
+text-decoration/color styling that's irrelevant (and can visually leak through)
+on a button with no visible text content:
 
 ```tsx
 <Card className="relative">
@@ -162,7 +166,7 @@ destination/action:
     <CardDescription>{member.role}</CardDescription>
   </CardHeader>
   <Button
-    variant="link"
+    variant="ghost"
     className="absolute inset-0 h-full w-full"
     aria-label={`View ${member.name}'s profile`}
     onClick={() => openMemberDetail(member.id)}

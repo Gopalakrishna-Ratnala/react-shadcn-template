@@ -125,9 +125,6 @@ export const useProductFiltersStore = create<ProductFiltersStore>((set) => ({
   setSearchTerm: (searchTerm) => {
     set({ searchTerm });
   },
-  clearSearchTerm: () => {
-    set({ searchTerm: "" });
-  },
 }));
 ```
 

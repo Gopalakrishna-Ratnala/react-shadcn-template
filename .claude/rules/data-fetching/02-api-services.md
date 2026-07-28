@@ -8,7 +8,7 @@ paths: ["src/services/**/*.ts", "src/hooks/**/*.ts"]
 ## Rules
 
 - Always place all service functions in `src/services/<domain>/` — one file per domain (e.g. `productService.ts`)
-- Never call a service function directly from a UI component — always go through a hook
+- Never call a service function directly from a UI component — go through a route `loader`/`action` for route-tied data (see `core/12-routing.md`, `core/07-react-hooks.md`), or a hook for non-route-tied fetches
 - Never hardcode endpoint strings inline — always define them in `src/constants/api.constants.ts`
 - Always type every service function's return value explicitly — return `ApiResponse<T>` (defined in `src/types/common.types.ts`)
 - Always handle errors in the service layer — do not let raw exceptions surface to the UI
@@ -32,7 +32,7 @@ src/services/
 ## Pattern
 
 ```ts
-// src/services/product/types.ts — raw API shape (DTO), matches json-server's db.json shape
+// src/services/product/types.ts — raw API shape (DTO), matches json-server's data/mockData/db.json shape
 export interface ProductDto {
   id: number;
   product_name: string;
@@ -59,17 +59,25 @@ export const getProducts = async (): Promise<ApiResponse<ProductDto[]>> => {
 ```
 
 ```ts
-// src/hooks/useProducts.ts — imports directly from the service file, not a barrel
-import { getProducts } from "@/services/product/productService";
+// src/pages/products/ProductsPage.loader.ts — route-tied data fetching calls
+// the service directly from a loader, not from a hook (see core/07-react-hooks.md
+// for why a useProducts-style hook would be the wrong shape for this case)
 import { mapProductDtoToProduct } from "@/services/mappers/productMapper";
+import { getProducts } from "@/services/product";
 import type { Product } from "@/types/product.types";
+import type { LoaderFunctionArgs } from "react-router";
 
-export const useProducts = () => {
-  const fetchProducts = async (): Promise<Product[]> => {
-    const response = await getProducts();
-    return response.data.map(mapProductDtoToProduct);
-  };
+export interface ProductsLoaderData {
+  products: Product[];
+  searchTerm: string;
+}
 
-  return { fetchProducts };
+export const productsLoader = async ({
+  request,
+}: LoaderFunctionArgs): Promise<ProductsLoaderData> => {
+  const url = new URL(request.url);
+  const searchTerm = url.searchParams.get("q") ?? "";
+  const response = await getProducts(searchTerm || undefined);
+  return { products: response.data.map(mapProductDtoToProduct), searchTerm };
 };
 ```

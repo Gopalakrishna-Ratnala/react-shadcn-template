@@ -8,9 +8,9 @@ description: Performance guidelines — memoization rules, lazy loading, list ke
 
 - Never wrap a component in `React.memo` by default — only add it when a profiler confirms unnecessary re-renders
 - Never use `useMemo` or `useCallback` as a habit — only use them when the computation is expensive or referential stability is required by a dependency array
-- Always lazy-load page components with `React.lazy` + `Suspense` — never eagerly import pages in the route config
+- Always lazy-load page components via each route's own `lazy: () => import(...)` (React Router v8 data mode) — never eagerly import pages in the route config, and never use `React.lazy` + `Suspense` for this (see `core/12-routing.md`)
 - Always provide a stable, unique identifier as the `key` prop in lists — never use array index as `key` in dynamic lists
-- Never fetch data in a `useEffect` when a hook can encapsulate it — effects are a last resort for data fetching
+- Never fetch data in a `useEffect` when a route `loader` can own it instead — effects are a last resort for data fetching (see `core/12-routing.md`, `core/07-react-hooks.md`)
 - Avoid deeply nested component trees — flatten when components have no independent re-render needs.
 
 ## When `useMemo` Is Justified
@@ -35,39 +35,39 @@ const handleClick = () => setOpen(true);
 
 ## Lazy Loading Pages
 
+This project uses React Router v8 **data mode** — route-level `lazy` replaces
+`React.lazy` + `Suspense` entirely (see `core/12-routing.md` for the full
+router setup). Never reach for `React.lazy`/`Suspense` for page-level code
+splitting in this repo; `lazy` also resolves a route's `loader`/`action`
+alongside its `Component`, code-splitting all three together:
+
 ```tsx
 // src/config/routes.tsx
-import { lazy, Suspense } from "react";
-import { Routes, Route } from "react-router";
+import { createBrowserRouter } from "react-router";
 import { ROUTES } from "@/constants";
+import { HydrateFallback } from "./routeFallback";
+import type { RouteObject } from "react-router";
 
-const DashboardPage = lazy(() => import("@/pages/dashboard/DashboardPage"));
-const ProfilePage   = lazy(() => import("@/pages/profile/ProfilePage"));
+const routes: RouteObject[] = [
+  {
+    path: ROUTES.DASHBOARD,
+    lazy: async () => {
+      const { DashboardPage } = await import("@/pages/dashboard/DashboardPage");
+      return { Component: DashboardPage };
+    },
+    HydrateFallback,
+  },
+  {
+    path: ROUTES.PROFILE,
+    lazy: async () => {
+      const { ProfilePage } = await import("@/pages/profile/ProfilePage");
+      return { Component: ProfilePage };
+    },
+    HydrateFallback,
+  },
+];
 
-const PageLoader = () => <p>Loading…</p>;
-
-export const AppRoutes = (): ReactElement => {
-  return (
-    <Routes>
-      <Route
-        path={ROUTES.DASHBOARD}
-        element={
-          <Suspense fallback={<PageLoader />}>
-            <DashboardPage />
-          </Suspense>
-        }
-      />
-      <Route
-        path={ROUTES.PROFILE}
-        element={
-          <Suspense fallback={<PageLoader />}>
-            <ProfilePage />
-          </Suspense>
-        }
-      />
-    </Routes>
-  );
-};
+export const router = createBrowserRouter(routes);
 ```
 
 ## Long Lists

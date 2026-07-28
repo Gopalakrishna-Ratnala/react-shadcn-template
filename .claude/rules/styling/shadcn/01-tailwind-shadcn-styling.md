@@ -38,8 +38,8 @@ export const containerStyles = cn("flex flex-col gap-4 p-6 rounded-lg bg-card");
 // ComponentName.tsx
 <section className={containerStyles}>
 
-// CORRECT — single token inline (note: never use <span>; use a semantic element or sr-only on a semantic element)
-<p className="sr-only">Loading…</p>
+// CORRECT — single token inline
+<span className="sr-only">Loading…</span>
 
 // CORRECT — cn() with base imported from styles.ts
 <section className={cn(containerStyles, isActive && "ring-2 ring-ring")}>
@@ -187,7 +187,7 @@ export const submitButtonStyles = cva(
 ```
 
 ```tsx
-// src/components/shared/authForm/AuthForm.tsx — no raw Tailwind strings, no <div> or <span>
+// src/components/shared/authForm/AuthForm.tsx — no raw Tailwind strings
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 

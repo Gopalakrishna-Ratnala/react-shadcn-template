@@ -879,7 +879,7 @@ boilerplate-generator, shared directly as `boilerplate-generator.zip`) that
 already has real, multi-tester validation history. Ported and adapted it here.
 
 **Source material read in full before adapting, not just described from memory**:
-the actual `SKILL.md`, `FEATURE-TEST-PLAN.md`, `test-reports/TEMPLATE.md`, and two
+the actual `SKILL.md`, `docs/FEATURE-TEST-PLAN.md`, `test-reports/TEMPLATE.md`, and two
 real filled-out reports (a normal tester report and a "central-brain final
 confirmation" report) from the source repo — used to calibrate the level of detail
 expected (full file contents pasted verbatim, not summarized; honest self-reporting
@@ -919,7 +919,7 @@ version-substitution logic at all, since this isn't a generator — just a plain
 
 **Files created**:
 - `.claude/skills/run-feature-test/SKILL.md` — the skill itself
-- `FEATURE-TEST-PLAN.md` — coordinator doc for teammates
+- `docs/FEATURE-TEST-PLAN.md` — coordinator doc for teammates
 - `test-reports/TEMPLATE.md` — report template, with a compliance checklist
   rewritten entirely around this repo's actual rules (component tiers, the full
   composition-patterns list, `apiClient`/`ApiResponse<T>`, Zustand no-mutation,
@@ -969,7 +969,7 @@ not memorized output.
   (`tester-4-repeat-<run-number>-<timestamp>.md`, auto-incrementing), and an
   explicit note that comparing accumulated repeats against each other happens
   separately, once at least 5 have come in — not part of the skill's own scope.
-- `FEATURE-TEST-PLAN.md`: explains both rounds to teammates, updated invocation
+- `docs/FEATURE-TEST-PLAN.md`: explains both rounds to teammates, updated invocation
   instructions, updated closing section covering the comparative review step
   specific to Round 2.
 - `test-reports/TEMPLATE.md`: added the "workflow steps followed" section,
@@ -1048,7 +1048,7 @@ template, so loosening it there would loosen the default posture for real client
 projects too, not just test runs. Instead, documented `.claude/settings.local.json`
 (Claude Code's own standard personal/gitignored override mechanism, confirmed via
 current official docs and community sources — layers on top of the shared file,
-never committed) as a one-time per-machine setup step in `FEATURE-TEST-PLAN.md`'s
+never committed) as a one-time per-machine setup step in `docs/FEATURE-TEST-PLAN.md`'s
 Step 0, with an allow-list scoped to exactly what the skill needs
 (`git`/`npm`/`npx`/`node`, `Read`/`Write`/`Edit`, a narrowly-scoped `rm -rf` rule
 for the temp test directory only). Cross-referenced the same distinction directly
@@ -1850,3 +1850,285 @@ exhaustively re-reading every line, same rigor applied where it mattered most.
   before pushing, rather than requesting broader token scope.
 - This file should be updated as decisions get made or plans change — don't let it go
   stale the way other docs in this repo did.
+
+## 27. PR #1 review — real reviewer, real fixes (2026-07-28)
+
+`divamidesignlabs/shadcn-template` PR #1 (`feature/ai-ready-boilerplate-v1-rebased`
+→ `main`, the v1.0.0 rewrite) got a real review from `varakumar-divami`:
+`CHANGES_REQUESTED`, 10 critical + 14 medium + ~20 minor findings across code and
+rule docs. Each finding was verified directly against the actual code/docs before
+fixing — several turned out to be real, previously-undetected bugs, not just doc
+staleness.
+
+**Real bugs confirmed and fixed**: `ProductsPage.action.ts` never re-validated
+`FormData` against `productFormSchema` server-side (client-only validation is
+bypassable) — now runs `safeParse` before every mutation, plus a `NaN` guard on
+PATCH/DELETE ids. `ProductsPage.tsx` had a genuine Zustand/loader `searchTerm`
+desync (deep-linking to `?q=lamp` showed the wrong empty-state message) — fixed
+by syncing the store from the loader's committed value. `check-component-files.sh`
+only ever checked `layout/`/`shared/`, missing the `blocks/`/feature-scoped tiers
+its own sibling hook (`check-component-duplicate.sh`) already covered. `themeToggle/`
+was missing its `types.ts`. `AsyncState<T>` was documented as required scaffolding
+in `core/10-error-handling.md` but never actually added to `common.types.ts`.
+Added a loader error-propagation test and a page-level `ErrorBoundary`-render test
+(both files were happy-path-only before). Removed dead `clearSearchTerm` code.
+Hid the decorative "Aa" swatch glyph from screen readers.
+
+**Doc staleness fixed**: `AGENTS.md` still had the old 3-tier component table, the
+old "Pages NEVER own components" line (this exact phrase, lowercase, was *also*
+still in `CLAUDE.md` itself — missed by an earlier grep that only checked the
+capitalized form), the 6-file Storybook-era contract, and the icons "ask user"
+placeholder. `core/11-performance.md`'s lazy-loading example still showed the
+declarative `Routes`/`Route`/`React.lazy` pattern `core/12-routing.md` explicitly
+bans. `core/05-architecture.md`'s tier table was missing `blocks/` and
+feature-scoped. `data-fetching/02-api-services.md` said "never call a service
+directly — always go through a hook," directly contradicting the shipped loader
+pattern. `use-mobile.ts`/`utils.ts`/`env.ts` still used `export function` instead
+of arrow consts, missed by the earlier `react/function-component-definition`
+cleanup (Section 23) since that pass only touched components, not these baseline
+utility files. `.github/copilot-instructions.md` got a full refresh — the old flat
+rule-file numbering (`06-styling.md`, `11-forms.md`, etc.) never matched the actual
+`styling/`/`forms/`/`testing/` folder structure since the v0.1.0 reorg; this had
+only been partially patched (MUI mentions only) in earlier sessions.
+
+**Blocking issue found while trying to commit**: `check-dependency-security.sh`
+rejected the commit outright — 8 real `npm audit` vulnerabilities (6 high, 2
+moderate), confirming the review's own flagged concern that this hook might not
+actually be exercised. It is; it fired correctly. Ran `/dependency-security`:
+`npm audit fix` cleared the `@hono/node-server`/`@modelcontextprotocol/sdk`
+moderate pair (non-breaking). The remaining `brace-expansion` (high, DoS via
+unbounded expansion) traced to `eslint@9.39.5`'s own **direct** dependency on
+`minimatch@3.1.5`, plus `eslint-plugin-react@7.37.5`'s `minimatch@^3.1.2` — both
+predate the fixed `brace-expansion` line. `npm audit fix --force` would have
+downgraded `eslint-plugin-react` to `7.22.0` (a real breaking change — that
+version predates the flat-config/rule support this repo's ESLint 9 setup relies
+on) or bumped `eslint` to a major `10.8.0`. Tried a blind global
+`brace-expansion` override first — genuinely broke `eslint-plugin-react`'s
+`minimatch@3.1.5` at runtime (`TypeError: expand is not a function`, confirmed by
+actually running lint, not assumed) since `minimatch@3.x`'s code expects
+`brace-expansion`'s pre-2.x export shape. Fixed correctly by overriding
+`minimatch` itself (not `brace-expansion`) to `^10.2.6` — the same version
+already resolved cleanly elsewhere in this tree (`eslint-plugin-import-x`,
+`typescript-eslint`) — which sidesteps the incompatibility since `minimatch@10.x`
+ships its own compatible `brace-expansion@5.x` usage. Verified: `npm audit` → 0
+vulnerabilities, `npm run lint` → same 15-error vendored-only baseline (no new
+errors), full suite unaffected. Documented in `.claude/skills/
+dependency-security/SKILL.md`'s Overrides Log.
+
+**File relocations** (per reviewer's general comments): `db.json` moved to
+`data/mockData/db.json` (every reference across active rule docs, `package.json`'s
+`mock-api` script, `README.md`, and the `run-feature-test` skill updated and
+re-verified against a real `json-server` instance — deliberately left the
+*historical* `test-reports/*.md` and `VERSIONS.md` changelog entries alone, since
+those are point-in-time records of what was true when written, not living docs).
+`.claude/PROJECT-CONTEXT.md` and `FEATURE-TEST-PLAN.md` moved to `docs/` (this
+file's own path is now `docs/PROJECT-CONTEXT.md` — every cross-reference to it
+across the repo updated accordingly).
+
+**DECISION: `check-no-div-span.sh` removed entirely, div/span ban lifted.** The
+reviewer argued the ban (ported from an MUI-based template ancestor) is actively
+wrong for a shadcn/ui + Tailwind stack: shadcn's own vendored primitives
+(`card.tsx`, `badge.tsx`, etc.) are themselves styled divs/spans, and there's no
+library replacement for a plain, semantically-neutral layout wrapper. This
+project's own history backs it up in hindsight — every real violation this repo
+hit was "fixed" with a semantically **wrong** workaround, not a better one:
+`<em>` misused for non-emphasized text (tester-5's report), `<p className="inline">`
+as a `<span>` substitute (Section 22), `<figure>`/`<figcaption>` forced onto a
+color swatch that isn't really self-contained media (Section 13), `Card` stripped
+of its own styling (`ring-0 p-0`) just to serve as a bare wrapper (Section 21).
+User's explicit call, after discussing the tradeoff (the underlying "prefer
+semantic HTML" principle is legitimate; the hard-block mechanism with no escape
+valve was the actual problem): remove the ban outright, not just downgrade it to
+a warning. Deleted `check-no-div-span.sh` and its `settings.json` registration;
+rewrote the HTML Element Policy in `core/03-coding-principles.md` (now the
+canonical source), `core/08-accessibility.md`, `core/09-anti-patterns-checklist.md`,
+`CLAUDE.md`, `AGENTS.md`, and `.github/copilot-instructions.md` around: prefer a
+shadcn/ui primitive → prefer a genuinely-fitting semantic element → a plain
+`<div>`/`<span>` is a legitimate default for generic layout/grouping. Also fixed,
+found while sweeping for div/span references: `styling/shadcn/04-composition-
+patterns.md`'s whole-card-click-target example used `variant="link"` on an
+invisible full-cover overlay button (irrelevant/leaky text-decoration styling for
+a button with no visible text) — corrected to `variant="ghost"`, not used in any
+shipped code yet, doc-only fix. The now-unused `check-no-sx-prop.sh` reference
+(the hook itself was already deleted in an earlier session per the MUI removal,
+but three docs still cited it as active) was also removed as part of the same
+sweep, rather than restored — `sx` is an MUI-only concept with no shadcn
+equivalent, irrelevant to this template going forward.
+
+Full validation after every change in this round: `tsc -b` clean, lint at the
+same 15-error vendored-only baseline, 65/65 tests passing (5 new: 3 action
+validation tests, 1 loader error-propagation test, 1 page-level ErrorBoundary
+test), `npm run build` succeeds with code-splitting intact (`products-*.js`,
+`ComponentsGalleryPage-*.js`).
+
+**Round 2 — remaining checklist items closed out.** After the above, continued
+through the rest of the review's medium/minor items (all now resolved, not
+just documented):
+
+- **Doc example fixes**: `core/12-routing.md`'s `protectedLayoutLoader` example
+  now has its mandated return type; `testing/01-vitest-rtl.md`'s loader/action
+  test examples and `forms/01-rhf-zod.md`'s Field composition example (missing
+  imports) fixed. `core/10-error-handling.md`/`core/12-routing.md`'s `<div>`
+  "violations" the reviewer flagged turned out to need **no fix at all** once
+  the div/span ban was lifted — a nice confirmation the reversal was coherent,
+  not just cosmetic.
+- **Real `as never` type-safety gap, not just style**: both `ProductsPage.
+  loader.test.ts` and `ProductsPage.action.test.ts` used `context: {} as never`
+  to satisfy `LoaderFunctionArgs`/`ActionFunctionArgs`'s `context` field —
+  checked the actual installed `react-router` types and found `RouterContext
+  Provider` is a real, no-arg-constructible, exported class matching that
+  field's actual type. Replaced `as never` with `new RouterContextProvider()`
+  in both real test files and both rule-doc examples — a genuine type-safety
+  improvement, not just satisfying a lint preference.
+- **A second real, previously-undetected hook bug, found while fixing the
+  first one**: `check-no-hardcoded-colors.sh`'s Tailwind-palette-class regex
+  (`\b(bg|text|...)-[a-z]+-[0-9]+\b`) false-positives on this project's own
+  *approved* semantic chart tokens (`bg-chart-1`..`bg-chart-5` — explicitly
+  listed as correct in `01-tailwind-shadcn-styling.md`'s own token table),
+  since "chart-1" matches the same shape as "blue-500". Caught only because it
+  blocked a real, otherwise-unrelated edit (retyping `ComponentsGalleryPage.
+  tsx`'s `COLOR_TOKENS` to `ColorSwatchProps[]`, which happened to touch the
+  existing `bg-chart-1` literals). Fixed with a `chart-[0-9]+` exclusion,
+  regression-tested against both a legit chart token (passes) and a genuine
+  `bg-blue-500` violation (still blocks).
+- **`ComponentsGalleryPage.tsx`**: `COLOR_TOKENS` now typed as `ColorSwatchProps[]`
+  directly (was a separately-declared, field-renamed duplicate of that same
+  shape) and spread directly into `<ColorSwatch {...colorToken} />`, removing
+  the manual per-field remapping. `THEME-LOG.json`'s unsafe `as ThemeLogEntry[]`
+  cast replaced with real runtime validation — added `ThemeHistoryPanel.
+  schema.ts` (Zod, `z.enum` for status) and parse it at module scope, since
+  this file is genuinely hand-edited per the theme-versioning workflow, not
+  machine-generated. This also fully resolves the separately-flagged "no
+  fallback for an unknown status value" in `ThemeHistoryPanel.tsx` — the
+  status is now guaranteed to be one of the three known values by construction
+  once it clears the schema, not just by an unenforced TS type. Also fixed
+  `ThemeLogEntry.notes` (was typed required, but the component already treated
+  it as optional with a ternary) to `notes?: string`, matching real usage.
+- **`ComponentsGalleryPage.test.tsx`**: the theme-history test only checked a
+  `<section>` existed regardless of content — renamed to state what it
+  actually verifies and strengthened to assert the real empty-state copy.
+- **`ProductsPage.tsx` / `productFormDialog/types.ts`**: the duplicated bare
+  `"create" | "edit"` union extracted to a single `ProductFormMode` type in
+  `productFormDialog/types.ts` (the component that actually owns the concept),
+  re-exported through both barrel files, reused in `ProductsPage.tsx`'s
+  `FormDialogState` instead of a second copy.
+- **`ProductsPage.action.ts`**: the raw `error.message` from *any* caught
+  error (including a raw `ApiError` carrying internal request/network detail)
+  was being returned verbatim to the user. Added a `ProductInputError` class
+  thrown only by the intentional, safe-to-show validation checks
+  (`parseProductInput`/`parseId`); the outer catch now shows that message
+  verbatim only for `ProductInputError`, and a fixed generic message for
+  anything else — so a service/network failure never leaks internal detail,
+  while form-validation feedback stays specific and useful. Updated the
+  corresponding test's expectation to match.
+- **`ErrorBoundary`/`RouteErrorFallback` — both gained a real recovery
+  action**: `ErrorBoundary`'s fallback now includes a "Reload" button
+  (`window.location.reload()`); `RouteErrorFallback` now includes a "Try
+  again" button (`navigate(0)`), per the reviewer's suggested fix for both.
+  Both components' `min-h-[200px]` arbitrary-value dimensions replaced with
+  the real Tailwind spacing scale (`min-h-52`). Added real interaction tests
+  for both new buttons — `ErrorBoundary`'s via `vi.stubGlobal("location", ...)`
+  and a real click; `RouteErrorFallback`'s via a scoped `vi.mock("react-router",
+  ...)` partial-mock of `useNavigate` only (a full loader-re-invocation test
+  via `navigate(0)` proved unreliable under `createMemoryRouter` in jsdom —
+  tried it directly, it genuinely doesn't trigger revalidation in that
+  environment, so the test asserts the correct call instead of the
+  unobservable-in-jsdom side effect).
+- **`package.json`'s lint-staged had no typecheck safeguard**: since
+  package.json is plain JSON, it can't hold a function-form lint-staged entry
+  (needed so `tsc -b` runs once, ignoring lint-staged's staged-filename
+  arguments — `tsc -b` type-checks the whole project-references graph, not a
+  file subset). Moved the whole lint-staged config to a new `lint-staged.
+  config.js`, added `() => "tsc -b"` as a third step (safe: `tsconfig.app.
+  json` already sets `noEmit: true`, so this is a pure type-check, no build
+  artifacts). Verified for real, not assumed: ran `npx lint-staged` directly
+  against real staged changes (passed), then injected a deliberate type error
+  into a staged file and reran it — confirmed it genuinely fails and reverts
+  the staged changes, then removed the probe.
+- **A real self-inflicted mistake, caught and fixed immediately**: while
+  cleaning up that type-error probe, ran `git checkout -- src/lib/utils.ts`
+  without checking `git diff` against HEAD first — since `utils.ts` had
+  uncommitted changes from earlier in this same session (the `cn` arrow-
+  function conversion), this silently reverted that real fix back to the old
+  `export function cn(...)` form along with the probe. Caught immediately via
+  `git show HEAD:...` comparison, redone correctly. Lesson reconfirmed: never
+  run a discard-y git command on a file with real uncommitted work without
+  diffing first, exactly per this project's own standing safety instructions.
+- **Verified, not just assumed, three items from the bundled test reports**:
+  all 12 `.claude/hooks/*.sh` files have the `jq`-presence guard (grepped
+  directly); `check-barrel-exports.sh` shows no false positive against a real
+  multi-export file (`common.types.ts`); the `tester-6` report's
+  `systemStatus`/`index.ts` path issue was from that tester's own isolated
+  `/tmp/feature-test-6` clone, not this repo — confirmed no `systemStatus`
+  page exists here, nothing to fix.
+
+**Still open, by explicit choice, not oversight**: `productService.ts`'s
+hand-written `ApiResponse.status` (`{ status: 200, data, message: "OK" }`)
+doesn't reflect the real HTTP status `apiClient` discards on success — fixing
+this properly means changing `apiClient`'s public return contract (currently
+`Promise<T>`, would need to become `Promise<{ data: T; status: number }>` or
+similar), which ripples into `01-fetch-client.md`'s and `03-data-layer.md`'s
+own documented usage examples. Flagged for the user rather than silently
+restructured, since it's a real API-contract change, not a local fix.
+`main.tsx`'s `document.getElementById("root")!` non-null assertion was
+deprioritized as low-value churn (matches every standard Vite/React scaffold;
+`root` existing is guaranteed by `index.html`).
+
+Every finding from PR #1 is now either fixed, or explicitly deferred with the
+reason on record above. Full validation held throughout this second round:
+`tsc -b` clean, lint at the 15-error vendored-only baseline (with one genuine
+new hook fix along the way — `check-no-hardcoded-colors.sh`'s chart-token
+false positive), 67/67 tests passing, `npm run build` succeeds, `npm audit`
+0 vulnerabilities.
+
+## 28. `.prettierignore`'s `src/components/ui` exclusion — resolved, with a
+self-correction along the way (2026-07-28)
+
+One of PR #1's general (non-inline) comments asked, plainly: "Do we have any
+specific reason for not considering this path for prettier?" — this had never
+actually been answered. Investigating it produced a real mistake worth
+recording honestly, not glossing over.
+
+**First pass, wrong**: ran `npx prettier --check "src/components/ui/**/*.
+{ts,tsx}"` directly (no explicit `--ignore-path` flag) and it reported "All
+matched files use Prettier code style!" — concluded from this that the
+exclusion wasn't preventing anything real and removed it outright, replacing
+it with a comment. **This was wrong.** Prettier automatically respects a
+`.prettierignore` file in the project root even without `--ignore-path` being
+passed explicitly — so that check silently skipped every file it was
+supposed to be checking, and the "clean" result meant nothing. User caught
+this immediately ("but the thing is we shouldn't exclude right thats not the
+standard approach right") and pushed for real verification instead of
+trusting the first answer.
+
+**Second pass, verified for real**: ran `npm run format:check` (the actual
+project script, which does correctly resolve `.prettierignore`) — genuinely
+found 60 files needing reformatting. Reformatted one (`button.tsx`) directly
+and diffed it to see *what* the real difference was: **shadcn's CLI generates
+code without semicolons** (its own style convention), while this project's
+Prettier config requires them — a real, systematic, non-trivial difference
+across all 60 vendored files, not the "already matches" first claimed.
+Reverted that diagnostic reformat before deciding anything (`git diff HEAD`
+confirmed a clean revert).
+
+**The actual tradeoff, presented honestly**, since this is a legitimate
+judgment call, not a bug: keeping the exclusion preserves a clean diff against
+shadcn's own canonical output for future re-vendoring (`npx shadcn add
+<component> --overwrite` to pick up an upstream fix) — without it, every
+future re-vendor shows a full-file diff (every semicolon) even for a trivial
+upstream change. Removing it makes the whole codebase visually consistent
+immediately, at that future cost.
+
+**User's explicit call**: remove the exclusion, reformat all 60 files now.
+Done — `.prettierignore` no longer excludes `src/components/ui` (only
+`dist`/`node_modules`/`coverage`/lockfiles remain, which is what a
+`.prettierignore` is conventionally for). Ran `npx prettier --write` across
+all 60 vendored files. Validated the reformat is purely cosmetic: `npm run
+format:check` now genuinely passes repo-wide, `tsc -b` clean, lint at the
+same 15-error vendored-only baseline (line numbers shifted from the added
+semicolons, same files/rules), 67/67 tests passing, `npm run build` succeeds.
+
+**Worth remembering for next time**: a tool silently succeeding is not the
+same as a tool actually having checked something — when a check's result
+seems too clean, verify what it actually scanned (file count, explicit flags)
+before treating "no errors" as "nothing was wrong."

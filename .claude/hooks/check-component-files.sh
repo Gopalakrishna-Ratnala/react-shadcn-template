@@ -17,7 +17,7 @@ fi
 # After writing to a component directory, checks all 5 required files exist.
 # Storybook is fixed OFF for this template (see features/README.md) - no
 # .stories.tsx is required or checked.
-# Applies to: src/components/layout/** and src/components/shared/**
+# Applies to: src/components/{layout,shared,blocks}/** and src/pages/*/components/**
 # Skips:      src/components/ui/** (vendored shadcn primitives — no contract required)
 # Required:   ComponentName.tsx, ComponentName.styles.ts, types.ts,
 #             ComponentName.test.tsx, index.ts
@@ -25,8 +25,7 @@ fi
 INPUT=$(cat)
 FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty')
 
-# Only check files inside src/components/
-if [[ "$FILE_PATH" != */src/components/* ]]; then
+if [[ "$FILE_PATH" != */src/components/* && "$FILE_PATH" != */src/pages/*/components/* ]]; then
   exit 0
 fi
 
@@ -35,20 +34,27 @@ if [[ "$FILE_PATH" == */src/components/ui/* ]]; then
   exit 0
 fi
 
-# Only check layout/ and shared/ tiers
-if [[ "$FILE_PATH" != */src/components/layout/* && "$FILE_PATH" != */src/components/shared/* ]]; then
+# Determine the tier's base directory so the "how deep is this file" check
+# below works generically instead of hardcoding two branches (mirrors
+# check-component-duplicate.sh's tier derivation).
+if [[ "$FILE_PATH" == */src/components/layout/* ]]; then
+  BASE_DIR="${FILE_PATH%%/src/components/layout/*}/src/components/layout"
+elif [[ "$FILE_PATH" == */src/components/shared/* ]]; then
+  BASE_DIR="${FILE_PATH%%/src/components/shared/*}/src/components/shared"
+elif [[ "$FILE_PATH" == */src/components/blocks/* ]]; then
+  BASE_DIR="${FILE_PATH%%/src/components/blocks/*}/src/components/blocks"
+elif [[ "$FILE_PATH" == */src/pages/*/components/* ]]; then
+  PAGES_PREFIX="${FILE_PATH%%/src/pages/*/components/*}/src/pages"
+  REST="${FILE_PATH#*/src/pages/}"
+  PAGE_NAME="${REST%%/components/*}"
+  BASE_DIR="$PAGES_PREFIX/$PAGE_NAME/components"
+else
   exit 0
 fi
 
 # Extract the component directory (the folder directly containing the component files)
 COMP_DIR=$(dirname "$FILE_PATH")
-
-# The relative path after layout/ or shared/
-if [[ "$FILE_PATH" == */src/components/layout/* ]]; then
-  RELATIVE=${COMP_DIR#*src/components/layout/}
-elif [[ "$FILE_PATH" == */src/components/shared/* ]]; then
-  RELATIVE=${COMP_DIR#*src/components/shared/}
-fi
+RELATIVE=${COMP_DIR#"$BASE_DIR"/}
 
 # Skip if we're nested deeper than one folder (e.g. a subfolder inside the component)
 if [[ "$RELATIVE" == */* ]]; then

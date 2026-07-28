@@ -1,2 +1,2 @@
 export { ProductFormDialog } from "./ProductFormDialog";
-export type { ProductFormDialogProps } from "./types";
+export type { ProductFormDialogProps, ProductFormMode } from "./types";

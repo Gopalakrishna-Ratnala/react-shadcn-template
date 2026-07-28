@@ -12,7 +12,7 @@ interface Env {
   appEnv: string;
 }
 
-function requireEnv(key: string): string {
+const requireEnv = (key: string): string => {
   const value = import.meta.env[key];
   if (!value) {
     throw new Error(
@@ -20,7 +20,7 @@ function requireEnv(key: string): string {
     );
   }
   return value;
-}
+};
 
 export const env: Env = {
   apiBaseUrl: requireEnv("VITE_API_BASE_URL"),

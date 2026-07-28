@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import { ComponentsGalleryPage } from "./ComponentsGalleryPage";
@@ -25,16 +25,19 @@ describe("ComponentsGalleryPage", () => {
     }
   });
 
-  it("renders the theme history panel with real THEME-LOG.json data", () => {
+  it("renders the theme history section's empty state when THEME-LOG.json has no entries yet", () => {
     render(<ComponentsGalleryPage />);
-    // db is empty by default in a fresh template - the panel should show its empty state
-    // rather than crashing, regardless of how many candidates actually exist yet.
+    // THEME-LOG.json is empty by default in a fresh template - the panel should
+    // show its empty-state copy rather than crashing.
     const historySection = screen
-      .getByRole("heading", {
-        name: "Theme History",
-      })
+      .getByRole("heading", { name: "Theme History" })
       .closest("section");
     expect(historySection).not.toBeNull();
+    expect(
+      within(historySection as HTMLElement).getByText(
+        "No theme candidates yet",
+      ),
+    ).toBeInTheDocument();
   });
 
   it("associates FieldLabel with its input via htmlFor (Field composition works)", () => {

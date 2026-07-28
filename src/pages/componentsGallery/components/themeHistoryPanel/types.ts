@@ -5,7 +5,7 @@ export interface ThemeLogEntry {
   round: string;
   file: string;
   status: ThemeCandidateStatus;
-  notes: string;
+  notes?: string;
 }
 
 export interface ThemeHistoryPanelProps {

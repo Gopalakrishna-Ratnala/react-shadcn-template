@@ -177,8 +177,6 @@ These hooks run as PreToolUse/PostToolUse checks on Write and Edit operations:
 | Hook | Enforces | Blocks |
 | --- | --- | --- |
 | `check-no-any.sh` | No explicit `any` in .ts/.tsx | Yes (exit 2) |
-| `check-no-div-span.sh` | No `<div>` or `<span>` in .tsx — use semantic HTML or UI library primitives instead | Yes (exit 2) |
-| `check-no-sx-prop.sh` | No `sx={}` prop in production .tsx | Yes (exit 2) |
 | `check-no-inline-style.sh` | No inline `style={}` in .tsx | Yes (exit 2) |
 | `check-no-hardcoded-colors.sh` | No hardcoded hex/rgb/rgba/hsl and no Tailwind palette classes (e.g. `bg-blue-500`) in .styles.ts and .tsx | Yes (exit 2) |
 | `check-no-raw-dimensions.sh` | No raw px strings in styles.ts, no raw numeric dimension props in .tsx | Yes (exit 2) |
@@ -193,23 +191,28 @@ All hooks skip test files (`*.test.*`), story files (`*.stories.*`), and theme f
 
 Hook configuration is in `.claude/settings.json`.
 
-### HTML Element Policy (Two-Tier)
+### HTML Element Policy
 
-| Tier | Elements | Rule |
+`<div>` and `<span>` are allowed — they're the idiomatic building blocks for
+generic layout/grouping on a shadcn/ui + Tailwind stack (shadcn's own vendored
+primitives are themselves styled divs/spans). Prefer a vendored shadcn/ui
+primitive, or a semantic element below, whenever the content genuinely matches
+what it represents — but never reach for one that doesn't actually apply just
+to avoid a `<div>`/`<span>`. See `core/03-coding-principles.md`'s full HTML
+Element Policy for the reasoning and examples.
+
+| Category | Elements | Rule |
 | --- | --- | --- |
-| **Forbidden** | `<div>`, `<span>` | No semantic meaning — always replace with a shadcn/ui primitive or a semantic HTML element |
-| **Allowed** | Structural: `<main>`, `<section>`, `<article>`, `<aside>`, `<header>`, `<footer>`, `<nav>` | Permitted when no UI library primitive satisfies the semantic need |
-| **Allowed** | Lists: `<ul>`, `<ol>`, `<li>` | Permitted when no UI library primitive satisfies the semantic need |
-| **Allowed** | Typography: `<h1>`–`<h6>`, `<p>`, `<em>`, `<strong>`, `<small>`, `<mark>`, `<time>`, `<abbr>`, `<code>`, `<kbd>` | Permitted when no UI library primitive satisfies the semantic need |
-| **Allowed** | Media: `<figure>`, `<figcaption>`, `<img>` | Permitted when no UI library primitive satisfies the semantic need |
-
-The `check-no-div-span.sh` hook enforces the **Forbidden** tier automatically. Allowed elements must still be used intentionally — not as a convenience shortcut.
+| Structural | `<main>`, `<section>`, `<article>`, `<aside>`, `<header>`, `<footer>`, `<nav>` | Use when the content genuinely has that structural role |
+| Lists | `<ul>`, `<ol>`, `<li>` | Use when the content genuinely has that structural role |
+| Typography | `<h1>`–`<h6>`, `<p>`, `<em>`, `<strong>`, `<small>`, `<mark>`, `<time>`, `<abbr>`, `<code>`, `<kbd>` | Use when the content genuinely carries that meaning |
+| Media | `<figure>`, `<figcaption>`, `<img>` | Use when the content is genuinely self-contained media |
 
 ---
 
 ## Rules Not Covered by Hooks (Manual Compliance Required)
 
-- **Component tier placement** — all custom components go in `components/shared/`, `components/layout/`, or `components/animated/` *(if enabled)*; pages NEVER own components (`core/02-project-structure.md`)
+- **Component tier placement** — custom components go in `components/shared/`, `components/blocks/`, `components/layout/`, `components/animated/` *(if enabled)*, or a page's own `components/` folder when feature-scoped to exactly one page (promoted to `shared/`/`blocks/` the moment a second page needs it) (`core/02-project-structure.md`)
 - **Separation of concerns** — Components vs Pages vs Store vs Services vs Hooks (`core/05-architecture.md`)
 - **Reuse existing building blocks** before creating new ones (`core/04-execution-flow.md`)
 - **Zustand**: no direct state mutation, domain-focused stores (`state-management/01-zustand.md`)
@@ -262,6 +265,32 @@ theme layer.
 | **Design System (components)** | `src/components/ui/` and `src/components/blocks/` | System owner | READ + USE. Never restyle. |
 | **Theme (all visual values)** | `src/styles/themes/theme.css` (built from `theme-template.css` in the same folder) | Designer | READ ONLY. Never edit unless explicitly asked. |
 | **Screens** | `src/pages/` (including `src/pages/preview/` sample pages) | You + designer | You build these, using Layer 1 only. |
+
+### On `src/components/ui/` being excluded from ESLint/Prettier
+
+`eslint.config.js` and `.prettierignore` both exclude `src/components/ui/**`
+from this template's custom style/architecture rules (import order, explicit
+return types, arrow-function-only components, Prettier formatting). This is a
+default for the **common case** — a freshly-vendored, never-hand-edited file,
+where the exclusion keeps future `npx shadcn add <component> --overwrite`
+re-syncs clean (only the real upstream change shows in the diff, not every
+line reformatted). It is **not** a statement that `ui/` can never be touched.
+
+If a real project genuinely needs a **behavioral** patch to a `ui/` file (not
+just re-theming, which never requires touching `ui/` at all — see the layer
+table above) — that's a legitimate, expected thing to do on top of this
+template, not an exception to apologize for. The moment a team does this, that
+specific file has stopped being untouched vendor output for their fork, and
+should get the same quality bar as the rest of the codebase:
+
+- Remove that file's path from the `ignores` list in `eslint.config.js` and
+  from `.prettierignore` (both are static path globs — they can't tell
+  "customized" apart from "untouched" automatically, so this is a conscious,
+  per-file decision, not something to leave implicit).
+- Run `npm run lint`/`npm run format` against it like any other file and fix
+  what comes up.
+- Still go through the Section 2b workflow below if the change is substantial
+  enough that other projects built from this template should get it too.
 
 ## 2. Component sourcing rules — READ CAREFULLY
 

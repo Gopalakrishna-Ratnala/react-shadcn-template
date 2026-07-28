@@ -82,6 +82,7 @@ service layer underneath. No component, no router, needed for this test file:
 ```typescript
 // src/pages/products/ProductsPage.loader.test.ts
 import { describe, expect, it, vi } from "vitest";
+import { RouterContextProvider } from "react-router";
 import { getProducts } from "@/services/product";
 import { productsLoader } from "./ProductsPage.loader";
 
@@ -94,7 +95,7 @@ describe("productsLoader", () => {
     const result = await productsLoader({
       request: new Request("http://localhost/products?q=lamp"),
       params: {},
-      context: {} as never,
+      context: new RouterContextProvider(),
     });
 
     expect(getProducts).toHaveBeenCalledWith("lamp");
@@ -106,6 +107,7 @@ describe("productsLoader", () => {
 ```typescript
 // src/pages/products/ProductsPage.action.test.ts
 import { describe, expect, it, vi } from "vitest";
+import { RouterContextProvider } from "react-router";
 import { createProduct } from "@/services/product";
 import { productsAction } from "./ProductsPage.action";
 
@@ -119,7 +121,7 @@ describe("productsAction", () => {
     const result = await productsAction({
       request: new Request("http://localhost/products", { method: "POST", body }),
       params: {},
-      context: {} as never,
+      context: new RouterContextProvider(),
     });
 
     expect(createProduct).toHaveBeenCalledWith({ name: "Desk", category: "Furniture", price: 99, inStock: true });

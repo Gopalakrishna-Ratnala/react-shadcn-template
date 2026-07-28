@@ -17,7 +17,7 @@ description: Routing — React Router v8 data mode (createBrowserRouter/RouterPr
   have one) via each route's own `lazy: () => import(...)` — never eagerly
   import pages, and never use `React.lazy` + `Suspense` for this (data mode's
   route-level `lazy` replaces that adapter; see `core/10-error-handling.md`
-  and `PROJECT-CONTEXT.md` Section 25 for the full migration rationale)
+  and `docs/PROJECT-CONTEXT.md` Section 25 for the full migration rationale)
 
 ## Router Setup in App.tsx
 
@@ -251,7 +251,9 @@ import { useAuthStore } from "@/store/auth";
 import { ROUTES } from "@/constants";
 import type { LoaderFunctionArgs } from "react-router";
 
-export const protectedLayoutLoader = async ({ request }: LoaderFunctionArgs) => {
+export const protectedLayoutLoader = async ({
+  request,
+}: LoaderFunctionArgs): Promise<null> => {
   // Adapt to your chosen auth/session mechanism — await it here if the
   // session needs to be rehydrated (e.g. from a cookie or localStorage). The
   // router's own pending state (HydrateFallback / navigation loading UI)

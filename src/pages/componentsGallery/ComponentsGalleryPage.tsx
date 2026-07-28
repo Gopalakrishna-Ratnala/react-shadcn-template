@@ -25,11 +25,16 @@ import {
   ColorSwatch,
   GallerySection,
   ThemeHistoryPanel,
-  type ThemeLogEntry,
+  themeLogSchema,
+  type ColorSwatchProps,
 } from "./components";
 import { componentsGalleryPageStyles as styles } from "./ComponentsGalleryPage.styles";
 
 import type { GalleryNavItem } from "./types";
+
+// THEME-LOG.json is a hand-edited file (see styling/shadcn/03-theme-versioning.md) -
+// validate its shape at runtime rather than trusting an unsafe `as` cast.
+const THEME_LOG_ENTRIES = themeLogSchema.parse(themeLog);
 
 const NAV_ITEMS: GalleryNavItem[] = [
   { id: "foundations", label: "Foundations" },
@@ -40,76 +45,81 @@ const NAV_ITEMS: GalleryNavItem[] = [
   { id: "theme-history", label: "Theme History" },
 ];
 
-const COLOR_TOKENS: {
-  label: string;
-  token: string;
-  bg: string;
-  fg?: string;
-}[] = [
+const COLOR_TOKENS: ColorSwatchProps[] = [
   {
     label: "Background",
     token: "--background",
-    bg: "bg-background",
-    fg: "text-foreground",
+    bgClassName: "bg-background",
+    textClassName: "text-foreground",
   },
   {
     label: "Foreground",
     token: "--foreground",
-    bg: "bg-foreground",
-    fg: "text-background",
+    bgClassName: "bg-foreground",
+    textClassName: "text-background",
   },
   {
     label: "Primary",
     token: "--primary",
-    bg: "bg-primary",
-    fg: "text-primary-foreground",
+    bgClassName: "bg-primary",
+    textClassName: "text-primary-foreground",
   },
   {
     label: "Secondary",
     token: "--secondary",
-    bg: "bg-secondary",
-    fg: "text-secondary-foreground",
+    bgClassName: "bg-secondary",
+    textClassName: "text-secondary-foreground",
   },
   {
     label: "Accent",
     token: "--accent",
-    bg: "bg-accent",
-    fg: "text-accent-foreground",
+    bgClassName: "bg-accent",
+    textClassName: "text-accent-foreground",
   },
-  { label: "Card", token: "--card", bg: "bg-card", fg: "text-card-foreground" },
+  {
+    label: "Card",
+    token: "--card",
+    bgClassName: "bg-card",
+    textClassName: "text-card-foreground",
+  },
   {
     label: "Muted",
     token: "--muted",
-    bg: "bg-muted",
-    fg: "text-muted-foreground",
+    bgClassName: "bg-muted",
+    textClassName: "text-muted-foreground",
   },
   {
     label: "Destructive",
     token: "--destructive",
-    bg: "bg-destructive",
-    fg: "text-destructive-foreground",
+    bgClassName: "bg-destructive",
+    textClassName: "text-destructive-foreground",
   },
   {
     label: "Success",
     token: "--success",
-    bg: "bg-success",
-    fg: "text-success-foreground",
+    bgClassName: "bg-success",
+    textClassName: "text-success-foreground",
   },
   {
     label: "Warning",
     token: "--warning",
-    bg: "bg-warning",
-    fg: "text-warning-foreground",
+    bgClassName: "bg-warning",
+    textClassName: "text-warning-foreground",
   },
-  { label: "Info", token: "--info", bg: "bg-info", fg: "text-info-foreground" },
-  { label: "Chart 1", token: "--chart-1", bg: "bg-chart-1" },
-  { label: "Chart 2", token: "--chart-2", bg: "bg-chart-2" },
-  { label: "Chart 3", token: "--chart-3", bg: "bg-chart-3" },
+  {
+    label: "Info",
+    token: "--info",
+    bgClassName: "bg-info",
+    textClassName: "text-info-foreground",
+  },
+  { label: "Chart 1", token: "--chart-1", bgClassName: "bg-chart-1" },
+  { label: "Chart 2", token: "--chart-2", bgClassName: "bg-chart-2" },
+  { label: "Chart 3", token: "--chart-3", bgClassName: "bg-chart-3" },
   {
     label: "Sidebar",
     token: "--sidebar",
-    bg: "bg-sidebar",
-    fg: "text-sidebar-foreground",
+    bgClassName: "bg-sidebar",
+    textClassName: "text-sidebar-foreground",
   },
 ];
 
@@ -148,14 +158,8 @@ export const ComponentsGalleryPage = (): ReactElement => {
           description="Semantic color tokens, read live from the active theme."
         >
           <div className={styles.swatchGrid}>
-            {COLOR_TOKENS.map((c) => (
-              <ColorSwatch
-                key={c.token}
-                label={c.label}
-                token={c.token}
-                bgClassName={c.bg}
-                textClassName={c.fg}
-              />
+            {COLOR_TOKENS.map((colorToken) => (
+              <ColorSwatch key={colorToken.token} {...colorToken} />
             ))}
           </div>
         </GallerySection>
@@ -256,7 +260,7 @@ export const ComponentsGalleryPage = (): ReactElement => {
           title="Theme History"
           description="Every theme candidate ever created, read directly from THEME-LOG.json — see styling/shadcn/03-theme-versioning.md."
         >
-          <ThemeHistoryPanel entries={themeLog as ThemeLogEntry[]} />
+          <ThemeHistoryPanel entries={THEME_LOG_ENTRIES} />
         </GallerySection>
       </main>
     </div>

@@ -12,6 +12,9 @@ All form fields MUST be composed with shadcn/ui's vendored `Field` primitives
 Confirmed against ui.shadcn.com's current docs:
 
 ```tsx
+import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+
 // WRONG — raw div wrapper, no accessible error wiring
 <div className="flex flex-col gap-2">
   <Label htmlFor="email">Email</Label>

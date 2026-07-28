@@ -26,7 +26,7 @@ and start a second session.
 **Before running this skill for the first time on a given machine**, make sure
 `.claude/settings.local.json` exists with a permission allow-list covering
 `git`/`npm`/`npx`/`node` and file `Read`/`Write`/`Edit` — see
-`FEATURE-TEST-PLAN.md`'s Step 0 for the exact content. Without it, Claude Code
+`docs/FEATURE-TEST-PLAN.md`'s Step 0 for the exact content. Without it, Claude Code
 will prompt for approval on nearly every individual command, which is a
 **different problem from, and should not be confused with**, the one deliberate
 human handoff this skill requires (below) — that handoff is structural (a real
@@ -85,11 +85,11 @@ assignments 1–6 exercise every rule file and every hook in `.claude/`.
 
 | # | Feature task | What it specifically stresses |
 |---|---|---|
-| 1 | **Products catalog**: a page listing products from `db.json` (add a `products` array if one doesn't exist), a search input filtering by name, an add/edit form, and a delete button with confirmation | `apiClient` → service → mapper → `AsyncState`, `Field`/`FieldGroup` + Zod, component tiers, `Card` composition, testing conventions |
-| 2 | **Team directory**: a grid/list of people (seed `db.json` if needed) with a `ToggleGroup` to switch grid/list view, `Avatar`+`AvatarFallback` per person, and a `Dialog` showing member detail on click (must have a `DialogTitle`, `sr-only` if visually hidden) | Zustand (store the view-mode toggle state), `Dialog` + overlay-title rule, `ToggleGroup`, `Avatar`, accessibility |
+| 1 | **Products catalog**: a page listing products from `data/mockData/db.json` (add a `products` array if one doesn't exist), a search input filtering by name, an add/edit form, and a delete button with confirmation | `apiClient` → service → mapper → `AsyncState`, `Field`/`FieldGroup` + Zod, component tiers, `Card` composition, testing conventions |
+| 2 | **Team directory**: a grid/list of people (seed `data/mockData/db.json` if needed) with a `ToggleGroup` to switch grid/list view, `Avatar`+`AvatarFallback` per person, and a `Dialog` showing member detail on click (must have a `DialogTitle`, `sr-only` if visually hidden) | Zustand (store the view-mode toggle state), `Dialog` + overlay-title rule, `ToggleGroup`, `Avatar`, accessibility |
 | 3 | **Settings page**: `Tabs`/`TabsList` sections (e.g. Profile / Security / Notifications), an `InputGroup` password field with a show/hide toggle button inside the input, a `Skeleton` shown while data "loads," a `Separator` between sections, and the existing `ThemeToggle` used prominently in the header | `Tabs`, `InputGroup`, `Skeleton`, `Separator`, dark/light theming |
 | 4 | **Theme candidate creation**: given 3 designer-supplied brand color sets (make up 3 plausible, distinct palettes if none are provided), create 3 theme candidates following the documented naming convention, log all 3 in `THEME-LOG.json`, then promote one | The full theme-versioning workflow — naming convention, `THEME-LOG.json` schema, `check-theme-log-entry.sh`, token-completeness validation |
-| 5 | **Activity feed**: a list of events (seed `db.json`) with `Badge` status indicators, an `Alert` shown on a simulated fetch error, a toast (`sonner`) on a simulated new item, a `Skeleton` while loading, a "load more" `Button` using the loading-state pattern (`Spinner` + `data-icon` + `disabled`, never `isLoading`/`isPending` props), and an `Empty` state when there's nothing yet | Toasts, `Badge`, `Alert`, button loading-state composition, `Empty` |
+| 5 | **Activity feed**: a list of events (seed `data/mockData/db.json`) with `Badge` status indicators, an `Alert` shown on a simulated fetch error, a toast (`sonner`) on a simulated new item, a `Skeleton` while loading, a "load more" `Button` using the loading-state pattern (`Spinner` + `data-icon` + `disabled`, never `isLoading`/`isPending` props), and an `Empty` state when there's nothing yet | Toasts, `Badge`, `Alert`, button loading-state composition, `Empty` |
 | 6 | **Minimal baseline page** — a single simple page with one heading and one piece of real content, deliberately simple, no special composition required | Control case — confirms nothing extra leaks in unprompted; results should be the cleanest of all six |
 
 For any assignment, if a real generation/setup error occurs unrelated to the feature
@@ -144,7 +144,7 @@ ask questions, same "pick and document" rule as always.)*
 > **<paste the assigned feature task from the table above, verbatim>**
 >
 > In `npm run mock-api` in a separate terminal to have a real local API available if
-> the task needs one — assume it's running at the URL in `.env.example`. If `db.json`
+> the task needs one — assume it's running at the URL in `.env.example`. If `data/mockData/db.json`
 > doesn't have the resource this task needs, add it.
 >
 > Build this the way you normally would given this project's real `.claude/`

@@ -1,7 +1,7 @@
 # Feature Test Plan — Parallel Real-World Verification
 
 > Purpose: everything validated so far in this repo's history (see
-> `.claude/PROJECT-CONTEXT.md`) checks individual pieces in isolation — does this
+> `docs/PROJECT-CONTEXT.md`) checks individual pieces in isolation — does this
 > hook fire correctly on synthetic input, does the build succeed, do the unit tests
 > pass. It does not check whether the `.claude/` guardrails (hooks + rules) actually
 > behave correctly when someone builds a real, complete feature on top of this
@@ -139,7 +139,7 @@ report is still committed locally — let whoever's coordinating know.
 
 Every report gets reviewed against the actual pasted code — not just each report's
 own self-assessment — the same way every other change in this repo has been
-validated (see `.claude/PROJECT-CONTEXT.md` for that whole history). Real issues get
+validated (see `docs/PROJECT-CONTEXT.md` for that whole history). Real issues get
 fixed: rule doc gaps get closed, hook false positives/negatives get corrected, and
 anything a hook should have caught but didn't gets addressed directly.
 

@@ -61,15 +61,14 @@ see `CLAUDE.md`'s "Step 2 — Optional features" and `.claude/rules/features/REA
 | Router | React Router v8 (`react-router` — no separate `-dom` package since v7) |
 | Testing | Vitest + React Testing Library |
 | Storybook | Fixed OFF for this template |
-| Icons | ask user — `public/assets/icons/` (SVG sprites) or `lucide-react` |
+| Icons | `lucide-react` — fixed for this template |
 
 ---
 
 ## Non-negotiable Rules
 
 - **NEVER** use explicit `any` *(hook-enforced — blocked)*
-- **NEVER** use `<div>` or `<span>` — they have no semantic meaning; replace with a shadcn/ui primitive or a semantic HTML element *(hook-enforced — blocked)*
-- **NEVER** use library-specific inline style props (e.g. `sx`) *(hook-enforced — blocked)*
+- **PREFER** a shadcn/ui primitive or a genuinely-fitting semantic HTML element over `<div>`/`<span>` — but a plain `<div>`/`<span>` is fine for generic layout/grouping with no semantic role of its own; never reach for a semantic element that doesn't actually apply just to avoid one
 - **NEVER** use inline `style={}` attribute — even for one-off values; use a Tailwind class extracted to `.styles.ts` *(hook-enforced — blocked)*
 - **NEVER** hardcode CSS colors (`#hex`, `rgb()`, `rgba()`, `hsl()`) *(hook-enforced — blocked)*
 - **NEVER** use Tailwind palette colour classes (`bg-blue-500`, `text-slate-700`, etc.) — use shadcn/ui semantic tokens (`bg-primary`, `text-muted-foreground`, `border-border`, etc.) *(hook-enforced — blocked)*
@@ -91,7 +90,7 @@ see `CLAUDE.md`'s "Step 2 — Optional features" and `.claude/rules/features/REA
 - **ALWAYS** use `cn()` from `src/lib/utils.ts` for conditional or composed class strings
 - **ALWAYS** separate UI, state, service, and mapping concerns
 - **ALWAYS** use design tokens — no raw numbers for dimensions
-- **ALWAYS** include `dark:` counterpart classes with every light-mode Tailwind class
+- **ALWAYS** rely on semantic color tokens (`bg-primary`, `text-muted-foreground`, etc.) to resolve correctly in both modes automatically — they almost never need a `dark:` variant, since the token itself is redefined under `.dark` in `theme.css`
 - **ALWAYS** reuse existing building blocks from `src/lib`, `src/utils`, `src/hooks`, `src/types`, `src/constants`, `src/services`, `src/store` before creating new ones
 - **ALWAYS** type API requests, responses, store state, actions, component props, and mapper outputs
 - **ALWAYS** ensure accessibility: semantic controls, valid labels, alt text, keyboard support
@@ -104,25 +103,31 @@ see `CLAUDE.md`'s "Step 2 — Optional features" and `.claude/rules/features/REA
 | --- | --- | --- |
 | Primitives | `components/ui/` | shadcn CLI only — never edit, no stories/tests required |
 | Layout | `components/layout/` | Page-framing wrappers with no business data — 5-file contract (fixed, no Storybook) |
-| Shared | `components/shared/` | ALL custom components regardless of how many pages use them — 5-file contract (fixed, no Storybook) |
+| Blocks | `components/blocks/` | Generic composite UI patterns, no domain-specific props — 5-file contract |
+| Shared | `components/shared/` | Reusable components tied to this app's actual domain entities, used by 2+ pages/features — 5-file contract |
+| Feature-scoped | `pages/{page}/components/` | Used by exactly one page/feature — not yet proven reusable — same 5-file contract |
+| Animated *(optional)* | `components/animated/` | Reusable animation wrappers only, if the animation feature is enabled — 5-file contract |
 
-**Pages NEVER own components.** Every custom component lives in `shared/` or `layout/`.
+**Promotion rule:** a feature-scoped component MUST be moved (never copy-pasted) to
+`shared/` or `blocks/` the moment a second page/feature needs it.
 
 ## Required File Contracts
 
-### Component — `layout/` and `shared/` (6 files — all required)
+### Component — `layout/`, `shared/`, `blocks/`, `animated/`, and feature-scoped (5 files — all required, no Storybook)
 
 ```text
 componentName/
 ├── ComponentName.tsx
 ├── ComponentName.styles.ts
 ├── types.ts
-├── ComponentName.stories.tsx
 ├── ComponentName.test.tsx
 └── index.ts
 ```
 
-### Page (6 files — schema only required when page has a form)
+Logic-only components with no visual UI (e.g. `ProtectedLayout`) use a **4-file
+contract** instead — no `.styles.ts`.
+
+### Page (5 files — schema only required when page has a form)
 
 ```text
 pageName/
@@ -149,8 +154,6 @@ hooks/
 | Hook | What it blocks/warns | Exit |
 | --- | --- | --- |
 | `check-no-any.sh` | Explicit `any` in .ts/.tsx | 2 (block) |
-| `check-no-div-span.sh` | `<div>` or `<span>` in .tsx | 2 (block) |
-| `check-no-sx-prop.sh` | `sx={}` prop in .tsx | 2 (block) |
 | `check-no-inline-style.sh` | `style={}` attribute in .tsx | 2 (block) |
 | `check-no-hardcoded-colors.sh` | CSS hex/rgb/hsl colors AND Tailwind palette classes (`bg-blue-500` etc.) | 2 (block) |
 | `check-no-raw-dimensions.sh` | Raw px strings in `.styles.ts`, raw numeric dimension props in .tsx | 2 (block) |
@@ -166,13 +169,16 @@ All hooks skip `*.test.*`, `*.stories.*`, and `*/theme/*` files.
 
 ## HTML Element Policy
 
-| Tier | Elements | Rule |
+`<div>`/`<span>` are allowed — the idiomatic layout building blocks on a
+shadcn/ui + Tailwind stack. Prefer a shadcn/ui primitive or a genuinely-fitting
+semantic element first; never force one that doesn't actually apply.
+
+| Category | Elements | Rule |
 | --- | --- | --- |
-| **Forbidden** | `<div>`, `<span>` | Always replace with a shadcn/ui primitive or semantic HTML |
-| **Allowed** | `<main>`, `<section>`, `<article>`, `<aside>`, `<header>`, `<footer>`, `<nav>` | When no shadcn/ui primitive fits |
-| **Allowed** | `<ul>`, `<ol>`, `<li>` | When no shadcn/ui primitive fits |
-| **Allowed** | `<h1>`–`<h6>`, `<p>`, `<em>`, `<strong>`, `<small>`, `<mark>`, `<time>`, `<abbr>`, `<code>`, `<kbd>` | When no shadcn/ui primitive fits |
-| **Allowed** | `<figure>`, `<figcaption>`, `<img>` | When no shadcn/ui primitive fits |
+| Structural | `<main>`, `<section>`, `<article>`, `<aside>`, `<header>`, `<footer>`, `<nav>` | When the content genuinely has that structural role |
+| Lists | `<ul>`, `<ol>`, `<li>` | When the content genuinely has that structural role |
+| Typography | `<h1>`–`<h6>`, `<p>`, `<em>`, `<strong>`, `<small>`, `<mark>`, `<time>`, `<abbr>`, `<code>`, `<kbd>` | When the content genuinely carries that meaning |
+| Media | `<figure>`, `<figcaption>`, `<img>` | When the content is genuinely self-contained media |
 
 ---
 
@@ -209,18 +215,18 @@ reference, moot now that Storybook is fixed off entirely.)
 - [ ] `npm run build` succeeds
 - [ ] `tsc --noEmit` exits 0
 - [ ] No explicit `any`
-- [ ] No `<div>` or `<span>`
+- [ ] No semantic element forced where it doesn't genuinely fit, just to avoid a `<div>`/`<span>`
 - [ ] No hardcoded CSS colors or Tailwind palette classes
-- [ ] No inline `style={}` or `sx={}`
+- [ ] No inline `style={}`
 - [ ] No raw px/numeric dimensions
 - [ ] No multi-token className strings inlined in JSX
 - [ ] No template literals in `className`
 - [ ] All new modules barrel-exported from sibling `index.ts`
-- [ ] All component folders have all 6 required files
+- [ ] All component folders have all 5 required files (4 for logic-only components)
 - [ ] Every hook has a co-located `.test.ts`
 - [ ] Every form page has a co-located `.schema.ts`
 - [ ] All services return `ApiResponse<T>`
 - [ ] Semantic HTML used intentionally — not as a layout convenience
 - [ ] Accessibility verified (aria-labels, alt text, keyboard support)
 - [ ] Responsive behaviour verified (dark mode + breakpoints)
-- [ ] All new types, services, stores, hooks, components, stories, and tests follow project structure
+- [ ] All new types, services, stores, hooks, components, and tests follow project structure

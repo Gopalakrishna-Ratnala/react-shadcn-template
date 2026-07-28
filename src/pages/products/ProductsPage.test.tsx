@@ -95,6 +95,19 @@ describe("ProductsPage", () => {
     expect(screen.getByRole("button", { name: "Search" })).toBeInTheDocument();
   });
 
+  it("renders the route ErrorBoundary when the loader's fetch fails", async () => {
+    vi.mocked(getProducts).mockRejectedValueOnce(
+      new Error("Service unavailable"),
+    );
+
+    renderProductsPage();
+
+    expect(
+      await screen.findByText("This page failed to load"),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Service unavailable")).toBeInTheDocument();
+  });
+
   it("renders the empty state when no products are returned", async () => {
     vi.mocked(getProducts).mockResolvedValueOnce({
       status: 200,

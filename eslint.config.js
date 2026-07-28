@@ -10,7 +10,28 @@ import { defineConfig, globalIgnores } from 'eslint/config'
 export default defineConfig([
   globalIgnores(['dist']),
   {
+    // src/components/ui/** (vendored shadcn CLI output, never manually
+    // edited) is excluded from every rule below, not just import-x/order and
+    // explicit-module-boundary-types - react-refresh/only-export-components
+    // and react-hooks/set-state-in-effect (from the extends below) were
+    // previously unscoped here, which only ever showed up as an accepted
+    // "15 pre-existing errors" baseline in `npm run lint`'s full-repo scan.
+    // That baseline was never actually harmless: lint-staged's `eslint --fix`
+    // step runs the same rules against whatever's staged, and blocks on
+    // these same errors the moment any ui/ file is staged - which happens
+    // for real, expected reasons (e.g. `npx shadcn add <component>
+    // --overwrite` to pick up an upstream fix), not just a one-off.
+    //
+    // This is a default for the untouched-vendor-file case, not a rule that
+    // ui/ can never be edited - if a project genuinely needs a behavioral
+    // patch to a specific ui/ file (not just re-theming, which never
+    // requires touching ui/ - see CLAUDE.md's Divami Design System Rules),
+    // remove that file's path from this ignores list (and from
+    // .prettierignore) so it gets the same quality bar as the rest of the
+    // codebase. This is a conscious per-file decision, not something a
+    // static glob can infer automatically.
     files: ['**/*.{ts,tsx}'],
+    ignores: ['src/components/ui/**'],
     extends: [
       js.configs.recommended,
       tseslint.configs.recommended,
@@ -23,9 +44,8 @@ export default defineConfig([
     },
   },
   {
-    // Two rules scoped to exclude src/components/ui/** (vendored shadcn CLI
-    // output, never manually edited), so neither can introduce errors in
-    // files we're not allowed to fix:
+    // Rules scoped to exclude src/components/ui/** the same way, so none of
+    // them can introduce errors in files we're not allowed to fix:
     // - import-x/order: matches core/06-typescript.md's documented 5-group
     //   import convention exactly (React first, third-party, @/ internal,
     //   relative, type imports last within each group).

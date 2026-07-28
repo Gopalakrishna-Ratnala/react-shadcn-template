@@ -1,4 +1,9 @@
-import { useState, type ChangeEvent, type ReactElement } from "react";
+import {
+  useEffect,
+  useState,
+  type ChangeEvent,
+  type ReactElement,
+} from "react";
 
 import { Form, useLoaderData, useNavigation } from "react-router";
 
@@ -16,6 +21,7 @@ import {
   DeleteProductDialog,
   ProductCard,
   ProductFormDialog,
+  type ProductFormMode,
 } from "./components";
 import { productsLoader } from "./ProductsPage.loader";
 import { productsPageStyles as styles } from "./ProductsPage.styles";
@@ -23,7 +29,7 @@ import { productsPageStyles as styles } from "./ProductsPage.styles";
 import type { Product } from "@/types/product.types";
 
 interface FormDialogState {
-  mode: "create" | "edit";
+  mode: ProductFormMode;
   product?: Product;
 }
 
@@ -36,9 +42,17 @@ export const ProductsPage = (): ReactElement => {
   const [formDialog, setFormDialog] = useState<FormDialogState | null>(null);
   const [productToDelete, setProductToDelete] = useState<Product | null>(null);
 
+  // Keep the store in sync with the loader's committed searchTerm - otherwise
+  // a deep link (or back/forward navigation) leaves storeSearchTerm at its
+  // initial "" while the loader's searchTerm already reflects the real
+  // applied filter, desyncing the empty-state message below.
+  useEffect(() => {
+    setSearchTerm(searchTerm);
+  }, [searchTerm, setSearchTerm]);
+
   // Reflects the router's own pending state for this navigation - no
   // component-level AsyncState<T> needed, since the loader is route-tied
-  // (see PROJECT-CONTEXT.md Section 25, item 2).
+  // (see docs/PROJECT-CONTEXT.md Section 25, item 2).
   const isSearching =
     navigation.state === "loading" &&
     new URLSearchParams(navigation.location.search).has("q");

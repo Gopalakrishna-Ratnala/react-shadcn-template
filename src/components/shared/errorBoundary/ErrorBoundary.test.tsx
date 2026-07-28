@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
 import { ErrorBoundary } from "./ErrorBoundary";
@@ -29,6 +30,25 @@ describe("ErrorBoundary", () => {
 
     expect(screen.getByRole("alert")).toHaveTextContent("Boom");
     spy.mockRestore();
+  });
+
+  it("reloads the page when the Reload button is clicked", async () => {
+    const spy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const reload = vi.fn();
+    vi.stubGlobal("location", { ...window.location, reload });
+
+    const user = userEvent.setup();
+    render(
+      <ErrorBoundary>
+        <Bomb />
+      </ErrorBoundary>,
+    );
+
+    await user.click(screen.getByRole("button", { name: "Reload" }));
+
+    expect(reload).toHaveBeenCalledTimes(1);
+    spy.mockRestore();
+    vi.unstubAllGlobals();
   });
 
   it("renders a custom fallback when provided", () => {

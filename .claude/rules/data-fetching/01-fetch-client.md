@@ -6,18 +6,19 @@ paths: ["src/services/**/*.ts", "src/hooks/**/*.ts"]
 # Fetch Client + json-server Rules
 
 This project is fully local and frontend-only for now. **json-server** serves a real
-local REST API from `db.json` (a genuine HTTP server, not synchronous mock functions),
-and the app talks to it over native `fetch` — no HTTP library dependency (no Axios).
+local REST API from `data/mockData/db.json` (a genuine HTTP server, not synchronous
+mock functions), and the app talks to it over native `fetch` — no HTTP library
+dependency (no Axios).
 
 ## Local mock backend
 
-- `db.json` at the project root is the "database." Each top-level key becomes a REST
+- `data/mockData/db.json` is the "database." Each top-level key becomes a REST
   resource automatically: `{"products": [...]}` → `GET/POST /products`,
   `GET/PATCH/PUT/DELETE /products/:id`.
 - Run it with `npm run mock-api` (separate terminal from `npm run dev`) — starts on the
   port configured in `VITE_API_BASE_URL` (`.env.example` default: `http://localhost:3001`).
-- `--watch` is enabled, so editing `db.json` while the server is running picks up
-  changes without a restart.
+- `--watch` is enabled, so editing `data/mockData/db.json` while the server is running
+  picks up changes without a restart.
 - json-server is **stable v0.17.x**, not the v1.0.0 beta line (still marked "expect
   breaking changes" upstream) — do not upgrade to a `1.0.0-*` version without deliberately
   re-checking its breaking changes (all IDs become strings, `_limit` → `_per_page`, etc.).

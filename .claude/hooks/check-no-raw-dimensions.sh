@@ -14,12 +14,15 @@ if ! command -v jq >/dev/null 2>&1; then
   exit 2
 fi
 # Enforces: NEVER use raw numeric dimensions in styles (styling/shadcn/01-tailwind-shadcn-styling.md)
-# Checks styles.ts for hardcoded px values and raw numeric dimensions.
+# Checks *.styles.ts files for hardcoded px/rem strings (e.g. "16px"). Only
+# styles.ts is actually checked below - .tsx files pass through this hook
+# untouched (no raw-numeric-dimension-prop check applies on this shadcn/Tailwind
+# stack, unlike the MUI-based template this hook set was originally ported from).
 
 INPUT=$(cat)
 FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty')
 
-# Only check styles.ts and .tsx in src/
+# Only check files in src/
 if [[ "$FILE_PATH" != */src/* ]]; then
   exit 0
 fi

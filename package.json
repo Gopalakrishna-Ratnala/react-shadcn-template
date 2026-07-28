@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "mock-api": "json-server --watch db.json --port 3001",
+    "mock-api": "json-server --watch data/mockData/db.json --port 3001",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "format": "prettier --write \"src/**/*.{ts,tsx,css}\" --ignore-path .prettierignore",
@@ -76,13 +76,7 @@
     "vite": "^8.0.1",
     "vitest": "^4.1.10"
   },
-  "lint-staged": {
-    "*.{ts,tsx}": [
-      "eslint --fix",
-      "prettier --write"
-    ],
-    "*.css": [
-      "prettier --write"
-    ]
+  "overrides": {
+    "minimatch": "^10.2.6"
   }
 }

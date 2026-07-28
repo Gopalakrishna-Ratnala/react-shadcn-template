@@ -59,8 +59,12 @@ CSS_VIOLATIONS=$(echo "$CONTENT" | grep -nE '(#[0-9a-fA-F]{3,8}\b|rgba?\s*\(|hsl
 
 # Check 2: Tailwind palette colour classes — bg-<color>-<step>, text-<color>-<step>,
 # border-<color>-<step>, ring-<color>-<step>, etc.
-# Matches patterns like bg-blue-500, text-slate-700, border-gray-200
-TAILWIND_VIOLATIONS=$(echo "$CONTENT" | grep -nE '\b(bg|text|border|ring|fill|stroke|from|to|via|placeholder|caret|accent|decoration|outline)-[a-z]+-[0-9]+\b' | grep -vE '^\s*//' | grep -vE '^\s*\*' || true)
+# Matches patterns like bg-blue-500, text-slate-700, border-gray-200.
+# Excludes this project's own approved semantic chart tokens (bg-chart-1..5,
+# text-chart-1..5, etc. — see 01-tailwind-shadcn-styling.md's token table),
+# which share the same "<prefix>-<word>-<number>" shape as a real palette
+# class but are legitimate semantic tokens, not hardcoded colors.
+TAILWIND_VIOLATIONS=$(echo "$CONTENT" | grep -nE '\b(bg|text|border|ring|fill|stroke|from|to|via|placeholder|caret|accent|decoration|outline)-[a-z]+-[0-9]+\b' | grep -vE '^\s*//' | grep -vE '^\s*\*' | grep -vE '\-chart-[0-9]+\b' || true)
 
 VIOLATIONS=""
 if [[ -n "$CSS_VIOLATIONS" ]]; then

@@ -3,7 +3,7 @@
 ## HTTP client — fixed, not a choice
 
 This project is local/frontend-only for now. **json-server** serves a real local REST
-API from `db.json`; the app talks to it via a native-`fetch`-based `apiClient`
+API from `data/mockData/db.json`; the app talks to it via a native-`fetch`-based `apiClient`
 (`src/services/apiClient.ts`) — no HTTP library dependency. See `01-fetch-client.md`.
 
 This was previously an open "pick Axios or an alternative" choice; it's now resolved
@@ -27,4 +27,4 @@ These two files add the full service/mock/mapper architecture on top of `apiClie
 3. In `CLAUDE.md`, update the Data Fetching rows to reflect what is kept.
 4. Update the dependency in `package.json` (remove `json-server`, add the new library).
 5. Replace `src/services/apiClient.ts` to match the new library's patterns.
-6. Remove `db.json`, `.env.example`'s `VITE_API_BASE_URL`, and the `mock-api` script if no longer applicable.
+6. Remove `data/mockData/db.json`, `.env.example`'s `VITE_API_BASE_URL`, and the `mock-api` script if no longer applicable.

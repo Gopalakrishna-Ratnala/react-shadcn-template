@@ -23,12 +23,6 @@
           },
           {
             "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/check-no-div-span.sh",
-            "timeout": 5000,
-            "statusMessage": "Checking for forbidden HTML elements (<div>, <span>)..."
-          },
-          {
-            "type": "command",
             "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/check-no-inline-style.sh",
             "timeout": 5000,
             "statusMessage": "Checking for inline style..."

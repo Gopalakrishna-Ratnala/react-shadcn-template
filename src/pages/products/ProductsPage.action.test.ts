@@ -1,4 +1,5 @@
-import { describe, expect, it, vi } from "vitest";
+import { RouterContextProvider } from "react-router";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import {
   createProduct,
@@ -27,11 +28,15 @@ const makeActionArgs = (
     url: new URL(url),
     pattern: "/products",
     params: {},
-    context: {} as never,
+    context: new RouterContextProvider(),
   };
 };
 
 describe("productsAction", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   it("POST creates a product from the form fields", async () => {
     vi.mocked(createProduct).mockResolvedValueOnce({
       status: 201,
@@ -108,7 +113,7 @@ describe("productsAction", () => {
     expect(result).toEqual({ ok: true });
   });
 
-  it("returns ok:false with the error message when the service throws", async () => {
+  it("returns a generic ok:false message when the service throws, without leaking the raw error", async () => {
     vi.mocked(createProduct).mockRejectedValueOnce(new Error("network down"));
 
     const result = await productsAction(
@@ -120,12 +125,54 @@ describe("productsAction", () => {
       }),
     );
 
-    expect(result).toEqual({ ok: false, error: "network down" });
+    expect(result).toEqual({
+      ok: false,
+      error: "Something went wrong. Please try again.",
+    });
   });
 
   it("returns ok:false for an unsupported method", async () => {
     const result = await productsAction(makeActionArgs("PUT", {}));
 
     expect(result).toEqual({ ok: false, error: "Unsupported method: PUT" });
+  });
+
+  it("POST rejects invalid form data instead of calling the service", async () => {
+    const result = await productsAction(
+      makeActionArgs("POST", {
+        name: "",
+        category: "Lighting",
+        price: "-5",
+        inStock: "true",
+      }),
+    );
+
+    expect(createProduct).not.toHaveBeenCalled();
+    expect(result.ok).toBe(false);
+    expect(result.error).toBeTruthy();
+  });
+
+  it("PATCH rejects a non-numeric id instead of calling the service", async () => {
+    const result = await productsAction(
+      makeActionArgs("PATCH", {
+        id: "not-a-number",
+        name: "Wireless Keyboard",
+        category: "Electronics",
+        price: "59",
+        inStock: "false",
+      }),
+    );
+
+    expect(updateProduct).not.toHaveBeenCalled();
+    expect(result).toEqual({ ok: false, error: "Invalid product id" });
+  });
+
+  it("DELETE rejects a non-numeric id instead of calling the service", async () => {
+    const result = await productsAction(
+      makeActionArgs("DELETE", { id: "not-a-number" }),
+    );
+
+    expect(deleteProduct).not.toHaveBeenCalled();
+    expect(result).toEqual({ ok: false, error: "Invalid product id" });
   });
 });

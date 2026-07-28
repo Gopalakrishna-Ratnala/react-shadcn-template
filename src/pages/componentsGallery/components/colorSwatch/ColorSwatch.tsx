@@ -17,6 +17,7 @@ export const ColorSwatch = ({
     <figure className={colorSwatchStyles.wrapper}>
       <Card
         className={cn(colorSwatchStyles.swatch, bgClassName, textClassName)}
+        aria-hidden="true"
       >
         Aa
       </Card>
