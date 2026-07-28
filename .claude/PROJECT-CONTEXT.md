@@ -1889,6 +1889,56 @@ implied to be a shadcn requirement.
 checking on theme candidates — the one remaining item, unrelated to this
 token-completeness pass.
 
+## 27.5. Contrast/accessibility checking on theme candidates (2026-07-28)
+
+The last remaining item from the original theming gap list (Section 15) —
+checking every semantic background/foreground token pair in a theme candidate
+against WCAG AA contrast (4.5:1 for normal text) before it ever reaches a
+client, rather than someone noticing a readability problem after the fact.
+
+Used `culori` (the same real, well-tested color library tweakcn itself uses
+for this exact purpose) via a Node-based hook — real color math (parsing
+hex/rgb/oklch, computing relative luminance and contrast ratios correctly)
+isn't worth hand-rolling in bash, so this is the one hook in this project not
+written in bash+`jq`. Verified `wcagContrast` against known reference values
+first (black/white = 21:1, white/white = 1:1 — both exactly correct) before
+trusting it.
+
+**Hit and fixed a real bug during testing, not just theoretical**: this
+project's `package.json` has `"type": "module"`, so a plain `require()` call
+failed with a genuine `ReferenceError`. The first test runs missed this
+because only `stdout` was being checked, not `stderr`, so the failure looked
+like a silent pass rather than a crash. Caught by testing with a real
+file-based payload and checking full output; fixed by converting to a proper
+ES module `import`.
+
+`check-theme-contrast.js` runs on Write/Edit to any `src/styles/themes/*.css`
+file except `theme-template.css` (placeholder values, not real colors) —
+covers both `history/*.css` candidates and `theme.css` itself at promotion
+time. Warning only, not a block — a low-contrast pairing can be a deliberate
+choice for a decorative/non-text-bearing surface a script can't fully judge,
+but should be confirmed as intentional, not silently missed. Confirmed the
+missing-dependency case fails loudly (a clear stack trace) rather than
+needing a `jq`-style guard, since `culori` is a normal npm dependency covered
+by the same `npm install` step every other dependency needs.
+
+**Real, valuable finding from running this against our own actual
+`theme.css`**: 4 genuine contrast violations in our own current baseline
+theme, never caught before now — light mode's `success`/`success-foreground`
+(3.30:1) and `warning`/`warning-foreground` (3.19:1), dark mode's
+`destructive`/`destructive-foreground` (3.76:1) and `info`/`info-foreground`
+(3.68:1) — all below the 4.5:1 AA threshold. Flagged this finding rather than
+fixing the actual color values in the same commit, since that's a
+color-design decision, not a code-correctness fix — left for the user to
+decide whether/how to adjust.
+
+Validated: 4 real test cases (bad pairing correctly flagged, good pairing
+correctly silent, a non-theme file correctly skipped, `theme-template.css`
+itself correctly excluded), plus the real `theme.css` test above. Full suite
+unaffected: 61/61 tests, `tsc -b` clean, build succeeds.
+
+**Every item from the original theming gap list is now closed out.**
+
 ## 28. Working agreements / process notes
 
 - User wants to **hold all pushes until explicitly requested** — make local commits
