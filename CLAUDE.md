@@ -99,9 +99,9 @@ Rules are split into three categories:
 | `core/07-react-hooks.md` | Component responsibilities, hooks requirements |
 | `core/08-accessibility.md` | Accessibility requirements and semantic element reference |
 | `core/09-anti-patterns-checklist.md` | Auto-reject patterns, refactor rules, final validation checklist |
-| `core/10-error-handling.md` | ErrorBoundary placement, AsyncState\<T\> pattern, service-layer error handling |
+| `core/10-error-handling.md` | App-level + per-route ErrorBoundary, AsyncState\<T\> (non-route-tied only), action error returns |
 | `core/11-performance.md` | Memoization rules, lazy loading, list keys, virtualization, bundle size |
-| `core/12-routing.md` | React Router v8, ProtectedRoute, ROUTES constants, lazy loading pages, Link/NavLink, useParams/useSearchParams |
+| `core/12-routing.md` | React Router v8 data mode, createBrowserRouter/RouterProvider, ProtectedLayout, ROUTES constants, lazy loading pages, Link/NavLink, useParams/useSearchParams |
 | `core/13-environment.md` | Environment variables, VITE_ prefix, typed config module, secrets policy |
 | `core/14-security.md` | XSS prevention, token storage, input sanitization, secrets policy |
 
@@ -227,9 +227,9 @@ The `check-no-div-span.sh` hook enforces the **Forbidden** tier automatically. A
 - **`ApiResponse<T>` envelope**: all services must wrap results in `ApiResponse<T>`; hooks unwrap `.data` before storing (`data-fetching/01-fetch-client.md`, full pattern in `data-fetching/03-data-layer.md`)
 - **Schema placement**: form validation schemas (Zod) live in `ComponentName.schema.ts`, never inside `.tsx` or hooks (`forms/01-rhf-zod.md`)
 - **Storybook**: fixed OFF for this template — 5-file component contract everywhere, no `.stories.tsx`, no `.storybook/` config, no Storybook scripts in `package.json`
-- **Error handling**: `ErrorBoundary` at root + page level, `AsyncState<T>` for async state, `unknown` in catch blocks (`core/10-error-handling.md`)
+- **Error handling**: app-level `ErrorBoundary` in `App.tsx` + a per-route `errorElement`/`ErrorBoundary` on every route with a `loader`/`action`, `AsyncState<T>` only for non-route-tied fetches, `unknown` in catch blocks, actions return `{ ok, error? }` for known failures rather than throwing (`core/10-error-handling.md`)
 - **Performance**: no default `React.memo`/`useMemo`/`useCallback`, stable list keys, lazy pages, virtualize >50-item lists (`core/11-performance.md`)
-- **Routing**: all routes in `src/config/routes.tsx`, `ProtectedRoute` with `<Outlet />`, `ROUTES` constants, loading state before redirect (`core/12-routing.md`)
+- **Routing**: React Router v8 data mode — `createBrowserRouter`/`RouterProvider` in `src/config/routes.tsx` (a `RouteObject[]`, route-level `lazy` resolving `Component`/`loader`/`action` together), `ProtectedLayout` guards protected routes via a `loader` that throws `redirect()` before render (not a render-time `<Navigate>` check), `ROUTES` constants (`core/12-routing.md`)
 - **Theming** *(if enabled)*: `ThemeProvider` at app root only, `useTheme()` only for runtime value, never for conditional styles (`styling/shadcn/02-theming.md`)
 - **Notifications** *(if enabled)*: `toast()` only from hooks, never from UI components; use `toast.promise` for async (`features/02-notifications.md`)
 - **i18n** *(if enabled)*: locale files in `public/locales/`, never imported into JS bundle, always loaded via `loadLocale()` (`features/03-internationalization.md`)

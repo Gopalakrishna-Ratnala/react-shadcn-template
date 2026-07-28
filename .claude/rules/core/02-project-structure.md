@@ -206,7 +206,7 @@ component-name/
 └── index.ts
 ```
 
-**Exception — logic-only components** (e.g. `ProtectedRoute`) have no visual UI and use a **4-file contract**: `ComponentName.tsx`, `types.ts`, `ComponentName.test.tsx`, `index.ts` — no `.styles.ts`.
+**Exception — logic-only components** (e.g. `ProtectedLayout`) have no visual UI and use a **4-file contract**: `ComponentName.tsx`, `types.ts`, `ComponentName.test.tsx`, `index.ts` — no `.styles.ts`.
 
 **Missing any required file = incomplete component**
 

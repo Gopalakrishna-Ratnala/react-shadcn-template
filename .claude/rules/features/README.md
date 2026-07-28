@@ -16,7 +16,7 @@ Unlike strategy folders (where you pick one option), these features are purely a
 
 This template uses the **5-file contract**, fixed (no Storybook): `.tsx`, `.styles.ts`, `types.ts`, `.test.tsx`, `index.ts`.
 
-Logic-only components (e.g. `ProtectedRoute`) always use a 4-file contract regardless: `.tsx`, `types.ts`, `.test.tsx`, `index.ts`.
+Logic-only components (e.g. `ProtectedLayout`) always use a 4-file contract regardless: `.tsx`, `types.ts`, `.test.tsx`, `index.ts`.
 
 ## How to Enable / Disable (remaining optional features)
 

@@ -1699,6 +1699,59 @@ the pre-data-mode prose.
   Phases 2/3's actual test files, just not yet written up in
   `testing/01-vitest-rtl.md`).
 
+**Phase 5 — done (2026-07-28), doc-only by explicit user choice.** Asked the
+user directly how far this phase should go, since — unlike Phases 2/3's
+Products catalog — there's no auth system anywhere in this repo to build the
+proof-of-concept against; building one from scratch (login mechanism, session
+storage, a real protected page) is a genuinely bigger scoping decision than
+"convert the existing pattern," and not something to quietly decide alone.
+User chose doc-only: rewrite `core/12-routing.md`'s pattern, no new auth code.
+
+- **`core/12-routing.md` fully rewritten** for data mode — every section that
+  assumed `<BrowserRouter>` + JSX `<Routes>`/`<Route>` updated to
+  `createBrowserRouter`/`RouterProvider` + `RouteObject[]` (matching this
+  repo's actual `src/config/routes.tsx` from Phases 1–3, referenced directly
+  rather than invented): router setup, the "shared layout routes" pattern
+  (nested `RouteObject.children`, not JSX route nesting), the route config
+  pattern, and the "Rules" list.
+- **The `ProtectedRoute` pattern itself replaced with `ProtectedLayout`** — a
+  parent layout route whose own `loader` throws `redirect()` before any
+  render, rather than a component that checks auth state and renders
+  `<Navigate>` after mounting. This is the concrete fix for the exact problem
+  plan item 5 named: a render-time check means a real (if brief) flash of
+  protected content before the redirect fires; a loader-time check means the
+  redirect happens before the route's `Component` is ever rendered at all.
+  Also fixed the old pattern's separate `isLoading` render branch (for an
+  auth state still rehydrating) — that's no longer needed either, since an
+  `async` loader can simply `await` the session check itself, and the
+  router's own pending state (`HydrateFallback`/navigation loading UI, same
+  mechanism Phase 2 already established for data fetching) covers the wait
+  without any component-level loading branch to write.
+- Added a `?from=` redirect-back pattern (the loader encodes the original
+  path into the login redirect's query string, since `throw redirect()` can't
+  carry the `state` a component-rendered `<Navigate state=...>` could) — the
+  practical detail needed to make the loader-based guard not regress the old
+  pattern's "return to where you came from after logging in" behavior.
+- **Consistency sweep**: found and fixed 4 other files still referencing the
+  old pattern by name/description rather than just leaving them stale —
+  `CLAUDE.md` (two spots: the file-summary table and the routing/error-
+  handling checklist bullets, the latter also picking up Phase 4's error-
+  handling wording that hadn't made it into `CLAUDE.md` yet), `.claude/rules/
+  core/README.md`'s summary table, and the `ProtectedRoute`-as-illustrative-
+  example mentions in `features/README.md`/`core/02-project-structure.md`
+  (renamed to `ProtectedLayout` for naming consistency, though those two are
+  about the general logic-only-component file-contract rule, not this
+  specific pattern).
+- No new application code, no new tests (nothing to test — this was
+  documentation only, and the doc's code samples describe a not-yet-built
+  feature rather than an existing tested one, unlike Phases 2–4's docs which
+  all reference real files). Validated that the doc-only change didn't break
+  anything: `tsc -b` clean, lint at the same 15-error baseline, `vitest run`
+  unchanged at 17/61, `npm run build` succeeds.
+- **Next up**: Phase 6 (state-management doc's Zustand boundary) or Phase 7
+  (testing-conventions doc), or building the auth feature for real if the
+  user wants to revisit Phase 5's scope later.
+
 ### Process note on how this gets picked up
 
 User asked whether this chat session has a length limit and needs a fresh chat to
