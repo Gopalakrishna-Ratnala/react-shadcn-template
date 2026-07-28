@@ -185,6 +185,7 @@ These hooks run as PreToolUse/PostToolUse checks on Write and Edit operations:
 | `check-component-duplicate.sh` | Never create a new reusable component if one already exists — warns and lists existing components in `components/shared/` or `components/layout/` when a new component folder is created (PreToolUse on Write\|Edit) | Warning only |
 | `check-component-files.sh` | Component folder has all required files including `ComponentName.styles.ts` — 5-file contract (fixed, no Storybook), 4-file (logic-only) (PostToolUse on Write\|Edit) | Warning only |
 | `check-no-inline-classnames.sh` | No multi-token className strings inlined in .tsx — must be extracted to `.styles.ts` (PostToolUse on Write\|Edit) | Warning only |
+| `check-theme-contrast.js` | Every background/foreground token pair in a theme candidate meets WCAG AA (4.5:1) using `culori` (PostToolUse on Write\|Edit to theme files) | Warning only |
 | `check-barrel-exports.sh` | New .ts/.tsx files in hooks/, components/, types/, constants/, services/, store/ must be re-exported from sibling index.ts (PostToolUse on Write) | Warning only |
 | `check-tsc.sh` | `tsc --noEmit` after .ts/.tsx writes in src/ (PostToolUse, debounced 30s) | Warning only |
 | `check-dependency-security.sh` | Blocks `git commit` when `npm audit` finds any vulnerability — run `/dependency-security` to fix | Yes (exit 2) |

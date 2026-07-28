@@ -79,6 +79,18 @@ An array of objects, one per candidate, in creation order:
    deliberate architectural choice, not a default — see `PROJECT-CONTEXT.md`'s Section 4
    for the (a)/(b)/(c) discussion already had on this).
 
+## Contrast checking
+
+`check-theme-contrast.js` runs on every write to a theme file (`history/*.css` or
+`theme.css` itself, excluding `theme-template.css`) and checks every semantic
+background/foreground pair (`primary`/`primary-foreground`,
+`destructive`/`destructive-foreground`, and so on, for both light and dark mode)
+against the WCAG AA minimum for normal text (4.5:1), using `culori`'s
+`wcagContrast()`. This is a **warning, not a block** — a low-contrast pairing can
+be a deliberate choice for a decorative or non-text-bearing surface a script can't
+fully judge — but any flagged pairing should be confirmed as intentional before
+that candidate goes to a client, not silently ignored.
+
 ## Comparing candidates
 
 When asked to compare candidates or help a client choose, list the relevant entries

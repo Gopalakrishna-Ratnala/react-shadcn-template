@@ -84,6 +84,12 @@
           },
           {
             "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/check-theme-contrast.js",
+            "timeout": 10000,
+            "statusMessage": "Checking theme candidate contrast ratios..."
+          },
+          {
+            "type": "command",
             "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/check-tsc.sh",
             "timeout": 30000,
             "statusMessage": "Running TypeScript type check..."
