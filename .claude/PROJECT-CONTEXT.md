@@ -1831,7 +1831,65 @@ of their session limit) — validation was done efficiently (full suite +
 targeted spot-checks of the highest-risk/most-novel changes) rather than
 exhaustively re-reading every line, same rigor applied where it mattered most.
 
-## 26. Working agreements / process notes
+## 27. Completed the radius/shadow/tracking token scales (2026-07-28)
+
+User asked whether the theme includes every possible property/value a real,
+production, multi-project design system would need — checked directly against
+the official shadcn theming docs first (found the radius scale was incomplete:
+we had 4 steps, shadcn's own official scale has 7), then went deeper per user's
+request and fetched two real production files directly: shadcn-ui/ui's own
+actual `apps/v4/app/globals.css` and tweakcn's `app/globals.css`. This
+confirmed the radius gap independently and surfaced two more real gaps not
+visible from the docs page alone:
+
+- **Shadow scale**: we had 4 tokens (`sm`/`md`/`lg`/our own `focus`); tweakcn's
+  real file has the complete 8-step Tailwind scale (`2xs`/`xs`/`sm`/base
+  `shadow`/`md`/`lg`/`xl`/`2xl`).
+- **Tracking/letter-spacing**: we had exactly one token (`tracking-display`,
+  for headings specifically); tweakcn's real file has the full 6-step scale
+  (`tighter`/`tight`/`normal`/`wide`/`wider`/`widest`), all derived from one
+  base via `calc()`.
+
+Same failure pattern as the original typography/radius/shadow bridging fix
+(Section 14): a real, standard Tailwind utility class exists that a future
+project will plausibly reach for, and without coverage it silently falls back
+to Tailwind's stock value instead of this project's theme — invisible until
+someone notices a component doesn't reskin correctly.
+
+**Fixed**: extended `theme-template.css`/`theme.css` (kept in sync via the
+same header/font-only diff as before) — radius now has `md`/`xl`/`2xl`/`3xl`/
+`4xl` added (8 steps + `full`), shadow now has the complete 8-step scale, and
+tracking now has a `--letter-spacing` base + the full 6-step derived scale.
+Kept this project's own existing "additive offset from one base" style for
+radius (matching how `radius-sm`/`-lg` were already defined) rather than
+switching to shadcn's ratio-based approach — deliberately avoided an
+unnecessary, larger change to already-working, already-tested tokens. Extended
+`index.css`'s `!important`-override block to cover every new utility class.
+`check-theme-log-entry.sh` needed no changes — it derives required tokens from
+`theme-template.css` dynamically at hook-run-time, so it picked up the new
+tokens automatically.
+
+Validated against real compiled CSS output: confirmed the new `--radius-xl`
+(`calc(var(--radius) + 8px)`, ~14px) genuinely differs from Tailwind's own
+stock `--radius-xl` (`0.75rem`, 12px) — unambiguous proof, not a coincidental
+match — and confirmed the `!important` override correctly wins regardless of
+whether a given Tailwind utility references its own internal variable or
+hardcodes a literal directly (both patterns exist across different utilities,
+confirmed in the compiled output). Full suite: 61/61 tests, `tsc -b` clean,
+lint unchanged, build succeeds.
+
+**Colors confirmed complete and even exceeding the baseline** during this same
+check — our `destructive-foreground` addition matches shadcn's own real
+production practice (their simplified docs example omits it, their actual
+file has it), and our `success`/`warning`/`info` tokens are a legitimate,
+common real-world extension, clearly flagged as our own convention rather than
+implied to be a shadcn requirement.
+
+**Still open from the broader theming gap list**: contrast/accessibility
+checking on theme candidates — the one remaining item, unrelated to this
+token-completeness pass.
+
+## 28. Working agreements / process notes
 
 - User wants to **hold all pushes until explicitly requested** — make local commits
   freely, but don't push to any remote without being asked first, so they can review
