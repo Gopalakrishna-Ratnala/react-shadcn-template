@@ -1807,6 +1807,30 @@ result the same way reports 1–6 tested the current architecture.
 (route-level `action` functions for the Products catalog's add/edit/delete,
 folding in the RHF+Zod submit-flow decision from plan item 3) is next.**
 
+## 25.5. v1.0.0 RELEASED (2026-07-28)
+
+All 10 phases of the data-mode migration are complete (Phases 3–7 done by a
+parallel session while this one was mid-fix on the same files — discarded this
+session's now-superseded local commits before they could conflict, synced to the
+complete state, then independently re-validated it: fresh `npm install`, `tsc -b`
+clean, lint at the 15-error vendored-file baseline, 61/61 tests passing, build
+succeeds with code-splitting intact, and a full `check-no-div-span.sh` sweep
+across every new component file — all clean). Spot-checked the one genuinely novel
+pattern (`ProtectedLayout`'s loader-based redirect) — sound, correctly scoped as
+doc-only since no real auth system exists to prove it against yet, matching this
+project's own "don't guess without real code" discipline throughout.
+
+Tagged `v1.0.0` — see `VERSIONS.md` for the full release description. Every
+"pick one" placeholder is resolved, every hook-vs-code inconsistency found this
+session is fixed, and the routing/data-fetching architecture is now data mode
+end-to-end, proven on a real, fully-tested Products catalog (list/search/
+create/edit/delete).
+
+**This was validated under a real token-budget constraint** (user was at 90%
+of their session limit) — validation was done efficiently (full suite +
+targeted spot-checks of the highest-risk/most-novel changes) rather than
+exhaustively re-reading every line, same rigor applied where it mattered most.
+
 ## 26. Working agreements / process notes
 
 - User wants to **hold all pushes until explicitly requested** — make local commits
