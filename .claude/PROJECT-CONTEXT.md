@@ -1752,6 +1752,44 @@ User chose doc-only: rewrite `core/12-routing.md`'s pattern, no new auth code.
   (testing-conventions doc), or building the auth feature for real if the
   user wants to revisit Phase 5's scope later.
 
+**Phases 6 + 7 — done (2026-07-28), doc-only.** Both close out plan item 8's
+remaining rule-doc list; both describe patterns already proven in Phases 2–3's
+real, tested code rather than inventing new prose.
+
+- **`state-management/01-zustand.md`**: added the loader/store boundary
+  explicitly to the "do not use Zustand for" list (route-tied server data —
+  read via `useLoaderData()`, never copied into a store), and a new "The
+  Loader/Store Boundary" section with the real `productFiltersStore` example
+  (holds only the transient search-input text) directly contrasted with a
+  "Wrong" example of duplicating a loader's `products` array into a store —
+  the concrete mistake the boundary rules out. The existing `useUserStore`
+  example (session state, genuinely not route-tied) is kept and now
+  explicitly framed as the *other side* of that same boundary, rather than
+  sitting there unqualified as "the" Zustand pattern.
+- **`testing/01-vitest-rtl.md`**: added dedicated "Testing Loaders and
+  Actions" and "Testing Loader-Backed Pages" sections — calling a
+  `loader`/`action` directly with a real `Request`/`FormData` (per
+  `ProductsPage.loader.test.ts`/`ProductsPage.action.test.ts`), and
+  `createMemoryRouter` + `RouterProvider` with the *real* loader/action wired
+  in rather than a stubbed page (per `ProductsPage.test.tsx`,
+  `ProductFormDialog.test.tsx`). Explicitly called out mocking the service
+  layer underneath rather than the loader/action itself — the whole point is
+  proving the real wiring, not a mock-calls-mock chain. Updated the Pages test
+  matrix to require this for any loader/action-backed route, and the
+  "Required Render Setup" section to redirect away from a generic router-
+  provider wrapper toward the real `createMemoryRouter` pattern for anything
+  using router context.
+- Validated: `tsc -b` clean, lint at the same 15-error baseline, `vitest run`
+  unchanged at 17/61 (doc-only), `npm run build` succeeds.
+
+**This closes out the full 10-phase data-mode migration plan.** Every item is
+now either built-and-tested (Phases 1–3: router, loader-based fetching,
+action-based mutations, all proved on the real Products catalog feature) or
+documented against that real code (Phases 4/5/6/7: error handling, routing/
+auth pattern, state-management boundary, testing conventions). Phase 5's auth
+code itself remains unbuilt by explicit user choice — the *pattern* is
+documented and ready whenever a real auth feature gets built against it.
+
 ### Process note on how this gets picked up
 
 User asked whether this chat session has a length limit and needs a fresh chat to
