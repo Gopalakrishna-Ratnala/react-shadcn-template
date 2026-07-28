@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/empty";
 import { Input } from "@/components/ui/input";
 import { useProductFiltersStore } from "@/store";
-import type { Product } from "@/types/product.types";
 
 import {
   DeleteProductDialog,
@@ -20,6 +19,8 @@ import {
 } from "./components";
 import { productsLoader } from "./ProductsPage.loader";
 import { productsPageStyles as styles } from "./ProductsPage.styles";
+
+import type { Product } from "@/types/product.types";
 
 interface FormDialogState {
   mode: "create" | "edit";
@@ -33,9 +34,7 @@ export const ProductsPage = (): ReactElement => {
   const setSearchTerm = useProductFiltersStore((state) => state.setSearchTerm);
 
   const [formDialog, setFormDialog] = useState<FormDialogState | null>(null);
-  const [productToDelete, setProductToDelete] = useState<Product | null>(
-    null,
-  );
+  const [productToDelete, setProductToDelete] = useState<Product | null>(null);
 
   // Reflects the router's own pending state for this navigation - no
   // component-level AsyncState<T> needed, since the loader is route-tied

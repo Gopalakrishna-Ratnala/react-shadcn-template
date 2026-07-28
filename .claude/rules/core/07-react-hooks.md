@@ -72,19 +72,58 @@ useEffect(() => {
 
 ## Examples
 
-### Correct: Hook coordinating store + service with error handling
+### Correct: page load data fetching — a route `loader`, not a hook
 
-**Use this shape only when the state is genuinely needed by more than one
-page/component** (e.g. the current user's session, used across many pages) —
-per `state-management/01-zustand.md`, Zustand is explicitly NOT for local,
-one-component/one-page-only state. If this hook's state is only ever consumed
-by a single page, use the local-state variant below instead, even though the
-overall shape (service → mapper → `AsyncState`) is identical either way.
+If a page needs this data as soon as it loads (the common case for a list
+page, a detail page, anything shown on first render), it belongs in that
+route's `loader`, not a `useEffect`-driven hook. Fetching starts the moment
+the route matches — before the component even mounts — and the page reads it
+back with `useLoaderData()`:
+
+```typescript
+// src/pages/products/ProductsPage.loader.ts
+import type { LoaderFunctionArgs } from "react-router";
+import { mapProductDtoToProduct } from "@/services/mappers/productMapper";
+import { getProducts } from "@/services/product";
+import type { Product } from "@/types/product.types";
+
+export interface ProductsLoaderData {
+  products: Product[];
+  searchTerm: string;
+}
+
+export const productsLoader = async ({ request }: LoaderFunctionArgs): Promise<ProductsLoaderData> => {
+  const url = new URL(request.url);
+  const searchTerm = url.searchParams.get("q") ?? "";
+  const response = await getProducts(searchTerm || undefined);
+  return { products: response.data.map(mapProductDtoToProduct), searchTerm };
+};
+```
+
+```tsx
+// src/pages/products/ProductsPage.tsx
+export const ProductsPage = (): ReactElement => {
+  const { products, searchTerm } = useLoaderData<typeof productsLoader>();
+  const navigation = useNavigation(); // pending state, instead of AsyncState<T>
+  // ...
+};
+```
+
+Wire the loader into the route in `src/config/routes.tsx` (see
+`core/12-routing.md`). No `useEffect`, no `AsyncState<T>`, no data-fetching
+hook needed for this case — the router itself owns the fetch lifecycle.
+
+### Correct: genuinely shared, not-page-load-tied state — still a hook + store
+
+Reach for a hook coordinating a Zustand store when the state **isn't tied to
+a single route's load** but needs to be read across many pages regardless of
+navigation — the current user's session is the standard example, since it's
+established once (e.g. at login) and then read everywhere, not re-fetched
+each time a page loads:
 
 ```typescript
 import { useCallback } from "react";
 
-// Adapt imports to your chosen state management and HTTP client libraries
 import { useUserStore } from "@/store/user";
 import { getUser } from "@/services/user/userService";
 import { mapUserDtoToUser } from "@/services/mappers/userMapper";
@@ -115,11 +154,12 @@ export const useUser = (): UseUserResult => {
 };
 ```
 
-### Correct: the same shape, but with page-local state (the more common case)
+### Correct: an on-demand fetch that isn't tied to any route's load
 
-Most data-fetching hooks (a single page's list, a single page's detail view) only
-ever have one consumer — this is the default to reach for unless you already know
-the state needs to be shared:
+A modal's search-as-you-type, a "load more" button, anything triggered by a
+user action rather than a navigation — this is `AsyncState<T>`'s actual remit
+now (see `core/10-error-handling.md`). Keep it page-local `useState` unless
+it's also genuinely needed elsewhere:
 
 ```typescript
 import { useCallback, useState } from "react";
@@ -129,15 +169,15 @@ import { mapUserDtoToUser } from "@/services/mappers/userMapper";
 import type { AsyncState } from "@/types/common.types";
 import type { UserModel } from "@/types/user.types";
 
-interface UseUserResult {
+interface UseUserLookupResult {
   state: AsyncState<UserModel>;
-  fetchUser: (id: string) => Promise<void>;
+  lookupUser: (id: string) => Promise<void>;
 }
 
-export const useUser = (): UseUserResult => {
+export const useUserLookup = (): UseUserLookupResult => {
   const [state, setState] = useState<AsyncState<UserModel>>({ status: "idle" });
 
-  const fetchUser = useCallback(async (id: string): Promise<void> => {
+  const lookupUser = useCallback(async (id: string): Promise<void> => {
     setState({ status: "loading" });
     try {
       const response = await getUser(id);
@@ -148,7 +188,7 @@ export const useUser = (): UseUserResult => {
     }
   }, []);
 
-  return { state, fetchUser };
+  return { state, lookupUser };
 };
 ```
 
@@ -162,5 +202,21 @@ export const useUser = () => {
     fetch("/users/1").then((r) => r.json()).then(setUser); // raw HTTP call in hook
   }, []);
   return user;
+};
+```
+
+### Wrong: a data-fetching hook for data the page needs on first load
+
+```typescript
+// ❌ BAD — this data is needed the moment the page loads; it belongs in a
+// route loader (see above), not a useEffect-driven hook with its own
+// loading/error state that duplicates what the router already tracks
+export const useProducts = () => {
+  const [state, setState] = useState<AsyncState<Product[]>>({ status: "idle" });
+  useEffect(() => {
+    setState({ status: "loading" });
+    getProducts().then((response) => setState({ status: "success", data: response.data }));
+  }, []);
+  return state;
 };
 ```

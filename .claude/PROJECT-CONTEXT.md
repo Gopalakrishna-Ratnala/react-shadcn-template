@@ -1653,6 +1653,52 @@ session's line-by-line review, and would have recurred here otherwise.
   (auth/`ProtectedRoute` redirect pattern), whichever the user wants tackled
   next.
 
+**Phase 4 — done (2026-07-28), doc-only.** Products already proved per-route
+error handling works in code (Phase 2's `RouteErrorFallback`, Phase 3's
+action-error-return pattern) — this phase closes the loop by rewriting the
+rule docs to actually describe what's already built and tested, rather than
+the pre-data-mode prose.
+
+- **`core/10-error-handling.md`** rewritten: app-level `ErrorBoundary` (class
+  component, root of `App.tsx`, render-errors-only, last-resort) now
+  explicitly coexists with a per-route `errorElement`/`ErrorBoundary` on every
+  route with a `loader`/`action` (catches that route's loader/action errors +
+  render errors in its subtree) — neither replaces the other. Added a
+  dedicated "Action Error Returns vs Throwing" section codifying the
+  `{ ok, error? }`-return-vs-throw distinction `ProductsPage.action.ts`
+  actually uses: known API failures return `{ ok: false, error }` (surfaced
+  inline via toast, next to the form) so a failed mutation never sends the
+  user to the route's `ErrorBoundary` and loses their in-progress edit;
+  reserve throwing for genuinely unexpected failures. `AsyncState<T>`'s scope
+  is now explicitly "non-route-tied fetches only" (a modal's on-demand fetch,
+  search-as-you-type) — route-tied pending/error state comes from
+  `useNavigation()`/`useFetcher().state` instead. All code examples now
+  reference the real, tested files (`RouteErrorFallback`, `productsAction`)
+  rather than invented ones.
+- **`core/07-react-hooks.md`**'s `useUser` example split three ways, matching
+  what actually got built: (1) page-load-tied data fetching is now a route
+  `loader` example (`ProductsPage.loader.ts`), not a hook at all; (2) the
+  genuinely-shared-across-pages case (e.g. session data not tied to any one
+  route's load) keeps the hook+Zustand-store shape; (3) a genuinely on-demand,
+  non-route-tied fetch keeps the page-local `AsyncState<T>` hook shape. Added
+  a "Wrong" example showing a `useProducts` hook duplicating what a loader
+  should own — the mistake this split is meant to prevent.
+- Both docs' code samples were cross-checked against this repo's actual
+  Phase 2/3 files rather than written fresh from the plan's prose, so the
+  rule docs and the working code can't drift apart the way the old
+  `useUser`/`AsyncState`-only guidance would have if left unchanged.
+- Validated: `tsc -b` clean, lint at the same 15-error baseline, `vitest run`
+  still 17/61 (doc-only change, no app code touched), `npm run build` succeeds.
+- **Next up**: Phase 5 (auth/`ProtectedRoute` redirect pattern — no auth
+  system exists in this repo yet, so this would mean building one from
+  scratch, a bigger scoping conversation than the doc-only phases), Phase 6
+  (state-management doc's Zustand boundary — partially already reflected via
+  the `07-react-hooks.md` split above, but `state-management/01-zustand.md`
+  itself hasn't been touched), or Phase 7 (testing-conventions doc — the
+  loader/action/`createMemoryRouter` testing patterns are already proven in
+  Phases 2/3's actual test files, just not yet written up in
+  `testing/01-vitest-rtl.md`).
+
 ### Process note on how this gets picked up
 
 User asked whether this chat session has a length limit and needs a fresh chat to
