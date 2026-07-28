@@ -98,11 +98,13 @@
    problem the same way.
 
    Only override the exact class names below - this project's scale is
-   xs/sm/base/lg/xl/2xl/3xl/4xl for text, sm/base(rounded)/lg/full for
-   radius, and sm/md/lg for shadow. Don't use rounded-md/rounded-xl/
-   rounded-2xl/rounded-3xl or other Tailwind default steps outside this
-   list - they aren't part of this project's design system and would
-   silently fall back to Tailwind's unthemed stock values.
+   xs/sm/base/lg/xl/2xl/3xl/4xl for text, sm/md/lg/xl/2xl/3xl/4xl/full/base
+   for radius, 2xs/xs/sm/base/md/lg/xl/2xl for shadow, and tighter/tight/
+   normal/wide/wider/widest for tracking (letter-spacing) - this is now full
+   coverage of Tailwind's own default scale for each of these utility
+   families, confirmed against both shadcn's own production theme file
+   (apps/v4/app/globals.css) and tweakcn's (app/globals.css) real,
+   current token scopes, not just the earlier partial pass.
    ============================================================ */
 .text-xs {
   font-size: var(--text-xs) !important;
@@ -143,21 +145,70 @@
 .rounded {
   border-radius: var(--radius) !important;
 }
+.rounded-md {
+  border-radius: var(--radius-md) !important;
+}
 .rounded-lg {
   border-radius: var(--radius-lg) !important;
+}
+.rounded-xl {
+  border-radius: var(--radius-xl) !important;
+}
+.rounded-2xl {
+  border-radius: var(--radius-2xl) !important;
+}
+.rounded-3xl {
+  border-radius: var(--radius-3xl) !important;
+}
+.rounded-4xl {
+  border-radius: var(--radius-4xl) !important;
 }
 .rounded-full {
   border-radius: var(--radius-full) !important;
 }
 
+.shadow-2xs {
+  box-shadow: var(--shadow-2xs) !important;
+}
+.shadow-xs {
+  box-shadow: var(--shadow-xs) !important;
+}
 .shadow-sm {
   box-shadow: var(--shadow-sm) !important;
+}
+.shadow {
+  box-shadow: var(--shadow) !important;
 }
 .shadow-md {
   box-shadow: var(--shadow-md) !important;
 }
 .shadow-lg {
   box-shadow: var(--shadow-lg) !important;
+}
+.shadow-xl {
+  box-shadow: var(--shadow-xl) !important;
+}
+.shadow-2xl {
+  box-shadow: var(--shadow-2xl) !important;
+}
+
+.tracking-tighter {
+  letter-spacing: var(--tracking-tighter) !important;
+}
+.tracking-tight {
+  letter-spacing: var(--tracking-tight) !important;
+}
+.tracking-normal {
+  letter-spacing: var(--tracking-normal) !important;
+}
+.tracking-wide {
+  letter-spacing: var(--tracking-wide) !important;
+}
+.tracking-wider {
+  letter-spacing: var(--tracking-wider) !important;
+}
+.tracking-widest {
+  letter-spacing: var(--tracking-widest) !important;
 }
 
 *,
