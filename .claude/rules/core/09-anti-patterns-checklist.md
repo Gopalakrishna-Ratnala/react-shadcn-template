@@ -15,9 +15,9 @@ description: Anti-patterns checklist, refactor rules, and final validation — a
 - business logic in style files
 - UI state mixed into service modules
 - hardcoded theme values
-- missing tests, or missing stories when Storybook is enabled
+- missing tests
 - missing `types.ts` or `index.ts`
-- using `<div>` or `<span>` anywhere in JSX — both are forbidden; replace with a UI library primitive or a semantic HTML element
+- reaching for a semantic element (`<section>`, `<em>`, etc.) that doesn't actually apply, just to avoid a `<div>`/`<span>` — a plain `<div>`/`<span>` is fine for generic layout/grouping with no semantic role of its own; see `core/03-coding-principles.md`'s HTML Element Policy
 - using local form state alongside a form library for the same field
 - creating a custom component when a UI library primitive already satisfies the need
 - placing a component inside a page folder — all custom components belong in `components/shared/` or `components/layout/`
@@ -47,9 +47,8 @@ During refactoring:
 - [ ] `tsc --noEmit` exits with 0 errors *(hook-enforced — warning)*
 - [ ] no explicit `any` *(hook-enforced)*
 - [ ] no hardcoded design values *(hook-enforced)* — scan every style file and every component file for raw numbers (widths, heights, margins, padding, line-heights, max-widths, min-heights) and verify each references a design token
-- [ ] no library-specific inline style props (e.g. `sx`) *(hook-enforced)*
 - [ ] no inline `style` attribute *(hook-enforced)*
-- [ ] no hardcoded colors or library palette classes *(hook-enforced)* — shadcn/ui: no Tailwind palette classes (e.g. `bg-blue-500`), use semantic tokens; MUI: no raw hex in `styled()`
+- [ ] no hardcoded colors or Tailwind palette classes *(hook-enforced)* — no `bg-blue-500` etc., use semantic tokens instead
 - [ ] no multi-token className strings inlined in .tsx — extracted to `.styles.ts` *(shadcn/Tailwind — hook-enforced — warning)*
 - [ ] no template literals in `className` — use `cn()` with imported base *(shadcn/Tailwind only)*
 - [ ] no raw HTTP calls in UI components
@@ -58,11 +57,10 @@ During refactoring:
 - [ ] every new module barrel-exported from sibling `index.ts` *(hook-enforced — warning)*
 - [ ] all mock services return `ApiResponse<T>`; hooks unwrap `.data` before storing
 - [ ] every form page has a co-located `ComponentName.schema.ts`
-- [ ] no `<div>` or `<span>` in any .tsx file *(hook-enforced)*
-- [ ] semantic HTML used intentionally — structural/typography/list/media elements chosen for meaning, not as a layout convenience
+- [ ] semantic HTML/shadcn primitives used intentionally where they genuinely fit — `<div>`/`<span>` used for generic layout/grouping, not in place of a semantic element that actually applies
 - [ ] accessibility verified
-- [ ] responsive behavior verified (breakpoints; dark mode via `dark:` Tailwind classes for shadcn/Tailwind projects, or via MUI theme palette for MUI projects)
-- [ ] all new types, services, stores, hooks, components, and tests follow project structure *(+ stories when Storybook is enabled)*
+- [ ] responsive behavior verified (breakpoints; dark mode resolves automatically via semantic color tokens — a `dark:` override is only needed for genuinely non-token-driven values)
+- [ ] all new types, services, stores, hooks, components, and tests follow project structure
 - [ ] no `console.log`, `console.warn`, or `console.error` left in source files
 - [ ] no commented-out code blocks
 - [ ] no unused imports or variables

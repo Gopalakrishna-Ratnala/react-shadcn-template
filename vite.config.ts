@@ -17,6 +17,13 @@ export default defineConfig({
     globals: false,
     setupFiles: ['./src/test/setup.ts'],
     css: true,
+    env: {
+      // apiClient reads this via src/config/env.ts at import time and throws if
+      // unset - this keeps tests independent of whether a developer has created
+      // their own .env.local from .env.example. Not a real network call target;
+      // apiClient calls are mocked at the fetch level in tests.
+      VITE_API_BASE_URL: 'http://localhost:3001',
+    },
     coverage: {
       provider: 'v8',
       reporter: ['text', 'html'],

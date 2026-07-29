@@ -23,18 +23,6 @@
           },
           {
             "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/check-no-div-span.sh",
-            "timeout": 5000,
-            "statusMessage": "Checking for forbidden HTML elements (<div>, <span>)..."
-          },
-          {
-            "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/check-no-sx-prop.sh",
-            "timeout": 5000,
-            "statusMessage": "Checking for production sx prop..."
-          },
-          {
-            "type": "command",
             "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/check-no-inline-style.sh",
             "timeout": 5000,
             "statusMessage": "Checking for inline style..."
@@ -81,6 +69,12 @@
             "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/check-barrel-exports.sh",
             "timeout": 5000,
             "statusMessage": "Checking barrel exports..."
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/check-theme-log-entry.sh",
+            "timeout": 5000,
+            "statusMessage": "Checking theme candidate log entry..."
           },
           {
             "type": "command",

@@ -52,7 +52,7 @@ export const fetchUser = (id: string) =>
 ```
 
 ```ts
-// CORRECT — validate shape before use (Zod shown; Yup equivalent is fine)
+// CORRECT — validate shape before use (Zod, per forms/01-rhf-zod.md)
 import { z } from "zod";
 import { API_ENDPOINTS } from "@/constants";
 

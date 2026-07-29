@@ -34,26 +34,30 @@ This repository is a **clean project template**. It ships with a minimal placeho
 
 ---
 
-## Project Setup — Required User Prompts
+## Project Setup Reference
 
-**When starting a new project from this template, ask the user for every choice below before writing any code.** Do not assume defaults.
+### Step 1 — Fixed technology decisions (nothing to ask about)
 
-### Step 1 — Mandatory choices (pick one per row)
+Every row below is fixed for this template — there is no choice to make or ask
+the user about for any of these:
 
-| Decision | Options |
+| Decision | What's fixed |
 | --- | --- |
-| Styling library | MUI (Material UI) or shadcn/ui + Tailwind CSS v4 (`@tailwindcss/vite` — not PostCSS) |
-| Icon source | `public/assets/icons/` (SVG sprites) or `lucide-react` library |
-| State management | Zustand or Redux Toolkit |
-| Forms & validation | React Hook Form + Yup or React Hook Form + Zod |
-| Data fetching | Axios or other (TanStack Query, SWR, native fetch) |
-| Testing framework | Vitest + React Testing Library or Jest + React Testing Library |
+| Styling library | shadcn/ui + Tailwind CSS v4 (`@tailwindcss/vite` — not PostCSS) |
+| Icon source | `lucide-react` — already installed |
+| State management | Zustand |
+| Forms & validation | React Hook Form + Zod |
+| Data fetching | Fetch-based `apiClient` + json-server (local mock backend) |
+| Testing framework | Vitest + React Testing Library — already installed and configured |
 
-### Step 2 — Optional features (ask yes/no for each)
+### Step 2 — Optional features (ask the user yes/no for each, before writing any code)
+
+**Storybook is fixed OFF for this template** (confirmed via two independent real
+feature-test runs, both landing on the 5-file contract — see
+`features/README.md`) — not a per-project choice anymore.
 
 | Feature | Yes → keep | No → delete |
 | --- | --- | --- |
-| Storybook component docs | `features/01-storybook.md` | Delete the file; skip `.stories.tsx`; omit Storybook scripts from `package.json` |
 | API service + data layer pattern (structured DTOs, mappers, mocks) | `data-fetching/02-api-services.md` + `data-fetching/03-data-layer.md` | Delete both files |
 | Dark/light theme toggle *(shadcn/ui only)* | `styling/shadcn/02-theming.md` | Delete the file |
 | Toast notifications | `features/02-notifications.md` | Delete the file |
@@ -95,9 +99,9 @@ Rules are split into three categories:
 | `core/07-react-hooks.md` | Component responsibilities, hooks requirements |
 | `core/08-accessibility.md` | Accessibility requirements and semantic element reference |
 | `core/09-anti-patterns-checklist.md` | Auto-reject patterns, refactor rules, final validation checklist |
-| `core/10-error-handling.md` | ErrorBoundary placement, AsyncState\<T\> pattern, service-layer error handling |
+| `core/10-error-handling.md` | App-level + per-route ErrorBoundary, AsyncState\<T\> (non-route-tied only), action error returns |
 | `core/11-performance.md` | Memoization rules, lazy loading, list keys, virtualization, bundle size |
-| `core/12-routing.md` | React Router v7, ProtectedRoute, ROUTES constants, lazy loading pages |
+| `core/12-routing.md` | React Router v8 data mode, createBrowserRouter/RouterProvider, ProtectedLayout, ROUTES constants, lazy loading pages, Link/NavLink, useParams/useSearchParams |
 | `core/13-environment.md` | Environment variables, VITE_ prefix, typed config module, secrets policy |
 | `core/14-security.md` | XSS prevention, token storage, input sanitization, secrets policy |
 
@@ -105,40 +109,39 @@ Rules are split into three categories:
 
 ## Strategy Rules — Conditionally Loaded (scoped by `paths`)
 
-Each folder below contains mutually exclusive strategy files. **Keep only the file matching your chosen library; delete the rest.**
+Every strategy category below is now fixed for this template — styling, forms,
+state management, and data fetching. None are per-project choices anymore; each
+section states what's used and why.
 
-### Styling (`.claude/rules/styling/`) — pick one + optional
+### Styling (`.claude/rules/styling/`) — fixed, not a choice
 
-| Strategy | Files to keep | Files to delete | Loaded when editing |
-| --- | --- | --- | --- |
-| **MUI (Material UI)** | `styling/mui/01-mui-styling.md` + `styling/mui/02-mui-usage.md` | `styling/shadcn/` | `src/**/styles.ts`, `src/**/*.tsx` |
-| **shadcn/ui + Tailwind CSS v4** | `styling/shadcn/01-tailwind-shadcn-styling.md` — uses `@tailwindcss/vite` (not PostCSS) | `styling/mui/` | `src/**/*.tsx`, `src/**/*.ts`, `src/**/*.css` |
+| Strategy | Files | Loaded when editing |
+| --- | --- | --- |
+| **shadcn/ui + Tailwind CSS v4** | `styling/shadcn/01-tailwind-shadcn-styling.md` — uses `@tailwindcss/vite` (not PostCSS) | `src/**/*.tsx`, `src/**/*.ts`, `src/**/*.css` |
 
-Optional (shadcn/ui only):
+Optional:
 
 | File | Feature | Keep when | Loaded when editing |
 | --- | --- | --- | --- |
 | `styling/shadcn/02-theming.md` | Dark/light theme toggle via `next-themes` | Project needs theme switching | `src/**/*.tsx`, `src/**/*.ts` |
 
-### Forms (`.claude/rules/forms/`) — pick one
+### Forms (`.claude/rules/forms/`) — fixed, not a choice
 
 | File | Strategy | Loaded when editing |
 | --- | --- | --- |
-| `forms/01-rhf-zod.md` | React Hook Form + Zod | `src/**/*.tsx`, `src/hooks/**/*.ts` |
-| `forms/02-rhf-yup.md` | React Hook Form + Yup | `src/**/*.tsx`, `src/hooks/**/*.ts` |
+| `forms/01-rhf-zod.md` | React Hook Form + Zod, `Field`/`FieldGroup` composition, `InputGroup`/`ToggleGroup` | `src/**/*.tsx`, `src/hooks/**/*.ts` |
 
-### State Management (`.claude/rules/state-management/`) — pick one
-
-| File | Strategy | Loaded when editing |
-| --- | --- | --- |
-| `state-management/01-zustand.md` | Zustand — store structure, async actions, no direct mutation | `src/store/**/*.ts`, `src/hooks/**/*.ts` |
-| `state-management/02-redux-toolkit.md` | Redux Toolkit — slices, async thunks, typed hooks, no direct mutation | `src/store/**/*.ts`, `src/hooks/**/*.ts` |
-
-### Data Fetching (`.claude/rules/data-fetching/`) — pick one + optional add-ons
+### State Management (`.claude/rules/state-management/`) — fixed, not a choice
 
 | File | Strategy | Loaded when editing |
 | --- | --- | --- |
-| `data-fetching/01-axios.md` | Axios — central API client, typed responses, error handling | `src/services/**/*.ts`, `src/hooks/**/*.ts` |
+| `state-management/01-zustand.md` | Zustand — store structure, async actions, no direct mutation. Fixed for this template — once a project has real stores, never suggest switching. | `src/store/**/*.ts`, `src/hooks/**/*.ts` |
+
+### Data Fetching (`.claude/rules/data-fetching/`) — fixed HTTP client + optional add-ons
+
+| File | Strategy | Loaded when editing |
+| --- | --- | --- |
+| `data-fetching/01-fetch-client.md` | Fetch-based `apiClient` + json-server local mock backend — central client, typed responses, error handling | `src/services/**/*.ts`, `src/hooks/**/*.ts` |
 
 Optional (works alongside any HTTP client):
 
@@ -161,7 +164,6 @@ Delete any file whose feature the project does not need. See setup prompts above
 
 | File | Feature | Loaded when editing |
 | --- | --- | --- |
-| `features/01-storybook.md` | Storybook v8 — configuration contract, story file rules, 6-file vs 5-file component contract | `src/**/*.stories.tsx`, `.storybook/**/*.ts` |
 | `features/02-notifications.md` | Toast notifications — hook-only usage, severity variants, async patterns | `src/hooks/**/*.ts`, `src/components/**/*.tsx`, `src/pages/**/*.tsx` |
 | `features/03-internationalization.md` | i18n — runtime locale loading, `loadLocale()`, no bundled strings | `src/**/*.ts`, `src/**/*.tsx` |
 | `features/04-animated-components.md` | Animation wrappers — `src/components/animated/`, component contract, no raw animation in pages | `src/components/**/*.tsx`, `src/pages/**/*.tsx` |
@@ -175,13 +177,11 @@ These hooks run as PreToolUse/PostToolUse checks on Write and Edit operations:
 | Hook | Enforces | Blocks |
 | --- | --- | --- |
 | `check-no-any.sh` | No explicit `any` in .ts/.tsx | Yes (exit 2) |
-| `check-no-div-span.sh` | No `<div>` or `<span>` in .tsx — use semantic HTML or UI library primitives instead | Yes (exit 2) |
-| `check-no-sx-prop.sh` | No `sx={}` prop in production .tsx | Yes (exit 2) |
 | `check-no-inline-style.sh` | No inline `style={}` in .tsx | Yes (exit 2) |
 | `check-no-hardcoded-colors.sh` | No hardcoded hex/rgb/rgba/hsl and no Tailwind palette classes (e.g. `bg-blue-500`) in .styles.ts and .tsx | Yes (exit 2) |
 | `check-no-raw-dimensions.sh` | No raw px strings in styles.ts, no raw numeric dimension props in .tsx | Yes (exit 2) |
 | `check-component-duplicate.sh` | Never create a new reusable component if one already exists — warns and lists existing components in `components/shared/` or `components/layout/` when a new component folder is created (PreToolUse on Write\|Edit) | Warning only |
-| `check-component-files.sh` | Component folder has all required files including `ComponentName.styles.ts` — 6-file (Storybook on), 5-file (Storybook off), 4-file (logic-only) (PostToolUse on Write\|Edit) | Warning only |
+| `check-component-files.sh` | Component folder has all required files including `ComponentName.styles.ts` — 5-file contract (fixed, no Storybook), 4-file (logic-only) (PostToolUse on Write\|Edit) | Warning only |
 | `check-no-inline-classnames.sh` | No multi-token className strings inlined in .tsx — must be extracted to `.styles.ts` (PostToolUse on Write\|Edit) | Warning only |
 | `check-barrel-exports.sh` | New .ts/.tsx files in hooks/, components/, types/, constants/, services/, store/ must be re-exported from sibling index.ts (PostToolUse on Write) | Warning only |
 | `check-tsc.sh` | `tsc --noEmit` after .ts/.tsx writes in src/ (PostToolUse, debounced 30s) | Warning only |
@@ -191,49 +191,52 @@ All hooks skip test files (`*.test.*`), story files (`*.stories.*`), and theme f
 
 Hook configuration is in `.claude/settings.json`.
 
-### HTML Element Policy (Two-Tier)
+### HTML Element Policy
 
-| Tier | Elements | Rule |
+`<div>` and `<span>` are allowed — they're the idiomatic building blocks for
+generic layout/grouping on a shadcn/ui + Tailwind stack (shadcn's own vendored
+primitives are themselves styled divs/spans). Prefer a vendored shadcn/ui
+primitive, or a semantic element below, whenever the content genuinely matches
+what it represents — but never reach for one that doesn't actually apply just
+to avoid a `<div>`/`<span>`. See `core/03-coding-principles.md`'s full HTML
+Element Policy for the reasoning and examples.
+
+| Category | Elements | Rule |
 | --- | --- | --- |
-| **Forbidden** | `<div>`, `<span>` | No semantic meaning — always replace with a UI library primitive (shadcn/ui or MUI) or a semantic HTML element |
-| **Allowed** | Structural: `<main>`, `<section>`, `<article>`, `<aside>`, `<header>`, `<footer>`, `<nav>` | Permitted when no UI library primitive satisfies the semantic need |
-| **Allowed** | Lists: `<ul>`, `<ol>`, `<li>` | Permitted when no UI library primitive satisfies the semantic need |
-| **Allowed** | Typography: `<h1>`–`<h6>`, `<p>`, `<em>`, `<strong>`, `<small>`, `<mark>`, `<time>`, `<abbr>`, `<code>`, `<kbd>` | Permitted when no UI library primitive satisfies the semantic need |
-| **Allowed** | Media: `<figure>`, `<figcaption>`, `<img>` | Permitted when no UI library primitive satisfies the semantic need |
-
-The `check-no-div-span.sh` hook enforces the **Forbidden** tier automatically. Allowed elements must still be used intentionally — not as a convenience shortcut.
+| Structural | `<main>`, `<section>`, `<article>`, `<aside>`, `<header>`, `<footer>`, `<nav>` | Use when the content genuinely has that structural role |
+| Lists | `<ul>`, `<ol>`, `<li>` | Use when the content genuinely has that structural role |
+| Typography | `<h1>`–`<h6>`, `<p>`, `<em>`, `<strong>`, `<small>`, `<mark>`, `<time>`, `<abbr>`, `<code>`, `<kbd>` | Use when the content genuinely carries that meaning |
+| Media | `<figure>`, `<figcaption>`, `<img>` | Use when the content is genuinely self-contained media |
 
 ---
 
 ## Rules Not Covered by Hooks (Manual Compliance Required)
 
-- **Component tier placement** — all custom components go in `components/shared/`, `components/layout/`, or `components/animated/` *(if enabled)*; pages NEVER own components (`core/02-project-structure.md`)
+- **Component tier placement** — custom components go in `components/shared/`, `components/blocks/`, `components/layout/`, `components/animated/` *(if enabled)*, or a page's own `components/` folder when feature-scoped to exactly one page (promoted to `shared/`/`blocks/` the moment a second page needs it) (`core/02-project-structure.md`)
 - **Separation of concerns** — Components vs Pages vs Store vs Services vs Hooks (`core/05-architecture.md`)
 - **Reuse existing building blocks** before creating new ones (`core/04-execution-flow.md`)
 - **Zustand**: no direct state mutation, domain-focused stores (`state-management/01-zustand.md`)
-- **Redux Toolkit**: no direct mutation, typed hooks only, async logic in thunks (`state-management/02-redux-toolkit.md`)
-- **Axios**: no raw Axios in UI components, typed responses, mapper usage (`data-fetching/01-axios.md`)
-- **Forms (Zod)**: Zod schema, RHF resolver, Controller integration (`forms/01-rhf-zod.md`)
-- **Forms (Yup)**: Yup schema, yupResolver, Controller integration (`forms/02-rhf-yup.md`)
-- **Testing**: all required test cases, 100% coverage, ThemeProvider in render (`testing/01-vitest-rtl.md`)
+- **apiClient**: no raw `fetch` in UI components, typed responses, mapper usage (`data-fetching/01-fetch-client.md`)
+- **Forms**: Zod schema, RHF resolver, Controller integration, `Field`/`FieldGroup` composition (`forms/01-rhf-zod.md`)
+- **Testing**: all required test cases, 100% coverage; wrap in `ThemeProvider` only when the component under test actually calls `useTheme()` (directly or via a child) — e.g. `ThemeToggle`; not a blanket requirement for every test (`testing/01-vitest-rtl.md`)
 - **Accessibility**: aria-labels, keyboard navigation, semantic elements (`core/08-accessibility.md`)
-- **Responsive**: mobile-first breakpoint handling required for all projects — shadcn/Tailwind: use breakpoint prefixes (`sm:`, `md:`, `lg:`, `xl:`) in `.styles.ts` and `dark:` classes for dark mode (`styling/shadcn/01-tailwind-shadcn-styling.md`); MUI: use theme breakpoints via `styled()` and theme palette for dark mode (`styling/mui/01-mui-styling.md`)
+- **Responsive**: mobile-first breakpoint handling required for all projects — use breakpoint prefixes (`sm:`, `md:`, `lg:`, `xl:`) in `.styles.ts` and `dark:` classes for dark mode (`styling/shadcn/01-tailwind-shadcn-styling.md`)
 - **Naming intent**: business-purpose names, not generic labels (`core/02-project-structure.md`)
 - **Final validation checklist**: lint, format, test, build all pass (`core/09-anti-patterns-checklist.md`)
 - **Dependency security**: run `/dependency-security` to audit, fix, and document vulnerabilities before committing
 - **className extraction** *(shadcn/Tailwind only)*: multi-token className strings must be in `.styles.ts` — single-token or `cn()` with imported base only inline (`styling/shadcn/01-tailwind-shadcn-styling.md`)
 - **No Tailwind palette classes** *(shadcn/Tailwind only)*: use shadcn/ui semantic tokens (`bg-primary`, `text-muted-foreground`, etc.) never `bg-blue-500` (`styling/shadcn/01-tailwind-shadcn-styling.md`)
 - **Barrel exports**: every new file in hooks/, components/, types/, constants/, services/, store/ must be re-exported from sibling `index.ts` (`core/03-coding-principles.md`)
-- **`ApiResponse<T>` envelope**: all mock services must wrap results in `ApiResponse<T>`; hooks unwrap `.data` before storing (`data-fetching/01-axios.md`, full pattern in `data-fetching/03-data-layer.md`)
-- **Schema placement**: form validation schemas (Zod or Yup) live in `ComponentName.schema.ts`, never inside `.tsx` or hooks (`forms/01-rhf-zod.md`, `forms/02-rhf-yup.md`)
-- **Storybook** *(if enabled)*: `.storybook/main.ts` and `preview.ts` must follow the contract in `features/01-storybook.md`; components use the 6-file contract; if disabled, use 5-file contract and omit `.stories.tsx` everywhere
-- **Error handling**: `ErrorBoundary` at root + page level, `AsyncState<T>` for async state, `unknown` in catch blocks (`core/10-error-handling.md`)
+- **`ApiResponse<T>` envelope**: all services must wrap results in `ApiResponse<T>`; hooks unwrap `.data` before storing (`data-fetching/01-fetch-client.md`, full pattern in `data-fetching/03-data-layer.md`)
+- **Schema placement**: form validation schemas (Zod) live in `ComponentName.schema.ts`, never inside `.tsx` or hooks (`forms/01-rhf-zod.md`)
+- **Storybook**: fixed OFF for this template — 5-file component contract everywhere, no `.stories.tsx`, no `.storybook/` config, no Storybook scripts in `package.json`
+- **Error handling**: app-level `ErrorBoundary` in `App.tsx` + a per-route `errorElement`/`ErrorBoundary` on every route with a `loader`/`action`, `AsyncState<T>` only for non-route-tied fetches, `unknown` in catch blocks, actions return `{ ok, error? }` for known failures rather than throwing (`core/10-error-handling.md`)
 - **Performance**: no default `React.memo`/`useMemo`/`useCallback`, stable list keys, lazy pages, virtualize >50-item lists (`core/11-performance.md`)
-- **Routing**: all routes in `src/config/routes.tsx`, `ProtectedRoute` with `<Outlet />`, `ROUTES` constants, loading state before redirect (`core/12-routing.md`)
+- **Routing**: React Router v8 data mode — `createBrowserRouter`/`RouterProvider` in `src/config/routes.tsx` (a `RouteObject[]`, route-level `lazy` resolving `Component`/`loader`/`action` together), `ProtectedLayout` guards protected routes via a `loader` that throws `redirect()` before render (not a render-time `<Navigate>` check), `ROUTES` constants (`core/12-routing.md`)
 - **Theming** *(if enabled)*: `ThemeProvider` at app root only, `useTheme()` only for runtime value, never for conditional styles (`styling/shadcn/02-theming.md`)
 - **Notifications** *(if enabled)*: `toast()` only from hooks, never from UI components; use `toast.promise` for async (`features/02-notifications.md`)
 - **i18n** *(if enabled)*: locale files in `public/locales/`, never imported into JS bundle, always loaded via `loadLocale()` (`features/03-internationalization.md`)
-- **Animation wrappers** *(if enabled)*: no raw animation code in pages/components, all wrappers in `src/components/animated/`, 6-file contract applies (`features/04-animated-components.md`)
+- **Animation wrappers** *(if enabled)*: no raw animation code in pages/components, all wrappers in `src/components/animated/`, 5-file contract applies (`features/04-animated-components.md`)
 
 ---
 
@@ -262,6 +265,32 @@ theme layer.
 | **Design System (components)** | `src/components/ui/` and `src/components/blocks/` | System owner | READ + USE. Never restyle. |
 | **Theme (all visual values)** | `src/styles/themes/theme.css` (built from `theme-template.css` in the same folder) | Designer | READ ONLY. Never edit unless explicitly asked. |
 | **Screens** | `src/pages/` (including `src/pages/preview/` sample pages) | You + designer | You build these, using Layer 1 only. |
+
+### On `src/components/ui/` being excluded from ESLint/Prettier
+
+`eslint.config.js` and `.prettierignore` both exclude `src/components/ui/**`
+from this template's custom style/architecture rules (import order, explicit
+return types, arrow-function-only components, Prettier formatting). This is a
+default for the **common case** — a freshly-vendored, never-hand-edited file,
+where the exclusion keeps future `npx shadcn add <component> --overwrite`
+re-syncs clean (only the real upstream change shows in the diff, not every
+line reformatted). It is **not** a statement that `ui/` can never be touched.
+
+If a real project genuinely needs a **behavioral** patch to a `ui/` file (not
+just re-theming, which never requires touching `ui/` at all — see the layer
+table above) — that's a legitimate, expected thing to do on top of this
+template, not an exception to apologize for. The moment a team does this, that
+specific file has stopped being untouched vendor output for their fork, and
+should get the same quality bar as the rest of the codebase:
+
+- Remove that file's path from the `ignores` list in `eslint.config.js` and
+  from `.prettierignore` (both are static path globs — they can't tell
+  "customized" apart from "untouched" automatically, so this is a conscious,
+  per-file decision, not something to leave implicit).
+- Run `npm run lint`/`npm run format` against it like any other file and fix
+  what comes up.
+- Still go through the Section 2b workflow below if the change is substantial
+  enough that other projects built from this template should get it too.
 
 ## 2. Component sourcing rules — READ CAREFULLY
 

@@ -1,3 +1,165 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "@fontsource-variable/geist";
+@import "./styles/themes/theme.css";
+
+/* Dark mode is driven by the `.dark` class on <html> (next-themes attribute="class",
+   if the optional theme-toggle feature is enabled — see styling/shadcn/02-theming.md).
+   Without next-themes, .dark simply never gets added and the app stays in light mode. */
+@custom-variant dark (&:is(.dark *));
+
+/* ============================================================
+   TOKEN -> TAILWIND MAPPING (colors only — see note below)
+   Maps the semantic color tokens defined in styles/themes/theme.css
+   onto Tailwind's theme namespace so utilities such as `bg-primary`,
+   `text-muted-foreground`, and `border-border` resolve to the active
+   theme. Editing theme.css re-skins every one of these utilities
+   across the whole app, because they reference the token vars at
+   runtime, not a compiled value.
+
+   Typography, radius, and shadow tokens are handled separately, below -
+   see the TYPOGRAPHY / RADIUS / SHADOW OVERRIDES block after this one.
+   ============================================================ */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+/* ============================================================
+   TYPOGRAPHY / RADIUS / SHADOW OVERRIDES
+   Tailwind v4 ships its OWN built-in default values for text-*, rounded-*,
+   and shadow-* utilities. Bridging only the color tokens above (via
+   @theme inline) does NOT change this - those utility classes already
+   exist today, but silently use Tailwind's stock hardcoded values, not
+   this project's theme tokens. Editing theme.css's --text-sm or
+   --radius-lg would have had zero visible effect anywhere those classes
+   are used, without this block.
+
+   These are NOT bridged via @theme inline like the colors above, because
+   several of our token names (--text-xs, --radius-sm, etc.) are the exact
+   same names Tailwind's own theme layer reserves for its own default
+   scale - bridging them there would be a genuine circular CSS variable
+   reference, not just a style bug. Confirmed against shadcn's own current
+   theming docs, which avoid this by never declaring --radius-sm etc. as
+   standalone :root properties at all (only deriving them inside
+   @theme inline from a single differently-named base) - our
+   theme-template.css intentionally keeps --radius-sm/-lg as independent,
+   designer-overridable values in :root (see its own comments), which is
+   why that approach doesn't apply here without renaming tokens theme.css
+   explicitly says never to rename.
+
+   Instead: plain, unlayered CSS rules with !important, directly
+   overriding the specific utility classes this project's token scale
+   actually defines. This technique is confirmed from tweakcn's own
+   production source (public/live-preview.js) solving the identical
+   problem the same way.
+
+   Only override the exact class names below - this project's scale is
+   xs/sm/base/lg/xl/2xl/3xl/4xl for text, sm/base(rounded)/lg/full for
+   radius, and sm/md/lg for shadow. Don't use rounded-md/rounded-xl/
+   rounded-2xl/rounded-3xl or other Tailwind default steps outside this
+   list - they aren't part of this project's design system and would
+   silently fall back to Tailwind's unthemed stock values.
+   ============================================================ */
+.text-xs {
+  font-size: var(--text-xs) !important;
+  line-height: var(--leading-xs) !important;
+}
+.text-sm {
+  font-size: var(--text-sm) !important;
+  line-height: var(--leading-sm) !important;
+}
+.text-base {
+  font-size: var(--text-base) !important;
+  line-height: var(--leading-base) !important;
+}
+.text-lg {
+  font-size: var(--text-lg) !important;
+  line-height: var(--leading-lg) !important;
+}
+.text-xl {
+  font-size: var(--text-xl) !important;
+  line-height: var(--leading-xl) !important;
+}
+.text-2xl {
+  font-size: var(--text-2xl) !important;
+  line-height: var(--leading-2xl) !important;
+}
+.text-3xl {
+  font-size: var(--text-3xl) !important;
+  line-height: var(--leading-3xl) !important;
+}
+.text-4xl {
+  font-size: var(--text-4xl) !important;
+  line-height: var(--leading-4xl) !important;
+}
+
+.rounded-sm {
+  border-radius: var(--radius-sm) !important;
+}
+.rounded {
+  border-radius: var(--radius) !important;
+}
+.rounded-lg {
+  border-radius: var(--radius-lg) !important;
+}
+.rounded-full {
+  border-radius: var(--radius-full) !important;
+}
+
+.shadow-sm {
+  box-shadow: var(--shadow-sm) !important;
+}
+.shadow-md {
+  box-shadow: var(--shadow-md) !important;
+}
+.shadow-lg {
+  box-shadow: var(--shadow-lg) !important;
+}
+
 *,
 *::before,
 *::after {
@@ -13,213 +175,4 @@ body,
   padding: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-/* ==========================================================================
-   PLACEHOLDER SCREEN — delete everything below when replacing src/App.tsx
-   ========================================================================== */
-
-.ph-root {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  padding: 24px;
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-  font-family: system-ui, -apple-system, sans-serif;
-}
-
-.ph-card {
-  background: #1e293b;
-  border: 1px solid #334155;
-  border-radius: 16px;
-  padding: 48px;
-  max-width: 560px;
-  width: 100%;
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
-}
-
-.ph-header {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  margin-bottom: 40px;
-  gap: 12px;
-}
-
-.ph-logo {
-  font-size: 48px;
-  line-height: 1;
-  margin: 0 0 4px;
-  color: #6366f1;
-  display: block;
-}
-
-.ph-title {
-  display: block;
-  font-size: 26px;
-  font-weight: 700;
-  color: #f1f5f9;
-  letter-spacing: -0.5px;
-}
-
-.ph-tagline {
-  display: block;
-  font-style: normal;
-  font-size: 15px;
-  color: #94a3b8;
-}
-
-.ph-section {
-  margin-bottom: 32px;
-}
-
-.ph-section-heading {
-  display: block;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.6px;
-  color: #94a3b8;
-  margin-bottom: 12px;
-}
-
-.ph-delete-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 4px;
-}
-
-.ph-delete-item {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  padding: 10px 14px;
-  background: #2d1a1a;
-  border: 1px solid #7f1d1d;
-  border-radius: 8px;
-  font-size: 13px;
-}
-
-.ph-delete-item code {
-  font-family: ui-monospace, Consolas, monospace;
-  font-size: 12px;
-  color: #fca5a5;
-  white-space: nowrap;
-}
-
-.ph-delete-item em {
-  font-style: normal;
-  color: #6b7280;
-  font-size: 12px;
-}
-
-.ph-replace-item {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  padding: 10px 14px;
-  background: #1c1a0f;
-  border: 1px solid #854d0e;
-  border-radius: 8px;
-  font-size: 13px;
-}
-
-.ph-replace-item code {
-  font-family: ui-monospace, Consolas, monospace;
-  font-size: 12px;
-  color: #fde68a;
-  white-space: nowrap;
-}
-
-.ph-replace-item em {
-  font-style: normal;
-  color: #6b7280;
-  font-size: 12px;
-}
-
-.ph-step-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.ph-step {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
-  padding: 16px;
-  background: #0f172a;
-  border: 1px solid #334155;
-  border-radius: 10px;
-}
-
-.ph-step-num {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 28px;
-  height: 28px;
-  background: #6366f1;
-  color: #fff;
-  border-radius: 50%;
-  font-size: 13px;
-  font-weight: 700;
-  font-style: normal;
-}
-
-.ph-step-body {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.ph-step-title {
-  display: block;
-  font-size: 14px;
-  font-weight: 600;
-  color: #e2e8f0;
-}
-
-.ph-step-desc {
-  display: block;
-  font-style: normal;
-  font-size: 13px;
-  color: #64748b;
-  line-height: 1.5;
-}
-
-.ph-step-desc code {
-  font-family: ui-monospace, Consolas, monospace;
-  font-size: 12px;
-  background: #1e293b;
-  color: #a5b4fc;
-  padding: 1px 5px;
-  border-radius: 4px;
-  border: 1px solid #334155;
-}
-
-.ph-footer {
-  border-top: 1px solid #334155;
-  padding-top: 24px;
-  text-align: center;
-  font-size: 13px;
-  color: #475569;
-}
-
-.ph-footer code {
-  font-family: ui-monospace, Consolas, monospace;
-  font-size: 12px;
-  background: #0f172a;
-  color: #a5b4fc;
-  padding: 1px 6px;
-  border-radius: 4px;
-  border: 1px solid #334155;
 }

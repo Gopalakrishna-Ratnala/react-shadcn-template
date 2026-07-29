@@ -8,22 +8,20 @@ Fill in your chosen library for each slot, then delete the strategy files you ar
 
 - **Framework**: React 19.x (latest stable version)
 - **Language**: TypeScript (strict mode)
-- **UI Library**: [e.g. MUI v7 / shadcn/ui] — see `styling/`
-- **State Management**: [e.g. Zustand] — see `state-management/`
-- **HTTP Client**: [e.g. Axios] — see `data-fetching/`
-- **Forms**: [e.g. React Hook Form + Zod] — see `forms/`
-- **Testing**: [e.g. Vitest + React Testing Library] — see `testing/`
-- **Storybook**: v8.x with a11y addon *(optional — see `features/01-storybook.md`)*
-- **Icons**: [e.g. `public/assets/icons/` (SVG sprites) or `lucide-react`] — see setup choices in `CLAUDE.md`
+- **UI Library**: shadcn/ui + Tailwind CSS v4 (Base UI backend) — see `styling/`
+- **State Management**: Zustand — fixed for this template, see `state-management/`
+- **HTTP Client**: Fetch-based `apiClient` + json-server as the local mock backend — fixed for this template, see `data-fetching/`
+- **Forms**: React Hook Form + Zod — fixed for this template, see `forms/`
+- **Testing**: Vitest + React Testing Library — installed and configured (see `testing/`)
+- **Storybook**: fixed OFF for this template — see `features/README.md`
+- **Icons**: `lucide-react` — already installed, fixed for this template
 
 ---
 
 ## Project Bootstrap Checklist (MANDATORY before first feature)
 
 - **All required dependencies installed** — framework, UI library, state management, HTTP client, form library, testing libraries
-  - If Storybook is enabled: also install `@storybook/react`, `@storybook/react-vite`, `@storybook/addon-a11y`, `@storybook/blocks`, `storybook`
 - **Test framework configured** — test runner, testing library, coverage tool, jsdom, `vite.config.ts` test block, `src/test/setup.ts`
-- **If Storybook is enabled** — install dependencies and configure `.storybook/main.ts` and `preview.ts` per `features/01-storybook.md`
 - **Required scripts present in `package.json`**:
   ```json
   "dev": "vite",
@@ -34,11 +32,6 @@ Fill in your chosen library for each slot, then delete the strategy files you ar
   "test": "vitest run",
   "test:watch": "vitest",
   "test:coverage": "vitest run --coverage"
-  ```
-  If Storybook is enabled, also add:
-  ```json
-  "storybook": "storybook dev -p 6006",
-  "build-storybook": "storybook build"
   ```
 - **Global CSS reset compatible with chosen UI library** — remove all template styles from `index.css`; keep only box-sizing reset, `min-height: 100vh` on html/body/root, and font smoothing
 - **Root providers wrap the app** — `App.tsx` must include your UI library's theme provider and global reset component before any UI renders

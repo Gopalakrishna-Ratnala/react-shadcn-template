@@ -1,39 +1,42 @@
-# Styling Strategy — Choose One + Optional Add-Ons
+# Styling Strategy — shadcn/ui + Tailwind
 
-## Step 1 — Pick your UI library (choose one, delete the other subfolder)
+This project uses **shadcn/ui + Tailwind CSS** as its UI library, on the **Base UI** primitive backend (`components.json` → `"style": "base-nova"`). This is fixed for this template — there is no MUI or other UI library option.
 
 | Strategy | Files |
 | --- | --- |
-| **MUI (Material UI)** | `mui/01-mui-styling.md`, `mui/02-mui-usage.md` |
 | **shadcn/ui + Tailwind** | `shadcn/01-tailwind-shadcn-styling.md` |
 
-## Step 2 — Enable optional theming (shadcn/ui only, ask the user)
+## Composition patterns — always active, not optional
+
+`shadcn/04-composition-patterns.md` documents the correct usage of vendored shadcn/ui
+primitives — Group nesting (`SelectItem`→`SelectGroup`, etc.), overlay `Title`
+requirements, `Card`/`Avatar`/`Tabs` composition, icon `data-icon` wiring, and button
+loading states. Confirmed against the official shadcn-ui/ui skill
+(`github.com/shadcn-ui/ui/tree/main/skills/shadcn`). Applies to every project using
+this template, regardless of theming choices.
+
+## Optional theming (ask the user)
 
 | Feature | File | Keep when | Delete when |
 | --- | --- | --- | --- |
 | Dark/light theme toggle | `shadcn/02-theming.md` | Project needs a theme switcher (light/dark/system) | Fixed theme only — no toggle needed |
 
-`shadcn/02-theming.md` requires `next-themes` and only applies when shadcn/ui is chosen. Delete it if using MUI or if the project has no theme toggle.
+`shadcn/02-theming.md` requires `next-themes`. Delete it if the project has no theme toggle.
 
-## How to Switch
+## Theme candidate versioning — always active, not optional
 
-1. Delete the subfolder for the strategy you are NOT using.
-2. Delete `shadcn/02-theming.md` if theme toggling is not needed.
-3. In `CLAUDE.md`, update the Styling rows to point to the files you kept.
-4. In `core/01-tech-stack.md`, update the UI Library entry to match your choice.
-5. Update dependencies in `package.json` accordingly.
+`shadcn/03-theme-versioning.md` governs how designer-supplied theme candidates get
+created, logged, compared, and promoted (`src/styles/themes/history/` +
+`THEME-LOG.json`). This applies to every project using this template — designers always
+arrive with their own values to apply, and the same round of client review repeats for
+later feature work too.
 
-## Strategy Summaries
-
-### MUI (Material UI) — `mui/`
-- `styled()` API with Emotion
-- All styles defined in `styles.ts` per component
-- Theme tokens from `src/theme/theme.ts`
-- Forbidden: `sx`, inline `style`, hardcoded values, Tailwind
+## Strategy Summary
 
 ### shadcn/ui + Tailwind — `shadcn/`
 - Tailwind utility classes extracted into co-located `ComponentName.styles.ts` files
 - `cva()` for variants, `cn()` for composition
-- CSS variables for theming in `src/styles/globals.css`
+- CSS variables for theming in the project's theme file (`src/styles/themes/theme.css` here)
 - Forbidden: inline `style`, raw hex/rgb/rgba, `@apply`, component-scoped CSS
+- Composition via Base UI's `render` prop, not Radix's `asChild` — see `01-tailwind-shadcn-styling.md`
 - Optional: `02-theming.md` — adds `next-themes` ThemeProvider + ThemeToggle component

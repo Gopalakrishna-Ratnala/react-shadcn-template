@@ -8,7 +8,7 @@ description: Architecture — separation of concerns, directory intent for compo
 
 **This separation is REQUIRED.**
 
-- **Components** = up to four tiers: `ui/` (vendored UI library primitives — shadcn/ui only), `layout/` (page-framing wrappers), `shared/` (all custom components), `animated/` *(optional — only when animation feature is enabled)* — pages never own components
+- **Components** = up to six tiers: `ui/` (vendored UI library primitives — shadcn/ui only), `layout/` (page-framing wrappers), `blocks/` (generic composite patterns, no domain-specific data), `shared/` (components tied to this app's domain entities, reused across pages), `pages/{page}/components/` (feature-scoped — used by exactly one page, not yet proven reusable), `animated/` *(optional — only when animation feature is enabled)* — see `core/02-project-structure.md` for the full decision tree and the promotion rule from feature-scoped to `shared/`/`blocks/`
 - **Pages** = screen composition only
 - **Store** = client state only
 - **Services** = API and external data access only
@@ -23,9 +23,11 @@ description: Architecture — separation of concerns, directory intent for compo
 | Directory         | Purpose                                              | Rules                                                                                 |
 | ----------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------- |
 | `src/components/ui/` | Vendored UI library primitives (shadcn/ui) — never modified | Installed by CLI only. No custom stories or tests required. |
-| `src/components/layout/` | Structural wrappers that appear on every/most pages | No business data. 6-file contract with Storybook, 5-file without. |
-| `src/components/shared/` | All custom app components — single-page or multi-page | Pages compose from here. 6-file contract with Storybook, 5-file without. |
-| `src/components/animated/` | Reusable animation wrappers *(optional — only if animation feature is enabled)* | No business logic. 6-file contract with Storybook, 5-file without. See `features/04-animated-components.md`. |
+| `src/components/layout/` | Structural wrappers that appear on every/most pages | No business data. 5-file contract (fixed, no Storybook). |
+| `src/components/blocks/` | Generic composite UI patterns assembled from `ui/` primitives | No domain-specific data — generic props only. 5-file contract (fixed, no Storybook). |
+| `src/components/shared/` | Components tied to this app's actual domain entities, reused across 2+ pages/features | Pages compose from here. 5-file contract (fixed, no Storybook). |
+| `src/pages/{page}/components/` | Feature-scoped components used by exactly one page/feature | Promote (move, never copy) to `shared/`/`blocks/` once a second page needs it. 5-file contract. |
+| `src/components/animated/` | Reusable animation wrappers *(optional — only if animation feature is enabled)* | No business logic. 5-file contract (fixed, no Storybook). See `features/04-animated-components.md`. |
 | `src/services/`   | HTTP clients, API methods                            | No JSX, no UI logic                                                                   |
 | `src/store/`      | State management stores                              | No JSX, no direct API wiring in components                                            |
 | `src/hooks/`      | Reusable hooks                                       | Compose store, services, router, forms                                                |

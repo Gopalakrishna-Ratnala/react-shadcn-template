@@ -1,13 +1,28 @@
 #!/bin/bash
-# Enforces: NEVER use raw numeric dimensions in styles (06-styling.md)
-# Checks styles.ts for hardcoded px values and raw numeric dimensions.
-# Also checks .tsx files for MUI component props with raw numeric dimensions.
+
+# Guard: every check below depends on jq to parse the tool-call JSON from
+# stdin. Without jq, each jq call below would fail, producing an empty
+# variable, which every hook's early-exit logic then silently treats as
+# "nothing to check" - exit 0, zero indication anything was skipped. Found
+# via a real teammate test-report run (jq missing on their machine caused
+# every jq-dependent hook, i.e. nearly all of them, to silently no-op for
+# the entire session). Fail loudly and block instead, so this is impossible
+# to miss.
+if ! command -v jq >/dev/null 2>&1; then
+  echo "BLOCKED: jq is required for the hooks in this repo to function and was not found on PATH. Install it (macOS: brew install jq | Debian/Ubuntu: apt-get install jq | Windows: choco install jq or scoop install jq), then restart your Claude Code session. Source: README.md" >&2
+  printf '%s\n' '{"hookSpecificOutput":{"hookEventName":"PostToolUse","additionalContext":"BLOCKED: jq is required for the hooks in this repo to function and was not found on PATH. Install it and restart your session. Source: README.md"}}'
+  exit 2
+fi
+# Enforces: NEVER use raw numeric dimensions in styles (styling/shadcn/01-tailwind-shadcn-styling.md)
+# Checks *.styles.ts files for hardcoded px/rem strings (e.g. "16px"). Only
+# styles.ts is actually checked below - .tsx files pass through this hook
+# untouched (no raw-numeric-dimension-prop check applies on this shadcn/Tailwind
+# stack, unlike the MUI-based template this hook set was originally ported from).
 
 INPUT=$(cat)
-TOOL_NAME=$(echo "$INPUT" | jq -r '.tool_name // empty')
 FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty')
 
-# Only check styles.ts and .tsx in src/
+# Only check files in src/
 if [[ "$FILE_PATH" != */src/* ]]; then
   exit 0
 fi
@@ -17,11 +32,22 @@ if [[ "$FILE_PATH" == *.test.* || "$FILE_PATH" == *.stories.* || "$FILE_PATH" ==
   exit 0
 fi
 
-if [[ "$TOOL_NAME" == "Write" ]]; then
-  CONTENT=$(echo "$INPUT" | jq -r '.tool_input.content // empty')
-elif [[ "$TOOL_NAME" == "Edit" ]]; then
-  CONTENT=$(echo "$INPUT" | jq -r '.tool_input.new_string // empty')
-else
+# Extract content by inspecting the actual JSON shape, not by matching an exact
+# tool name. The previous version only handled TOOL_NAME == "Write" or "Edit",
+# which silently let every other content-writing tool (MultiEdit's `edits` array
+# being the most common) bypass this hook entirely with no check and no warning -
+# a real, confirmed gap (found via a real teammate's test-report run, then
+# reproduced directly). This checks for known content-bearing fields directly:
+# `content` (Write-shaped), `new_string` (Edit-shaped), or `edits[].new_string`
+# (MultiEdit-shaped) - whichever is present, regardless of what the tool is named.
+CONTENT=$(echo "$INPUT" | jq -r '
+  if .tool_input.content != null then .tool_input.content
+  elif .tool_input.new_string != null then .tool_input.new_string
+  elif .tool_input.edits != null then [.tool_input.edits[].new_string] | join("\n")
+  else empty
+  end
+')
+if [[ -z "$CONTENT" ]]; then
   exit 0
 fi
 
@@ -33,23 +59,8 @@ if [[ "$FILE_PATH" == *styles.ts ]]; then
     echo "Violations:" >&2
     echo "$VIOLATIONS" >&2
     echo "" >&2
-    echo "Rule: Use theme.spacing(), theme.customSpacing, or other theme tokens instead of raw px values." >&2
-    echo "Source: 06-styling.md" >&2
-    exit 2
-  fi
-fi
-
-# For .tsx files: check for MUI component props with raw numeric dimensions
-# e.g., width={40}, height={40}, size={32}, gap={16}, margin={8}, padding={4}
-if [[ "$FILE_PATH" == *.tsx ]]; then
-  VIOLATIONS=$(echo "$CONTENT" | grep -nE '\b(width|height|size|minWidth|maxWidth|minHeight|maxHeight|margin|marginTop|marginBottom|marginLeft|marginRight|padding|paddingTop|paddingBottom|paddingLeft|paddingRight|gap|rowGap|columnGap)=\{[0-9]+\}' | grep -vE '^\s*//' | grep -vE '^\s*\*' | grep -vE '^\s*/\*' || true)
-  if [[ -n "$VIOLATIONS" ]]; then
-    echo "BLOCKED: Raw numeric dimension props found in $FILE_PATH." >&2
-    echo "Violations:" >&2
-    echo "$VIOLATIONS" >&2
-    echo "" >&2
-    echo "Rule: Create a styled component in styles.ts with theme.spacing() instead of raw numeric MUI props." >&2
-    echo "Source: 06-styling.md" >&2
+    echo "Rule: Use theme spacing tokens (e.g. Tailwind spacing scale) instead of raw px values." >&2
+    echo "Source: styling/shadcn/01-tailwind-shadcn-styling.md" >&2
     exit 2
   fi
 fi

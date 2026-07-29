@@ -34,7 +34,12 @@ Use the element that best describes the content's role. Never reach for a generi
 | `<kbd>` | Keyboard input |
 | `<address>` | Contact information for the nearest `<article>` or `<body>` ancestor |
 
-**Never use `<div>` or `<span>`** — they are layout shortcuts with no semantic meaning and are blocked by the `check-no-div-span.sh` hook.
+**Prefer a semantic element over `<div>`/`<span>` whenever one genuinely fits** —
+but a plain `<div>`/`<span>` is a legitimate choice for generic layout/grouping
+with no semantic role of its own (see `core/03-coding-principles.md`'s HTML
+Element Policy). Never reach for a semantic element that doesn't actually apply
+just to avoid a `<div>`/`<span>` — that dilutes the signal the semantic element
+exists to carry, which is worse for accessibility, not better.
 
 ---
 

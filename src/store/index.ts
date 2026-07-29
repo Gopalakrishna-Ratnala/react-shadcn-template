@@ -1,1 +1,1 @@
-export {};
+export { useProductFiltersStore } from "./productFilters";

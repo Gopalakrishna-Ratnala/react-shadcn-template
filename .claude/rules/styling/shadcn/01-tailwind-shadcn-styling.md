@@ -11,10 +11,13 @@ paths: ["src/**/*.tsx", "src/**/*.ts", "src/**/*.css"]
 - Always extract all Tailwind class strings out of `.tsx` files into a co-located `ComponentName.styles.ts` file inside the same component or page folder
 - Always use `cva()` (from `class-variance-authority`) in `.styles.ts` files to define component variants
 - Always use `cn()` (from `src/lib/utils.ts`) for conditional or composed class strings
-- Always include `dark:` counterpart classes alongside every light-mode class — never write light-only styles
+- Semantic color tokens (`bg-primary`, `text-foreground`, `border-border`, etc.) never need a `dark:` variant — the token itself is redefined under `.dark` in `theme.css`, so it already resolves correctly in both modes automatically. Only reach for a `dark:` prefix for something that is genuinely not token-driven (rare — if you find yourself writing `dark:bg-blue-500` or similar, that's almost always a sign the value should be a semantic token instead, not a `dark:` override)
 - Always style responsively using Tailwind's mobile-first breakpoint prefixes (`sm:`, `md:`, `lg:`, `xl:`)
+- Always use `size-*` when width and height are equal — `size-10`, never `w-10 h-10`
+- Always use the `truncate` shorthand for single-line text overflow — never `overflow-hidden text-ellipsis whitespace-nowrap`
+- Never set a manual `z-index` on overlay components (`Dialog`, `Sheet`, `Popover`, `DropdownMenu`, etc.) — they manage their own stacking internally
 - Never use the inline `style` attribute — use a Tailwind class or CSS variable instead; inline style props are forbidden even for one-off values
-- Never write raw hex, rgb, or rgba values in className strings or style props — use CSS variables defined in `src/styles/globals.css`
+- Never write raw hex, rgb, or rgba values in className strings or style props — use CSS variables defined in the project's theme file (`src/styles/themes/theme.css` in this template; shadcn's own docs use `app/globals.css` for Next.js, but Vite projects keep the token file wherever `src/index.css` imports it from)
 - Never use `@apply` anywhere — compose Tailwind classes in `.styles.ts` files instead
 
 ## MANDATORY: className Extraction Rule (GAP 1)
@@ -35,8 +38,8 @@ export const containerStyles = cn("flex flex-col gap-4 p-6 rounded-lg bg-card");
 // ComponentName.tsx
 <section className={containerStyles}>
 
-// CORRECT — single token inline (note: never use <span>; use a semantic element or sr-only on a semantic element)
-<p className="sr-only">Loading…</p>
+// CORRECT — single token inline
+<span className="sr-only">Loading…</span>
 
 // CORRECT — cn() with base imported from styles.ts
 <section className={cn(containerStyles, isActive && "ring-2 ring-ring")}>
@@ -77,6 +80,9 @@ Forbidden patterns (any colour name + numeric step):
 | `border-border` | Default border |
 | `border-input` | Form input border |
 | `ring-ring` | Focus ring |
+| `bg-chart-1` … `bg-chart-5` | Default chart palette (used by `ui/chart.tsx`) |
+| `bg-sidebar` / `text-sidebar-foreground` | Sidebar surface and default sidebar text (used by `ui/sidebar.tsx`) |
+| `bg-sidebar-primary` / `bg-sidebar-accent` / `border-sidebar-border` / `ring-sidebar-ring` | Sidebar-specific active, hover, border, and focus states |
 
 ```tsx
 // WRONG
@@ -85,6 +91,22 @@ Forbidden patterns (any colour name + numeric step):
 // CORRECT
 <Button className="bg-primary text-primary-foreground border-border">
 ```
+
+## Composition: `render` prop, not `asChild` (Base UI)
+
+This template's `components.json` uses a **Base UI** style (`"style": "base-nova"`). Base UI components use a **`render` prop** for polymorphic composition — Radix UI's `asChild` prop does not apply here.
+
+```tsx
+// WRONG — asChild is a Radix UI pattern; this project's components don't accept it
+<Button asChild>
+  <a href="/about">About</a>
+</Button>
+
+// CORRECT — Base UI render prop
+<Button render={<a href="/about" />}>About</Button>
+```
+
+If a design system change ever switches `components.json`'s `style` back to a `radix-*` variant, this section no longer applies and `asChild` becomes correct again — check `components.json` before assuming either pattern.
 
 ## Directory Structure
 
@@ -102,7 +124,6 @@ src/
         AuthForm.tsx            # Component — no raw Tailwind strings
         AuthForm.styles.ts      # Co-located Tailwind class definitions for this component
         types.ts
-        AuthForm.stories.tsx    # only when Storybook is enabled
         AuthForm.test.tsx
         index.ts
   pages/
@@ -166,18 +187,18 @@ export const submitButtonStyles = cva(
 ```
 
 ```tsx
-// src/components/shared/authForm/AuthForm.tsx — no raw Tailwind strings, no <div> or <span>
+// src/components/shared/authForm/AuthForm.tsx — no raw Tailwind strings
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 import { formContainerStyles, inputStyles, submitButtonStyles } from "./AuthForm.styles";
 
-export function AuthForm() {
+export const AuthForm = (): ReactElement => {
   return (
     <section className={formContainerStyles}>
       <Input className={inputStyles({ state: "default" })} />
       <Button className={submitButtonStyles({ variant: "primary" })}>Sign in</Button>
     </section>
   );
-}
+};
 ```
