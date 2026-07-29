@@ -47,7 +47,7 @@ the user about for any of these:
 | Icon source | `lucide-react` — already installed |
 | State management | Zustand |
 | Forms & validation | React Hook Form + Zod |
-| Data fetching | Fetch-based `apiClient` + json-server (local mock backend) |
+| Data fetching | Axios-based `apiClient` + json-server (local mock backend) |
 | Testing framework | Vitest + React Testing Library — already installed and configured |
 
 ### Step 2 — Optional features (ask the user yes/no for each, before writing any code)
@@ -141,7 +141,7 @@ Optional:
 
 | File | Strategy | Loaded when editing |
 | --- | --- | --- |
-| `data-fetching/01-fetch-client.md` | Fetch-based `apiClient` + json-server local mock backend — central client, typed responses, error handling | `src/services/**/*.ts`, `src/hooks/**/*.ts` |
+| `data-fetching/01-axios-client.md` | Axios-based `apiClient` + json-server local mock backend — central client, typed responses, error handling | `src/services/**/*.ts`, `src/hooks/**/*.ts` |
 
 Optional (works alongside any HTTP client):
 
@@ -216,7 +216,7 @@ Element Policy for the reasoning and examples.
 - **Separation of concerns** — Components vs Pages vs Store vs Services vs Hooks (`core/05-architecture.md`)
 - **Reuse existing building blocks** before creating new ones (`core/04-execution-flow.md`)
 - **Zustand**: no direct state mutation, domain-focused stores (`state-management/01-zustand.md`)
-- **apiClient**: no raw `fetch` in UI components, typed responses, mapper usage (`data-fetching/01-fetch-client.md`)
+- **apiClient**: no raw `axios` calls in UI components, typed responses, mapper usage (`data-fetching/01-axios-client.md`)
 - **Forms**: Zod schema, RHF resolver, Controller integration, `Field`/`FieldGroup` composition (`forms/01-rhf-zod.md`)
 - **Testing**: all required test cases, 100% coverage; wrap in `ThemeProvider` only when the component under test actually calls `useTheme()` (directly or via a child) — e.g. `ThemeToggle`; not a blanket requirement for every test (`testing/01-vitest-rtl.md`)
 - **Accessibility**: aria-labels, keyboard navigation, semantic elements (`core/08-accessibility.md`)
@@ -227,7 +227,7 @@ Element Policy for the reasoning and examples.
 - **className extraction** *(shadcn/Tailwind only)*: multi-token className strings must be in `.styles.ts` — single-token or `cn()` with imported base only inline (`styling/shadcn/01-tailwind-shadcn-styling.md`)
 - **No Tailwind palette classes** *(shadcn/Tailwind only)*: use shadcn/ui semantic tokens (`bg-primary`, `text-muted-foreground`, etc.) never `bg-blue-500` (`styling/shadcn/01-tailwind-shadcn-styling.md`)
 - **Barrel exports**: every new file in hooks/, components/, types/, constants/, services/, store/ must be re-exported from sibling `index.ts` (`core/03-coding-principles.md`)
-- **`ApiResponse<T>` envelope**: all services must wrap results in `ApiResponse<T>`; hooks unwrap `.data` before storing (`data-fetching/01-fetch-client.md`, full pattern in `data-fetching/03-data-layer.md`)
+- **`ApiResponse<T>` envelope**: all services must wrap results in `ApiResponse<T>`; hooks unwrap `.data` before storing (`data-fetching/01-axios-client.md`, full pattern in `data-fetching/03-data-layer.md`)
 - **Schema placement**: form validation schemas (Zod) live in `ComponentName.schema.ts`, never inside `.tsx` or hooks (`forms/01-rhf-zod.md`)
 - **Storybook**: fixed OFF for this template — 5-file component contract everywhere, no `.stories.tsx`, no `.storybook/` config, no Storybook scripts in `package.json`
 - **Error handling**: app-level `ErrorBoundary` in `App.tsx` + a per-route `errorElement`/`ErrorBoundary` on every route with a `loader`/`action`, `AsyncState<T>` only for non-route-tied fetches, `unknown` in catch blocks, actions return `{ ok, error? }` for known failures rather than throwing (`core/10-error-handling.md`)

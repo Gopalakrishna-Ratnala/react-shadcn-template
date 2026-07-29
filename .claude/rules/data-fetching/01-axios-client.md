@@ -1,14 +1,14 @@
 ---
-description: Fetch-based HTTP client architecture — central apiClient, typed requests, error handling, json-server as the local mock backend. Loaded when editing services.
+description: Axios-based HTTP client architecture — central apiClient, typed requests, error handling, json-server as the local mock backend. Loaded when editing services.
 paths: ["src/services/**/*.ts", "src/hooks/**/*.ts"]
 ---
 
-# Fetch Client + json-server Rules
+# Axios Client + json-server Rules
 
 This project is fully local and frontend-only for now. **json-server** serves a real
 local REST API from `data/mockData/db.json` (a genuine HTTP server, not synchronous
-mock functions), and the app talks to it over native `fetch` — no HTTP library
-dependency (no Axios).
+mock functions), and the app talks to it over **axios** — a single shared
+`axios.create()` instance, not per-call raw `axios.get()`/`axios.post()` calls.
 
 ## Local mock backend
 
@@ -29,7 +29,7 @@ All API communication MUST go through reusable service modules in `src/services/
 
 UI components MUST NOT:
 
-- call `fetch` directly
+- call `axios` directly
 - hardcode endpoints
 - transform raw response shapes inline
 - handle repeated header/timeout setup
@@ -50,14 +50,20 @@ src/services/
 
 ## apiClient Requirements
 
-`src/services/apiClient.ts` is the one place that calls `fetch`. It:
+`src/services/apiClient.ts` is the one place that creates an axios instance and calls
+`axiosInstance.request()`. It:
 
-- Reads the base URL from `env.apiBaseUrl` (`src/config/env.ts`) — never hardcodes it
-- Sets `Content-Type: application/json` on every request
-- Applies a request timeout via `AbortController` (default 10s)
+- Reads the base URL from `env.apiBaseUrl` (`src/config/env.ts`) — never hardcodes it,
+  and passes it as `axios.create()`'s `baseURL` (never as a per-call string
+  concatenation)
+- Sets `Content-Type: application/json` on the shared instance, not per call
+- Applies a request timeout via axios's own `timeout` config (default 10s) — no manual
+  `AbortController`/`setTimeout` needed, though an external `AbortSignal` (e.g. from a
+  component unmounting) can still be passed through per-request via axios's own
+  `signal` option
 - Normalizes every failure — non-2xx response, network error, or timeout — into a
-  thrown `ApiError` (`{ message, status, body }`) — callers never handle raw `fetch`
-  rejections or inspect `Response` objects directly
+  thrown `ApiError` (`{ message, status, body }`) via `axios.isAxiosError()` — callers
+  never handle a raw `AxiosError` or inspect `error.response` directly
 - Exposes typed methods matching json-server's REST verbs: `get`, `post`, `patch`,
   `put`, `del`
 
@@ -82,8 +88,17 @@ const created = await apiClient.post<Product>("/products", newProduct);
 ## Error Handling Rules
 
 - Do not silently swallow errors
-- Let `ApiError` propagate from the service to the hook; the hook decides how to
-  surface it to the UI (toast, inline error state, etc.) — never decode `ApiError`
+- Let `ApiError` propagate from the service to the caller (a route `loader`/`action`,
+  or a hook for non-route-tied fetches); the caller decides how to surface it to the
+  UI (toast, inline error state, route `ErrorBoundary`, etc.) — never decode `ApiError`
   internals inside a component
 - Prefer a shared error-message mapper over inspecting `error.status` ad hoc in every
-  hook, once more than one hook needs the same status-to-message logic
+  caller, once more than one needs the same status-to-message logic
+
+## Testing apiClient
+
+Mock `axios` itself (`vi.mock("axios", ...)`, mocking `axios.create` to return an
+object with a `request` mock), not `global.fetch` — see `apiClient.test.ts` for the
+full pattern, including how a mocked `AxiosError`-shaped rejection (`{ isAxiosError:
+true, response, code }`) is used to exercise the non-2xx, network-error, and
+timeout (`code: "ECONNABORTED"`) branches.

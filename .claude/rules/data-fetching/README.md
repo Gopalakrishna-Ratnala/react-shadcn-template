@@ -1,15 +1,18 @@
-# Data Fetching Strategy — Fetch + json-server (fixed) + Optional Data Layer
+# Data Fetching Strategy — Axios + json-server (fixed) + Optional Data Layer
 
 ## HTTP client — fixed, not a choice
 
 This project is local/frontend-only for now. **json-server** serves a real local REST
-API from `data/mockData/db.json`; the app talks to it via a native-`fetch`-based `apiClient`
-(`src/services/apiClient.ts`) — no HTTP library dependency. See `01-fetch-client.md`.
+API from `data/mockData/db.json`; the app talks to it via an **axios**-based `apiClient`
+(`src/services/apiClient.ts`) — a single shared `axios.create()` instance. See
+`01-axios-client.md`.
 
-This was previously an open "pick Axios or an alternative" choice; it's now resolved
-for this template. If a future project genuinely needs a different HTTP client (e.g.
-swapping to a real backend that requires a different auth flow), that's a deliberate,
-explicit decision to make with the user — not a default to fall back to.
+This was previously a native-`fetch`-based client (no HTTP library dependency); it was
+deliberately switched to axios for its built-in per-request timeout/cancellation
+(`signal`/`timeout` config) and `AxiosError` normalization, rather than hand-rolling
+`AbortController` plumbing. If a future project needs a different HTTP client entirely
+(e.g. swapping to a real backend that requires a different auth flow), that's a
+deliberate, explicit decision to make with the user — not a default to fall back to.
 
 ## Step 2 — Enable optional data layer patterns (ask the user)
 
@@ -22,9 +25,9 @@ These two files add the full service/mock/mapper architecture on top of `apiClie
 
 ## How to Switch (only if moving away from json-server entirely)
 
-1. Delete `01-fetch-client.md` and replace with rules for the new client/library.
+1. Delete `01-axios-client.md` and replace with rules for the new client/library.
 2. Delete `02-api-services.md` and `03-data-layer.md` if the project does not need a structured data layer.
 3. In `CLAUDE.md`, update the Data Fetching rows to reflect what is kept.
-4. Update the dependency in `package.json` (remove `json-server`, add the new library).
+4. Update the dependency in `package.json` (remove `axios`/`json-server`, add the new library).
 5. Replace `src/services/apiClient.ts` to match the new library's patterns.
 6. Remove `data/mockData/db.json`, `.env.example`'s `VITE_API_BASE_URL`, and the `mock-api` script if no longer applicable.

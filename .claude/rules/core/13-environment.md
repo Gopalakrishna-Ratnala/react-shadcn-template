@@ -43,12 +43,14 @@ export const env = {
 
 ```ts
 // src/services/apiClient.ts — imports from env config, never from import.meta.env directly
+import axios from "axios";
 import { env } from "@/config/env";
 
-// apiClient uses native fetch, not a library instance — see data-fetching/01-fetch-client.md
-// for the full implementation. The key point here: env.apiBaseUrl is read once, from the
+// apiClient uses a shared axios instance — see data-fetching/01-axios-client.md for
+// the full implementation. The key point here: env.apiBaseUrl is read once, from the
 // typed config module, never inline as import.meta.env.VITE_API_BASE_URL.
-const response = await fetch(`${env.apiBaseUrl}/products`, {
+const axiosInstance = axios.create({
+  baseURL: env.apiBaseUrl,
   headers: { "Content-Type": "application/json" },
 });
 ```
