@@ -18,7 +18,7 @@ paths: ["src/services/**/*.ts", "src/hooks/**/*.ts"]
 
 ```text
 src/services/
-├── apiClient.ts               # Central fetch-based HTTP client (see 01-fetch-client.md)
+├── apiClient.ts               # Central axios-based HTTP client (see 01-axios-client.md)
 ├── product/
 │   ├── productService.ts      # Service functions
 │   ├── types.ts               # Raw API response types (DTO)

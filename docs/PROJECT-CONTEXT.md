@@ -2132,3 +2132,88 @@ semicolons, same files/rules), 67/67 tests passing, `npm run build` succeeds.
 same as a tool actually having checked something — when a check's result
 seems too clean, verify what it actually scanned (file count, explicit flags)
 before treating "no errors" as "nothing was wrong."
+
+## 29. Switched `apiClient` from native fetch to axios (2026-07-29)
+
+User explicitly asked to reopen the previously-closed "fetch vs Axios" decision
+(Sections 6/16 — HTTP client had been deliberately fixed to native `fetch`, "no
+HTTP library dependency," after direct research) and switch to axios. This was a
+requested reversal, not an unprompted one — done deliberately, not silently.
+
+**Why the blast radius was small**: the codebase was already well-insulated at
+the `apiClient` boundary. `productService.ts` only ever calls
+`apiClient.get/post/patch/del`, never `fetch` directly; `productService.test.ts`
+mocks `apiClient` itself; `ProductsPage.test.tsx` mocks the service layer, not
+`apiClient` or `fetch`. Only `apiClient.ts` and `apiClient.test.ts` needed real
+code changes — every layer above (services, mappers, loaders, actions,
+components) was untouched, confirming the original service-boundary
+architecture (Section 6) was sound regardless of which HTTP library sits behind
+it.
+
+**Environment gap hit and resolved first**: `npm install axios` failed outright
+under `engine-strict=true` (Section 22) — local Node was `20.13.1`, repo
+requires `>=22.22.1`. Asked the user how to proceed rather than silently
+bypassing the safeguard that was deliberately added for exactly this case;
+user chose installing Node `22.22.1` via `nvm` (already available, just not
+selected) over a one-off `--engine-strict=false` bypass. All subsequent
+commands in this session were run with `nvm use 22.22.1` sourced first.
+
+**Code changes**:
+- `src/services/apiClient.ts` — `fetch`/`AbortController`/`setTimeout` replaced
+  with a single shared `axios.create({ baseURL: env.apiBaseUrl, timeout:
+  10_000, headers: { "Content-Type": "application/json" } })` instance.
+  `request<T>()` now calls `axiosInstance.request<T>({ method, url, data,
+  timeout, signal })` and normalizes failures via `axios.isAxiosError()`:
+  `error.response` present → non-2xx `ApiError` (status + body from the real
+  response); `error.code === "ECONNABORTED" | "ERR_CANCELED"` → timeout
+  `ApiError` (status 0); anything else → network-error `ApiError` (status 0).
+  **Public interface unchanged** (`get/post/patch/put/del`, same `ApiError`
+  shape) — this is exactly what kept every downstream file untouched.
+- `src/services/apiClient.test.ts` — rewritten to mock `axios` itself
+  (`vi.mock("axios", ...)`, `axios.create` returning `{ request: requestMock }`)
+  instead of `vi.stubGlobal("fetch", ...)`. Kept all 4 original assertions
+  (successful GET, POST body/method, non-2xx → `ApiError`, network failure →
+  `ApiError`) plus 2 new ones: an explicit check that `axios.create` was called
+  with the right `baseURL`/headers, and a dedicated timeout-path test
+  (`code: "ECONNABORTED"` → `ApiError` with `status: 0`) — a case the old
+  fetch-based test only covered generically via `AbortError`, now split out
+  since axios's timeout and external-cancel codes are actually distinguishable
+  values worth asserting on directly.
+- `package.json` — `axios@^1.18.1` added as a dependency. `npm audit`: 0
+  vulnerabilities after the install.
+
+**Docs updated** (mechanical sweep, not just the two touched files):
+`.claude/rules/data-fetching/01-fetch-client.md` renamed to
+`01-axios-client.md` and rewritten throughout (axios instance requirements,
+`axios.isAxiosError()` normalization, axios-based testing pattern);
+`data-fetching/README.md` (HTTP client description + the "how to switch" list);
+`data-fetching/02-api-services.md` and `03-data-layer.md` (both had a stray
+`01-fetch-client.md`/`fetch` reference); `core/13-environment.md`'s apiClient
+code example; `core/01-tech-stack.md`'s HTTP Client row; `CLAUDE.md` (tech
+stack table, the data-fetching rule-file table, two "Rules Not Covered by
+Hooks" bullets referencing the old filename); `AGENTS.md` (two tables);
+`README.md`'s feature list; `.claude/skills/run-feature-test/SKILL.md`'s
+boilerplate description. **Deliberately left `test-reports/*.md` alone** — per
+the Section 27 precedent, those are point-in-time records of what was true
+when each report was written, not living docs to keep in sync.
+
+**Validated**: `tsc -b` clean, `npm run lint` clean (0 errors — actually better
+than the historical 15-error vendored-file baseline; not investigated further
+since it's a strict improvement, not a regression), `vitest run` 69/69 passing
+(the pre-existing 67 plus the 2 new axios-specific `apiClient` tests), `npm
+run build` succeeds (code-splitting intact — `products-*.js`,
+`ComponentsGalleryPage-*.js` unchanged), `npm audit` 0 vulnerabilities.
+**Proved against a real, live json-server instance**, not just mocked tests —
+same as every other data-fetching change in this project's history: started
+json-server on a scratch copy of `db.json` (so the repo's seed data stayed
+untouched) and ran a standalone script using the exact same
+`axios.create()`/`request()` shape as `apiClient.ts` — GET (200, 6 items),
+POST (201), PATCH (200), DELETE, and a 404 error path (confirmed
+`axios.isAxiosError(error)` is `true` with the real `status`) all behaved as
+expected.
+
+**Still open, by explicit choice, not oversight**: this is a reversal of a
+previously "closed" decision (Sections 6/16's own framing: HTTP client picks
+should be deliberate, not silent defaults) — worth remembering if a future
+session sees the old fetch-based framing still lingering anywhere and assumes
+it's current.

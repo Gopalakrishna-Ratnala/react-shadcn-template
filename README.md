@@ -19,7 +19,7 @@ badly-formed component before it ships.
   a client approves, with every candidate (approved or rejected) permanently
   recorded — see `.claude/rules/styling/shadcn/03-theme-versioning.md`
 - **A local mock API** via `json-server`, backed by `data/mockData/db.json`,
-  with a fetch-based `apiClient` (no HTTP library dependency)
+  with an axios-based `apiClient` (a single shared `axios.create()` instance)
 - **A component tier system** (`ui/` → `layout/` → `blocks/` → `shared/` →
   feature-scoped `pages/*/components/`) with an explicit promotion rule, so a
   one-off component doesn't get force-promoted into a shared folder just

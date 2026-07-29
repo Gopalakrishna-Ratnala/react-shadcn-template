@@ -39,7 +39,7 @@ choose between for any of these:
 | Icon source | `lucide-react` — already installed |
 | State management | Zustand |
 | Forms & validation | React Hook Form + Zod |
-| Data fetching | Fetch-based `apiClient` + json-server (local mock backend) |
+| Data fetching | Axios-based `apiClient` + json-server (local mock backend) |
 | Testing framework | Vitest + React Testing Library — already installed and configured |
 
 For the genuinely optional, still-ask-the-user features (Storybook is fixed OFF;
@@ -56,7 +56,7 @@ see `CLAUDE.md`'s "Step 2 — Optional features" and `.claude/rules/features/REA
 | Language | TypeScript strict mode |
 | UI Library | shadcn/ui + Tailwind CSS v4 (`@tailwindcss/vite` — NOT PostCSS) |
 | State | Zustand |
-| HTTP | Fetch-based `apiClient` + json-server (local mock) |
+| HTTP | Axios-based `apiClient` + json-server (local mock) |
 | Forms | React Hook Form + Zod |
 | Router | React Router v8 (`react-router` — no separate `-dom` package since v7) |
 | Testing | Vitest + React Testing Library |

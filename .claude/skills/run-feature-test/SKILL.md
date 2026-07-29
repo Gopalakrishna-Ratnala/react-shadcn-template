@@ -78,7 +78,7 @@ which one to use.
 ### Step 2 — Look up your assignment (inlined here, not read from another file)
 
 This repo is a single, fixed boilerplate (shadcn/ui + Base UI, Zustand, RHF+Zod,
-fetch-based `apiClient` + json-server) — there's no bundle/variant system to select.
+axios-based `apiClient` + json-server) — there's no bundle/variant system to select.
 Every assignment builds against the same repo; what varies is the **feature task**,
 each one deliberately chosen to stress a different part of the ruleset. Together,
 assignments 1–6 exercise every rule file and every hook in `.claude/`.

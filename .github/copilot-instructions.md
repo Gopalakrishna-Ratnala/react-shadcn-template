@@ -41,7 +41,7 @@ All guidelines are organized into `rules` (contextual guidance) and `hooks` (aut
 | `styling/shadcn/01-tailwind-shadcn-styling.md` | shadcn/ui + Tailwind CSS v4 styling rules, forbidden patterns, theme tokens | `src/**/*.styles.ts`, `src/**/*.tsx`, `src/**/*.css` |
 | `styling/shadcn/02-theming.md` | Dark/light theme toggle via `next-themes` *(if enabled)* | `src/**/*.tsx`, `src/**/*.ts` |
 | `styling/shadcn/04-composition-patterns.md` | shadcn/ui composition patterns — always active | `src/**/*.tsx` |
-| `data-fetching/01-fetch-client.md` | Fetch-based `apiClient` + json-server, service patterns, error handling | `src/services/**/*.ts`, `src/hooks/**/*.ts` |
+| `data-fetching/01-axios-client.md` | Axios-based `apiClient` + json-server, service patterns, error handling | `src/services/**/*.ts`, `src/hooks/**/*.ts` |
 | `data-fetching/02-api-services.md` | Structured service layer, typed DTOs *(if enabled)* | `src/services/**/*.ts`, `src/hooks/**/*.ts` |
 | `data-fetching/03-data-layer.md` | Full mock/mapper/DTO data architecture *(if enabled)* | `src/services/**/*.ts`, `src/hooks/**/*.ts`, `src/types/**/*.ts` |
 | `state-management/01-zustand.md` | Zustand store structure, async actions — fixed for this template | `src/store/**/*.ts`, `src/hooks/**/*.ts` |
@@ -81,7 +81,7 @@ semantic element first; never force one that doesn't actually apply. See
 - Separation of concerns - Components vs Pages vs Store vs Services vs Hooks (`core/05-architecture.md`)
 - Reuse existing building blocks before creating new ones (`core/04-execution-flow.md`)
 - Zustand: no direct state mutation, domain-focused stores, route-tied data stays in the loader, never duplicated into a store (`state-management/01-zustand.md`)
-- `apiClient`: no raw fetch in UI components, typed responses, mapper usage (`data-fetching/01-fetch-client.md`)
+- `apiClient`: no raw axios calls in UI components, typed responses, mapper usage (`data-fetching/01-axios-client.md`)
 - Forms: Zod validation, RHF resolver, `Field`/`FieldGroup` composition (`forms/01-rhf-zod.md`)
 - Testing: all required test cases, `ThemeProvider` wrapper only when the component under test calls `useTheme()`, loader/action testing conventions, expected coverage requirements (`testing/01-vitest-rtl.md`)
 - Accessibility: aria-labels, keyboard navigation, semantic elements used intentionally (`core/08-accessibility.md`)

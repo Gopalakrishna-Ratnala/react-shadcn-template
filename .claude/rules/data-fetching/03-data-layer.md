@@ -8,7 +8,7 @@ paths: ["src/services/**/*.ts", "src/hooks/**/*.ts", "src/types/**/*.ts"]
 ## Purpose
 
 Decouples the UI from the API response shape. json-server (a real local HTTP server,
-not synchronous mock functions — see `01-fetch-client.md`) can be swapped for a real
+not synchronous mock functions — see `01-axios-client.md`) can be swapped for a real
 production backend without touching any UI code — only the service and mapper need
 updating, since both already speak in `ApiResponse<T>` and a stable domain model.
 
@@ -28,7 +28,7 @@ data/mockData/db.json (via json-server)  →  Service Layer  →  Mapper Layer  
 
 **Important shift from a purely-mocked architecture:** `mocks.ts` is no longer where
 runtime data comes from — it's test-only fixture data for unit tests that mock
-`fetch` (see `apiClient.test.ts` for the pattern). The actual data the app sees while
+`axios` (see `apiClient.test.ts` for the pattern). The actual data the app sees while
 developing comes from a real network call to json-server, which is itself backed by
 `data/mockData/db.json`. This means loading states, network errors, and timeouts are all genuinely
 exercised during development, not just simulated.
