@@ -2217,3 +2217,52 @@ previously "closed" decision (Sections 6/16's own framing: HTTP client picks
 should be deliberate, not silent defaults) — worth remembering if a future
 session sees the old fetch-based framing still lingering anywhere and assumes
 it's current.
+
+## 30. Onboarding fix: `.nvmrc`/`.node-version` for the engine-strict Node requirement (2026-07-29)
+
+Doing the axios migration surfaced the Node-version friction as a real,
+recurring team problem, not just a one-off: `npm install` hard-fails
+(`EBADENGINE`) under `engine-strict=true` on any machine below `>=22.22.1`
+(this repo's `engines` field), and this template is explicitly meant to be
+picked up by other teammates/teams — every one of them would hit the exact
+same wall on first clone.
+
+**Verified before proposing a fix, not assumed**: tested whether a `preinstall`
+npm script could intercept this to show a friendlier message — it cannot.
+Built a throwaway `package.json` with `engine-strict=true` and a `preinstall`
+script, ran `npm install` on a mismatched Node version: the preinstall script
+never ran at all — npm's own engine check aborts before any lifecycle script
+fires. This ruled out a "friendly pre-install check" as a real option; the fix
+had to be documentation/tooling-based instead.
+
+**Fix applied**:
+- Added `.nvmrc` and `.node-version` (both pinned to the exact string
+  `22.22.1`) — `nvm use` (also read by `fnm`/`nodenv`) picks this up with zero
+  arguments. Verified directly: switched a shell from Node `20.13.1` to
+  `22.22.1` via a bare `nvm use` inside the repo, confirmed via `node -v`
+  before/after.
+- **`.nvmrc` and `engines` deliberately express different things, discussed
+  and confirmed with the user rather than assumed**: `engines`'s
+  `>=22.22.1` is the *supported range* (a floor — any `22.22.1` or newer
+  passes `npm install`'s own check); `.nvmrc`'s `22.22.1` is the *recommended
+  development version* (the known-good baseline every teammate actually runs
+  via `nvm use`). They're allowed to diverge on purpose — e.g. if the team
+  later validates against `22.24.0`, bump `.nvmrc`/`.node-version` to match
+  without touching `engines`'s floor unless there's an actual reason to raise
+  the minimum. Also technically necessary: `nvm`'s `.nvmrc` format has no
+  semver-range syntax (no `>=`) — it only accepts an exact version, a
+  major/minor prefix, or an alias like `lts/*` — so `.nvmrc` couldn't
+  literally mirror `engines`'s range syntax even if that were desired.
+- `README.md`'s Getting Started section rewritten with this as an explicit
+  **Step 0**, before `npm install`: `nvm install && nvm use` for nvm users,
+  a note that `fnm`/`nodenv` read the same files, and Volta mentioned as an
+  explicit *optional* alternative for teammates who want fully automatic
+  version switching with no manual `use` step at all (not enforced, not a
+  new required tool — just documented for anyone who wants it).
+- Considered and explicitly rejected: a `"volta"` field pinning
+  node/npm in `package.json` (would work automatically for Volta users, but
+  forces every teammate to adopt a specific tool rather than staying
+  editor/tool-agnostic); a custom wrapper script replacing `npm install` as
+  the primary onboarding command (adds a new command to remember — same
+  friction class as just remembering `nvm use`, for no real gain once
+  `.nvmrc` already exists).
