@@ -31,3 +31,9 @@ class MockObserver {
 globalThis.ResizeObserver ??= MockObserver as unknown as typeof ResizeObserver;
 globalThis.IntersectionObserver ??=
   MockObserver as unknown as typeof IntersectionObserver;
+
+// jsdom doesn't implement scrollIntoView, needed by cmdk's Command component.
+Element.prototype.scrollIntoView ??= vi.fn();
+
+// jsdom doesn't implement getAnimations, needed by Base UI's ScrollArea viewport.
+Element.prototype.getAnimations ??= vi.fn(() => []);

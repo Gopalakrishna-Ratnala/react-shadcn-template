@@ -78,6 +78,7 @@
     "vitest": "^4.1.10"
   },
   "overrides": {
-    "minimatch": "^10.2.6"
+    "minimatch": "^10.2.6",
+    "html-encoding-sniffer": "^4.0.0"
   }
 }

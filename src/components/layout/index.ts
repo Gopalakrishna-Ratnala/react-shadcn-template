@@ -1,1 +1,2 @@
-// layout component exports go here
+export { PreviewShell } from "./previewShell";
+export type { PreviewNavItem } from "./previewShell";

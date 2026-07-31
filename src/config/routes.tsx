@@ -14,15 +14,6 @@ import type { RouteObject } from "react-router";
 // resolves the route's `loader` alongside its `Component`, code-splitting both.
 const routes: RouteObject[] = [
   {
-    path: ROUTES.COMPONENTS_GALLERY,
-    lazy: async () => {
-      const { ComponentsGalleryPage } =
-        await import("@/pages/componentsGallery/ComponentsGalleryPage");
-      return { Component: ComponentsGalleryPage };
-    },
-    HydrateFallback,
-  },
-  {
     path: ROUTES.PRODUCTS,
     lazy: async () => {
       const { ProductsPage, productsLoader, productsAction } =
@@ -35,6 +26,58 @@ const routes: RouteObject[] = [
     },
     HydrateFallback,
     ErrorBoundary: RouteErrorFallback,
+  },
+  {
+    lazy: async () => {
+      const { PreviewShell } = await import("@/components/layout/previewShell");
+      return { Component: PreviewShell };
+    },
+    children: [
+      {
+        path: ROUTES.PREVIEW_LISTING,
+        lazy: async () => {
+          const { ListingPreviewPage } =
+            await import("@/pages/preview/listing");
+          return { Component: ListingPreviewPage };
+        },
+        HydrateFallback,
+      },
+      {
+        path: ROUTES.PREVIEW_DASHBOARD,
+        lazy: async () => {
+          const { DashboardPreviewPage } =
+            await import("@/pages/preview/dashboard");
+          return { Component: DashboardPreviewPage };
+        },
+        HydrateFallback,
+      },
+      {
+        path: ROUTES.PREVIEW_FORM,
+        lazy: async () => {
+          const { FormPreviewPage } = await import("@/pages/preview/form");
+          return { Component: FormPreviewPage };
+        },
+        HydrateFallback,
+      },
+      {
+        path: ROUTES.PREVIEW_DETAILS,
+        lazy: async () => {
+          const { DetailsPreviewPage } =
+            await import("@/pages/preview/details");
+          return { Component: DetailsPreviewPage };
+        },
+        HydrateFallback,
+      },
+      {
+        path: ROUTES.COMPONENTS_GALLERY,
+        lazy: async () => {
+          const { ComponentsGalleryPage } =
+            await import("@/pages/preview/componentsGallery");
+          return { Component: ComponentsGalleryPage };
+        },
+        HydrateFallback,
+      },
+    ],
   },
 ];
 

@@ -1,1 +1,9 @@
-[]
+[
+  {
+    "date": "2026-07-31",
+    "round": "qad-rebrand",
+    "file": "2026-07-31_qad-rebrand_v1-qad-modern-sleek.css",
+    "status": "approved",
+    "notes": "Ported from feature/components-listing-page-theming-v2's QAD Modern Sleek theme (green primary, QAD red reserved as a signal/destructive color, IBM Plex Sans, 4px radius). The theme's own header comment claims primary should be graphite (#111418) and calls the green a mistake, but screenshots of the reference branch's live app confirm green (#099E09) is the actual, consistently-shipped primary color (nav active state, every primary button, radio selection) — kept as green; the comment is stale documentation, not the real value."
+  }
+]
