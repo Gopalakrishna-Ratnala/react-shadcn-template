@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import type { ReactElement } from "react";
 
 import {
@@ -27,8 +28,8 @@ export const PageHeader = ({
             {breadcrumbItems.map((item, index) => {
               const isLast = index === breadcrumbItems.length - 1;
               return (
-                <li key={item.label} className={styles.breadcrumbItem}>
-                  <BreadcrumbItem>
+                <Fragment key={item.label}>
+                  <BreadcrumbItem className={styles.breadcrumbItem}>
                     {isLast || !item.href ? (
                       <BreadcrumbPage>{item.label}</BreadcrumbPage>
                     ) : (
@@ -38,7 +39,7 @@ export const PageHeader = ({
                     )}
                   </BreadcrumbItem>
                   {!isLast && <BreadcrumbSeparator />}
-                </li>
+                </Fragment>
               );
             })}
           </BreadcrumbList>
