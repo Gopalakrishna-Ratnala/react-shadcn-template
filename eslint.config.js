@@ -56,6 +56,7 @@ export default defineConfig([
     plugins: { 'import-x': importX, react: pluginReact },
     settings: {
       'import-x/resolver': { typescript: true },
+      react: { version: 'detect' },
     },
     rules: {
       'react/function-component-definition': [
